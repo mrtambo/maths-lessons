@@ -435,12 +435,30 @@ function transition(hideId, showId) {
 }
 
 function goToLessons() {
-  // Placeholder — wire up to your lesson pages
-  const y = selectedYear;
-  const c = selectedClass || '';
-  alert(`Navigate to: Year ${y}${c ? ' — ' + c : ''}\n\n(Connect this button to your lesson page links.)`);
+  const destinations = {
+    '7':              'year7/index.html',
+    '8-Pathway 1':    'year8-pathway1/index.html',
+    '8-Pathway 2':    'year8-pathway2/index.html',
+    '8-Pathway 3':    'year8-pathway3/index.html',
+    '9-Pathway 1':    'year9-pathway1/index.html',
+    '9-Pathway 2':    'year9-pathway2/index.html',
+    '9-Pathway 3':    'year9-pathway3/index.html',
+    '10-Pathway 1':   'year10-pathway1/index.html',
+    '10-Pathway 2':   'year10-pathway2/index.html',
+    '10-Pathway 3':   'year10-pathway3/index.html',
+    '11-11 Foundations':  'year11-foundations/index.html',
+    '11-11 Essentials':   'year11-essentials/index.html',
+    '11-11 Applications': 'year11-applications/index.html',
+    '11-11 Methods':      'year11-methods/index.html',
+    '12-12 Foundations':  'year12-foundations/index.html',
+    '12-12 Essentials':   'year12-essentials/index.html',
+    '12-12 Applications': 'year12-applications/index.html',
+    '12-12 Methods':      'year12-methods/index.html',
+  };
+  const key = selectedClass ? `${selectedYear}-${selectedClass}` : `${selectedYear}`;
+  const url = destinations[key];
+  if (url) window.location.href = url;
 }
-
 // ── Breadcrumb ─────────────────────────────────────────
 function updateBreadcrumb(year, cls) {
   const bc = document.getElementById('breadcrumb');
