@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit Your Work — MTCC</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #09121f;
+  --bg-tint:   #0d1a2e;
+  --panel:     #101d30;
+  --card:      #162540;
+  --lift:      #1e3256;
+  --bdr:       #1f3557;
+  --teal:      #00c9b8;
+  --teal2:     #009e90;
+  --gold:      #f0a500;
+  --green:     #2ecc71;
+  --red:       #e74c3c;
+  --blue:      #4fa9ff;
+  --text:      #dde8f5;
+  --muted:     #6b87a8;
+  --white:     #ffffff;
+}
+
+body {
+  font-family: 'Trebuchet MS', Trebuchet, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── CHROME ─── */
+.chrome {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--panel); border-bottom: 2px solid var(--teal2);
+  padding: 0 28px; height: 52px; flex-shrink: 0;
+}
+.chrome-left  { display: flex; align-items: center; gap: 10px; }
+.chrome-dot   { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); }
+.chrome-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 700; }
+.chrome-right { font-size: 0.82rem; font-weight: 700; color: var(--teal); font-variant-numeric: tabular-nums; }
+
+/* ─── MAIN ─── */
+.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  gap: 28px;
+}
+
+/* ─── HEADER ─── */
+.page-header { text-align: center; }
+.page-header .icon-wrap {
+  width: 60px; height: 60px; border-radius: 14px;
+  background: var(--green); color: #000;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; margin-bottom: 14px;
+}
+.page-header h1 { font-size: 2rem; font-weight: 900; color: var(--text); line-height: 1.1; }
+.page-header p  { font-size: 0.95rem; color: var(--muted); margin-top: 6px; }
+
+/* ─── CARD ─── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--bdr);
+  border-radius: 14px;
+  padding: 28px 32px;
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ─── STEP LABELS ─── */
+.step-label {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--gold); font-weight: 700; margin-bottom: 10px;
+}
+.step-hint { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+
+/* ─── ID INPUT ─── */
+.id-input {
+  width: 160px; padding: 13px 16px;
+  font-size: 1.6rem; font-weight: 800;
+  text-align: center; letter-spacing: 0.3em;
+  background: var(--lift); border: 2px solid var(--bdr);
+  border-radius: 10px; color: var(--teal);
+  outline: none; font-family: inherit;
+  display: block; transition: border-color 0.15s;
+}
+.id-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,201,184,0.15); }
+.id-input::placeholder { color: var(--muted); letter-spacing: 0.1em; font-size: 1rem; }
+
+/* ─── DIVIDER ─── */
+.divider { border: none; border-top: 1px solid var(--bdr); }
+
+/* ─── BUTTONS ─── */
+.photo-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 15px 32px; border-radius: 12px; border: none;
+  background: var(--teal2); color: var(--white);
+  font-size: 1.05rem; font-weight: 700;
+  cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.photo-btn:hover  { background: var(--teal); transform: scale(1.02); }
+.photo-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.photo-btn.submit-btn {
+  background: var(--green); width: 100%;
+  justify-content: center; font-size: 1.1rem; padding: 17px;
+}
+.photo-btn.submit-btn:hover { background: #27ae60; }
+
+/* ─── PREVIEW GRID ─── */
+.photo-preview-grid { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; width: 100%; }
+.photo-thumb {
+  position: relative; width: 100px; height: 100px;
+  border-radius: 10px; overflow: hidden; border: 2px solid var(--bdr);
+}
+.photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.photo-thumb .remove-btn {
+  position: absolute; top: 4px; right: 4px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--red); color: #fff; border: none;
+  font-size: 0.85rem; font-weight: 900; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── STATUS MESSAGES ─── */
+.status-msg {
+  padding: 12px 20px; border-radius: 10px;
+  font-weight: 700; font-size: 0.95rem;
+  text-align: center; display: none; width: 100%;
+  line-height: 1.5;
+}
+.status-msg.success { background: rgba(46,204,113,0.15); border: 2px solid var(--green); color: var(--green); display: block; }
+.status-msg.error   { background: rgba(231,76,60,0.15);  border: 2px solid var(--red);   color: var(--red);   display: block; }
+.status-msg.loading { background: rgba(79,169,255,0.15); border: 2px solid var(--blue);  color: var(--blue);  display: block; }
+
+/* ─── FOOTER ─── */
+footer {
+  text-align: center; padding: 18px;
+  font-size: 0.78rem; color: var(--muted);
+  border-top: 1px solid var(--bdr);
+}
+
+/* ─── COURSE SELECT ─── */
+.course-select {
+  width: 100%; padding: 13px 16px;
+  font-size: 1rem; font-weight: 700;
+  background: var(--lift); border: 2px solid var(--bdr);
+  border-radius: 10px; color: var(--text);
+  outline: none; font-family: inherit;
+  cursor: pointer; transition: border-color 0.15s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b87a8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+.course-select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,201,184,0.15); }
+.course-select option { background: var(--card); color: var(--text); }
+
+@media (max-width: 560px) {
+  .card { padding: 22px 18px; }
+  .page-header h1 { font-size: 1.6rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="chrome">
+  <div class="chrome-left">
+    <div class="chrome-dot"></div>
+    <span class="chrome-label">Mother Teresa Catholic College</span>
+  </div>
+  <span class="chrome-right" id="live-clock"></span>
+</header>
+
+<main class="page">
+
+  <div class="page-header">
+    <div class="icon-wrap">📷</div>
+    <h1>Submit Your Work</h1>
+    <p>Select your class, enter your ID, snap a photo, and tap <strong>Submit</strong></p>
+  </div>
+
+  <div class="card">
+
+    <!-- Step 1 — Course -->
+    <div>
+      <div class="step-label">Step 1 — Select your class</div>
+      <select class="course-select" id="courseSelect">
+        <option value="">— Choose your class —</option>
+        <option value="1Vxb9ntVNvd8wf_KOCRuQuuQISV1Iwcfc">Year 12 Essentials</option>
+        <option value="1xZzcqQXYiZEQAY3ncNXp0AemufhGAF1U">Year 12 Apps</option>
+        <option value="1e-j-Rlma9SSdbzXoLO0tauXr5tcMI1Js">Year 11 Methods</option>
+        <option value="1gJDhgHnFb7i6O7jX-phUQ3dYy9F6M2c7">Year 11 Foundations</option>
+        <option value="1HSl_x-FfUbn3DSUtz5qSMfRhg4eQWWy1">Year 11 Essentials</option>
+        <option value="1l8JLaeLBkUfbxVT9FB3eZQ5-czZkWFi9">Year 11 Apps</option>
+        <option value="1cq4lpxyou4qJfqOXaHONIKXtcMV7LIhs">Year 10</option>
+        <option value="1xaTPogudenjYWSwagLAIaozq-9bSV3Mz">Year 9</option>
+        <option value="1UOXPybIAQ7m03M8xnsDEiqHudjCk9BTe">Year 8</option>
+        <option value="11ts1_-UU6un5EfIA9WvqDeIhNUCOrrIB">Year 7</option>
+      </select>
+      <p class="step-hint">Pick the class you're submitting work for</p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Step 2 — Student ID -->
+    <div>
+      <div class="step-label">Step 2 — Enter your student ID</div>
+      <input class="id-input" type="text" id="studentIdInput"
+        maxlength="6" placeholder="ID" inputmode="numeric"
+        autocomplete="off" spellcheck="false">
+      <p class="step-hint">Your numeric student code</p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Step 3 — Photo -->
+    <div>
+      <div class="step-label">Step 3 — Take a photo of your work</div>
+      <input type="file" id="cameraInput" accept="image/*" capture="environment"
+        multiple style="display:none;">
+      <button class="photo-btn" id="takePhotoBtn"
+        onclick="document.getElementById('cameraInput').click()">
+        📷 &nbsp; Take / Choose a Photo
+      </button>
+      <p class="step-hint">You can add multiple photos if your work spans more than one page.</p>
+    </div>
+
+    <!-- Preview thumbnails -->
+    <div class="photo-preview-grid" id="photoPreview"></div>
+
+    <hr class="divider" id="submitDivider" style="display:none;">
+
+    <!-- Submit button -->
+    <button class="photo-btn submit-btn" id="submitBtn"
+      onclick="submitWork()" style="display:none;">
+      ✅ &nbsp; Submit to Teacher
+    </button>
+
+    <!-- Status feedback -->
+    <div class="status-msg" id="statusMsg"></div>
+
+  </div>
+
+</main>
+
+<footer>Mother Teresa Catholic College &mdash; Mathematics Department</footer>
+
+<script>
+// ── Apps Script URL ───────────────────────────────────────────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbUhLSI3N_BvK87YqVk4WLRtcGc9CJdGzLMsKC3WH3JxXE2oCmKVzn-xdWWY6PiRrqKw/exec';
+// ─────────────────────────────────────────────────────────────────────
+
+let collectedPhotos = [];
+
+/* ── Live clock ── */
+function updateClock() {
+  const now   = new Date();
+  const h     = now.getHours();
+  const m     = String(now.getMinutes()).padStart(2, '0');
+  const s     = String(now.getSeconds()).padStart(2, '0');
+  const ampm  = h >= 12 ? 'PM' : 'AM';
+  const h12   = h % 12 || 12;
+  const days  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const el = document.getElementById('live-clock');
+  if (el) el.textContent = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}  ${h12}:${m}:${s} ${ampm}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ── ID input: digits only ── */
+document.getElementById('studentIdInput').addEventListener('input', function () {
+  this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+});
+
+/* ── Photo file selection ── */
+document.getElementById('cameraInput').addEventListener('change', function () {
+  Array.from(this.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      collectedPhotos.push({ file, dataUrl: ev.target.result });
+      renderPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+  this.value = '';
+});
+
+function renderPreviews() {
+  const container = document.getElementById('photoPreview');
+  container.innerHTML = '';
+  collectedPhotos.forEach((photo, idx) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'photo-thumb';
+    thumb.innerHTML = `<img src="${photo.dataUrl}" alt="Photo ${idx + 1}">
+      <button class="remove-btn" onclick="removePhoto(${idx})">✕</button>`;
+    container.appendChild(thumb);
+  });
+  const hasPhotos = collectedPhotos.length > 0;
+  document.getElementById('submitBtn').style.display     = hasPhotos ? 'flex'  : 'none';
+  document.getElementById('submitDivider').style.display = hasPhotos ? 'block' : 'none';
+}
+
+function removePhoto(idx) {
+  collectedPhotos.splice(idx, 1);
+  renderPreviews();
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('statusMsg');
+  el.className   = 'status-msg ' + type;
+  el.textContent = msg;
+}
+
+/* ── Submit ── */
+async function submitWork() {
+  const courseFolderId = document.getElementById('courseSelect').value;
+  const studentId      = document.getElementById('studentIdInput').value.trim();
+
+  if (!courseFolderId) {
+    showStatus('Please select your class.', 'error');
+    return;
+  }
+  if (!studentId || studentId.length < 1) {
+    showStatus('Please enter your student ID.', 'error');
+    return;
+  }
+  if (collectedPhotos.length === 0) {
+    showStatus('Please take at least one photo of your work.', 'error');
+    return;
+  }
+
+  document.getElementById('submitBtn').disabled    = true;
+  document.getElementById('takePhotoBtn').disabled = true;
+  showStatus('Uploading your work… please wait.', 'loading');
+
+  try {
+    const now        = new Date();
+    const lessonDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+
+    const photos = collectedPhotos.map((p, i) => ({
+      base64:   p.dataUrl.split(',')[1],
+      mimeType: p.file.type || 'image/jpeg',
+      filename: `${studentId}_p${i+1}_${Date.now()}.jpg`
+    }));
+
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify({ studentId, lessonDate, photos, courseFolderId })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      let msg;
+      if (result.matched && result.coursesUpdated > 0) {
+        msg = `✅ Work submitted successfully! Found you in ${result.coursesUpdated} course${result.coursesUpdated > 1 ? 's' : ''}. Well done today. 🎉`;
+      } else {
+        msg = '📁 Photos saved, but your ID wasn\'t found in any register. Let your teacher know.';
+      }
+      showStatus(msg, result.matched ? 'success' : 'error');
+      document.getElementById('submitBtn').style.display    = 'none';
+      document.getElementById('takePhotoBtn').style.display = 'none';
+      document.getElementById('submitDivider').style.display = 'none';
+    } else {
+      showStatus('Upload failed: ' + (result.error || 'Unknown error. Please try again.'), 'error');
+      document.getElementById('submitBtn').disabled    = false;
+      document.getElementById('takePhotoBtn').disabled = false;
+    }
+  } catch (err) {
+    showStatus('Connection error. Check your internet and try again.', 'error');
+    document.getElementById('submitBtn').disabled    = false;
+    document.getElementById('takePhotoBtn').disabled = false;
+  }
+}
+</script>
+</body>
+</html>
