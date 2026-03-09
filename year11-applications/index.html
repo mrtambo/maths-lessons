@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>11 Applications — Maths</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#09121f;--bg-tint:#0d1a2e;--panel:#101d30;--card:#162540;
+  --lift:#1e3256;--bdr:#1f3557;
+  --teal:#00c9b8;--teal2:#009e90;--gold:#f0a500;--green:#2ecc71;
+  --red:#e74c3c;--blue:#4fa9ff;--text:#dde8f5;--muted:#6b87a8;--white:#ffffff;
+  --accent:#2ecc71;
+}
+body{font-family:'Trebuchet MS',Trebuchet,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+body.light{--bg:#eef5ff;--panel:#ffffff;--card:#ffffff;--lift:#ddeeff;--bdr:#b8d4f0;--teal:#007a70;--teal2:#005f58;--gold:#c07800;--green:#1a8a45;--red:#cc2200;--blue:#1a6fc4;--text:#0f1e30;--muted:#4a6a88;}
+.chrome{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:2px solid var(--teal2);padding:0 28px;height:46px;flex-shrink:0;}
+.chrome-left{display:flex;align-items:center;gap:10px;}
+.chrome-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);}
+.chrome-title{font-size:0.92rem;font-weight:700;color:var(--text);}
+.chrome-right{display:flex;align-items:center;gap:14px;}
+.chrome-clock{font-size:0.9rem;font-weight:700;color:var(--teal);font-variant-numeric:tabular-nums;}
+.theme-btn{background:transparent;border:1.5px solid var(--bdr);border-radius:6px;color:var(--muted);font-size:0.8rem;font-weight:700;padding:4px 12px;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+.theme-btn:hover{border-color:var(--teal);color:var(--teal);}
+.home-btn{background:transparent;border:1.5px solid var(--bdr);border-radius:6px;color:var(--muted);font-size:0.8rem;font-weight:700;padding:4px 12px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+.home-btn:hover{border-color:var(--teal);color:var(--teal);}
+.main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;}
+.hero{text-align:center;margin-bottom:48px;}
+.hero-logo{display:inline-flex;align-items:center;justify-content:center;width:80px;height:80px;border-radius:20px;background:var(--accent);font-size:2.4rem;font-weight:900;color:#000;margin-bottom:20px;box-shadow:0 0 40px rgba(0,201,184,0.2);}
+.hero h1{font-size:2.8rem;font-weight:900;color:var(--text);line-height:1.1;margin-bottom:10px;}
+.hero h1 span{color:var(--accent);}
+.hero p{font-size:1.05rem;color:var(--muted);}
+.menu-wrap{width:100%;max-width:480px;}
+.menu-card{background:var(--panel);border:1px solid var(--bdr);border-top:4px solid var(--accent);border-radius:12px;padding:28px 32px;text-align:center;}
+.menu-title{font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:700;margin-bottom:18px;}
+.menu-btn{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--card);border:2px solid var(--bdr);border-radius:10px;padding:16px 22px;cursor:pointer;font-family:inherit;font-size:1.1rem;font-weight:800;color:var(--text);transition:all 0.15s;text-decoration:none;margin-bottom:10px;}
+.menu-btn:last-child{margin-bottom:0;}
+.menu-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateX(4px);}
+.menu-btn .btn-icon{width:36px;height:36px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#000;flex-shrink:0;}
+.menu-btn .btn-arrow{color:var(--muted);font-size:1.2rem;transition:transform 0.15s;}
+.menu-btn:hover .btn-arrow{transform:translateX(4px);color:var(--accent);}
+.footer{text-align:center;padding:14px;font-size:0.78rem;color:var(--muted);border-top:1px solid var(--bdr);background:var(--panel);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.anim-in{animation:fadeUp 0.3s ease both;}
+.anim-in-2{animation:fadeUp 0.3s 0.1s ease both;}
+</style>
+</head>
+<body>
+<div class="chrome">
+  <div class="chrome-left">
+    <div class="chrome-dot"></div>
+    <span class="chrome-title">Mathematics</span>
+  </div>
+  <div class="chrome-right">
+    <span class="chrome-clock" id="live-clock"></span>
+    <a class="home-btn" href="../index.html">⌂ Home</a>
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
+  </div>
+</div>
+<div class="main">
+  <div class="hero anim-in">
+    <div class="hero-logo">11</div>
+    <h1><span>11 Applications</span></h1>
+    <p>Select an option below to get started.</p>
+  </div>
+  <div class="menu-wrap anim-in-2">
+    <div class="menu-card">
+      <div class="menu-title">Select an option</div>
+      <a class="menu-btn" href="lessons.html">
+        <div class="btn-icon">📚</div>
+        <span>Lessons</span>
+        <span class="btn-arrow">›</span>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="footer">Mathematics Department</div>
+<script>
+function updateClock(){const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,'0'),s=String(now.getSeconds()).padStart(2,'0'),ampm=h>=12?'PM':'AM',h12=h%12||12;const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const el=document.getElementById('live-clock');if(el)el.textContent=days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+'  '+h12+':'+m+':'+s+' '+ampm;}
+updateClock();setInterval(updateClock,1000);
+function toggleTheme(){const isLight=document.body.classList.toggle('light');document.getElementById('theme-btn').innerHTML=isLight?'🌙 Dark':'☀ Light';}
+</script>
+</body>
+</html>
