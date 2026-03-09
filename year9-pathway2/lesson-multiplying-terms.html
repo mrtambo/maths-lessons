@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multiplying Terms — Maths</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] },
+  startup: { typeset: false }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#09121f;--bg-tint:#0d1a2e;--panel:#101d30;--card:#162540;--card-tint:#1b2d47;
+  --lift:#1e3256;--lift-tint:#22395e;--bdr:#1f3557;--bdr-tint:#263f65;
+  --teal:#00c9b8;--teal2:#009e90;--gold:#f0a500;--green:#2ecc71;
+  --red:#e74c3c;--blue:#4fa9ff;--purple:#a855f7;--text:#dde8f5;--muted:#6b87a8;--white:#fff;
+  --eg-bg:#100e00;--eg-bg2:#1a1400;
+}
+body{font-family:'Trebuchet MS',Trebuchet,Arial,sans-serif;background:var(--bg);color:var(--text);width:100vw;height:100vh;overflow:hidden;font-size:18px;}
+body.light{--bg:#eef5ff;--bg-tint:#e0eeff;--panel:#fff;--card:#fff;--card-tint:#f0f7ff;--lift:#ddeeff;--lift-tint:#d0e8ff;--bdr:#b8d4f0;--bdr-tint:#a8c8e8;--teal:#007a70;--teal2:#005f58;--gold:#c07800;--green:#1a8a45;--red:#cc2200;--blue:#1a6fc4;--purple:#7c3aed;--text:#0f1e30;--muted:#4a6a88;--white:#fff;--eg-bg:#fffaea;--eg-bg2:#fff3cc;}
+.pres{width:100vw;height:100vh;display:flex;flex-direction:column;}
+.chrome{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:2px solid var(--teal2);padding:0 28px;height:46px;flex-shrink:0;}
+.chrome-left{display:flex;align-items:center;gap:10px;}
+.chrome-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);}
+.chrome-label{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:700;}
+.chrome-title{font-size:0.92rem;font-weight:700;color:var(--text);}
+.chrome-right{font-size:0.9rem;font-weight:700;color:var(--teal);font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:12px;}
+.deck{flex:1;position:relative;overflow:hidden;}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;padding:28px 56px 16px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.18s ease;overflow-y:auto;}
+.slide.active{opacity:1;visibility:visible;pointer-events:all;}
+.slide.tinted{background:var(--bg-tint);}
+.slide.tinted .rule,.slide.tinted .eg-card{background:var(--card-tint);border-color:var(--bdr-tint);}
+.slide.tinted .sol-box{background:var(--lift-tint);}
+.slide.eg-slide{background:var(--eg-bg);}
+.slide.eg-slide .eg-card,.slide.eg-slide .rule{background:var(--eg-bg2);border-color:rgba(240,165,0,0.3);}
+.slide.eg-slide .sol-box{background:rgba(240,165,0,0.08);border-color:var(--gold);}
+.slide.yt-slide{background:#0e0a1a;}
+body.light .slide.yt-slide{background:#f8f4ff;}
+.slide.yt-slide .yt-card{background:#1a1030;border-color:rgba(168,85,247,0.3);}
+body.light .slide.yt-slide .yt-card{background:#f0ebff;border-color:rgba(124,58,237,0.3);}
+.slide.yt-slide .sol-box{background:rgba(168,85,247,0.08);border-color:var(--purple);}
+.nav-bar{background:var(--panel);border-top:1px solid var(--bdr);height:48px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 24px;flex-shrink:0;flex-wrap:wrap;}
+.nav-dot{width:11px;height:11px;border-radius:50%;background:var(--bdr);cursor:pointer;transition:all 0.15s;flex-shrink:0;}
+.nav-dot:hover{background:var(--muted);transform:scale(1.5);}
+.nav-dot.active{background:var(--teal);width:28px;border-radius:6px;}
+.arrows{margin-top:auto;padding-top:10px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.arrow-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 24px;border-radius:7px;border:2px solid var(--bdr);color:var(--muted);cursor:pointer;font-size:0.9rem;font-weight:700;transition:all 0.15s;background:transparent;font-family:inherit;}
+.arrow-btn:hover{border-color:var(--teal);color:var(--teal);}
+.arrow-btn.fwd{background:var(--teal2);border-color:var(--teal2);color:var(--white);}
+.arrow-btn.fwd:hover{background:var(--teal);border-color:var(--teal);}
+.ghost{visibility:hidden;pointer-events:none;}
+.sh{display:flex;align-items:center;gap:14px;padding-bottom:14px;margin-bottom:18px;border-bottom:2px solid var(--bdr);flex-shrink:0;}
+.sh-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:900;flex-shrink:0;color:#000;}
+.ic-teal{background:var(--teal);}.ic-gold{background:var(--gold);}.ic-green{background:var(--green);}.ic-blue{background:var(--blue);}.ic-red{background:var(--red);color:#fff;}.ic-purple{background:var(--purple);color:#fff;}
+.sh-title{font-size:2rem;font-weight:800;color:var(--text);flex:1;line-height:1;}
+.sh-badge{flex-shrink:0;background:var(--lift);border:1px solid var(--bdr);border-radius:20px;padding:5px 16px;font-size:0.82rem;color:var(--muted);white-space:nowrap;}
+.rule{background:var(--card);border:1px solid var(--bdr);border-left:5px solid var(--teal);border-radius:10px;padding:15px 22px;margin-bottom:12px;flex-shrink:0;}
+.rule-title{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal);font-weight:700;margin-bottom:8px;}
+.rule-body{font-size:1.05rem;line-height:1.9;}
+.rule-body em{color:var(--gold);font-style:italic;font-weight:700;}
+.rule-formula{display:block;background:var(--lift);padding:8px 14px;border-radius:6px;font-size:1.05em;color:var(--teal);font-weight:700;margin-bottom:8px;line-height:2.2;}
+.eg-grid{display:grid;gap:14px;}
+.eg-grid.g2{grid-template-columns:1fr 1fr;}
+.eg-grid.g3{grid-template-columns:1fr 1fr 1fr;}
+.eg-card{background:var(--card);border:1px solid var(--bdr);border-top:4px solid var(--gold);border-radius:10px;padding:16px 20px;}
+.eg-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);font-weight:700;margin-bottom:8px;}
+.eg-q{font-size:1.25rem;font-weight:700;margin-bottom:10px;line-height:1.6;}
+.yt-grid{display:grid;gap:14px;}
+.yt-grid.g2{grid-template-columns:1fr 1fr;}
+.yt-grid.g3{grid-template-columns:1fr 1fr 1fr;}
+.yt-card{background:var(--card);border:1px solid var(--bdr);border-top:4px solid var(--purple);border-radius:10px;padding:16px 20px;}
+.yt-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--purple);font-weight:700;margin-bottom:8px;}
+.yt-q{font-size:1.25rem;font-weight:700;margin-bottom:10px;line-height:1.6;}
+details summary{list-style:none;cursor:pointer;font-size:0.82rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.06em;padding:6px 0;user-select:none;}
+details summary::-webkit-details-marker{display:none;}
+details summary::before{content:'▶  ';font-size:0.7rem;}
+details[open] summary::before{content:'▼  ';}
+.sol-box{background:var(--lift);border-left:3px solid var(--green);border-radius:6px;padding:12px 16px;margin-top:8px;font-size:0.92rem;line-height:2;color:var(--text);}
+.sol-box strong{color:var(--green);}
+.qg{display:grid;gap:10px;}
+.qg.g2{grid-template-columns:1fr 1fr;}
+.qg.g3{grid-template-columns:1fr 1fr 1fr;}
+.qg.g4{grid-template-columns:1fr 1fr 1fr 1fr;}
+.qc{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:13px 16px;display:flex;align-items:flex-start;gap:12px;}
+.qc.full{grid-column:1/-1;}
+.qlabel{flex-shrink:0;width:30px;height:30px;border-radius:7px;background:var(--teal2);color:#fff;font-size:0.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.qlabel.gd{background:var(--gold);color:#1a0800;}
+.qlabel.ans{background:var(--green);color:#000;}
+.qtext{font-size:1.05rem;line-height:1.8;flex:1;}
+.q-ans-val{margin-top:4px;font-weight:700;color:var(--green);font-size:0.95rem;line-height:2;}
+.timer-bar-wrap{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:10px 18px;margin-bottom:14px;flex-shrink:0;}
+.tbar-btn{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;padding:7px 20px;border-radius:7px;border:2px solid var(--bdr);cursor:pointer;font-size:0.9rem;font-weight:700;color:var(--muted);background:transparent;transition:all 0.15s;user-select:none;white-space:nowrap;min-width:130px;font-family:inherit;}
+.tbar-btn:hover{border-color:var(--teal);color:var(--teal);}
+.tbar-btn.tbar-active{background:var(--teal2);border-color:var(--teal2);color:#fff;}
+.tbar-track-outer{flex:1;height:14px;background:var(--bg);border-radius:7px;border:1px solid var(--bdr);overflow:hidden;display:none;}
+.tbar-track-outer.tbar-visible{display:block;}
+.tbar-fill{height:100%;border-radius:7px;width:100%;transition:width 0.5s linear;}
+.tbar-fill.green{background:var(--green);}.tbar-fill.orange{background:#f39c12;}.tbar-fill.red{background:var(--red);}
+.tbar-done{opacity:0;flex-shrink:0;font-size:0.95rem;font-weight:800;color:var(--red);display:none;}
+.tbar-done.tbar-show{display:block;opacity:1;}
+.obj-list{display:flex;flex-direction:column;gap:12px;flex:1;justify-content:center;}
+.obj-item{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:16px 24px;font-size:1.15rem;line-height:1.4;}
+.obj-tick{flex-shrink:0;width:30px;height:30px;background:var(--teal2);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;}
+.cover-slide{background:radial-gradient(ellipse at 25% 50%,#0e2248 0%,var(--bg) 65%);align-items:center;justify-content:center;text-align:center;gap:18px;}
+.t-school{font-size:1rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.14em;}
+.t-unit{font-size:0.85rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);border:1px solid var(--bdr);display:inline-block;padding:4px 18px;border-radius:20px;}
+.t-main{font-size:3rem;font-weight:900;color:var(--white);line-height:1.1;}
+.t-main span{color:var(--teal);}
+.t-sub{font-size:1.2rem;color:var(--muted);}
+.t-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.t-pill{background:var(--card);border:1px solid var(--bdr);border-radius:7px;padding:7px 18px;font-size:0.95rem;}
+.t-meta{display:flex;gap:24px;justify-content:center;color:var(--muted);font-size:0.95rem;}
+body.light .cover-slide{background:radial-gradient(ellipse at 25% 50%,#c8deff 0%,#eef5ff 65%);}
+body.light .t-main{color:var(--text);}
+body.light .t-main span{color:var(--teal);}
+body.light .t-pill{color:var(--text);}
+.ple-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0;}
+.ple-card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:18px 22px;overflow-y:auto;}
+.ple-head{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);font-weight:700;margin-bottom:12px;}
+.ple-q{font-size:1rem;padding:12px 0;border-bottom:1px solid var(--bdr);line-height:1.65;display:flex;gap:10px;align-items:flex-start;}
+.ple-q:last-of-type{border-bottom:none;}
+.ple-num{flex-shrink:0;color:var(--gold);font-weight:700;padding-top:3px;}
+.theme-btn{background:transparent;border:1.5px solid var(--bdr);color:var(--muted);border-radius:7px;padding:4px 11px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+.theme-btn:hover{border-color:var(--teal);color:var(--teal);}
+/* ─── FLOAT CAMERA ─── */
+.float-cam-btn{position:fixed;bottom:62px;right:18px;width:50px;height:50px;border-radius:50%;background:var(--teal2);border:2px solid var(--teal);color:#fff;font-size:1.35rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:150;box-shadow:0 4px 16px rgba(0,201,184,0.35);transition:all 0.18s;font-family:inherit;}
+.float-cam-btn:hover{background:var(--teal);transform:scale(1.12);}
+.float-cam-btn.cam-visible{display:flex;}
+/* ─── UPLOAD MODAL ─── */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.18s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:var(--panel);border:1px solid var(--bdr);border-radius:16px;padding:28px 30px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:20px;max-height:90vh;overflow-y:auto;transform:translateY(20px);transition:transform 0.18s;}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:1.2rem;font-weight:900;color:var(--white);}
+.modal-close{background:transparent;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:color 0.15s;font-family:inherit;line-height:1;}
+.modal-close:hover{color:var(--text);}
+.modal-step-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);font-weight:700;margin-bottom:10px;}
+.modal-hint{font-size:0.8rem;color:var(--muted);margin-top:6px;}
+.modal-divider{border:none;border-top:1px solid var(--bdr);margin:0;}
+.modal-course-select{width:100%;padding:12px 14px;font-size:0.95rem;font-weight:700;background:var(--lift);border:2px solid var(--bdr);border-radius:10px;color:var(--text);outline:none;font-family:inherit;cursor:pointer;transition:border-color 0.15s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b87a8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+.modal-course-select:focus{border-color:var(--teal);}
+.modal-course-select option{background:var(--card);color:var(--text);}
+.modal-id-input{width:160px;padding:12px 14px;font-size:1.5rem;font-weight:800;text-align:center;letter-spacing:0.3em;background:var(--lift);border:2px solid var(--bdr);border-radius:10px;color:var(--teal);outline:none;font-family:inherit;display:block;transition:border-color 0.15s;}
+.modal-id-input:focus{border-color:var(--teal);}
+.modal-id-input::placeholder{color:var(--muted);letter-spacing:0.1em;font-size:1rem;}
+.modal-photo-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:12px;border:none;background:var(--teal2);color:var(--white);font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.15s;font-family:inherit;}
+.modal-photo-btn:hover{background:var(--teal);}
+.modal-photo-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.modal-submit-btn{background:var(--green);width:100%;justify-content:center;font-size:1rem;padding:15px;}
+.modal-submit-btn:hover{background:#27ae60;}
+.modal-preview-grid{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.modal-thumb{position:relative;width:88px;height:88px;border-radius:10px;overflow:hidden;border:2px solid var(--bdr);}
+.modal-thumb img{width:100%;height:100%;object-fit:cover;}
+.modal-thumb .modal-remove{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:0.78rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-status{padding:10px 16px;border-radius:10px;font-weight:700;font-size:0.88rem;text-align:center;display:none;width:100%;line-height:1.5;}
+.modal-status.success{background:rgba(46,204,113,0.15);border:2px solid var(--green);color:var(--green);display:block;}
+.modal-status.error{background:rgba(231,76,60,0.15);border:2px solid var(--red);color:var(--red);display:block;}
+.modal-status.loading{background:rgba(79,169,255,0.15);border:2px solid var(--blue);color:var(--blue);display:block;}
+/* ─── SETUP OVERLAY ─── */
+.setup-overlay{position:fixed;inset:0;z-index:800;background:var(--bg);display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:0 0 60px;transition:opacity 0.35s ease;}
+.setup-overlay.hiding{opacity:0;pointer-events:none;}
+.setup-overlay.gone{display:none;}
+.s-chrome{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:2px solid var(--teal2);padding:0 28px;height:52px;flex-shrink:0;margin-bottom:32px;position:sticky;top:0;z-index:10;}
+.s-chrome-l{display:flex;align-items:center;gap:10px;}
+.s-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);}
+.s-lbl{font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:700;}
+.s-clock{font-size:0.82rem;font-weight:700;color:var(--teal);}
+.s-header{text-align:center;margin-bottom:28px;padding:0 24px;}
+.s-header h1{font-size:1.7rem;font-weight:900;color:var(--white);margin-bottom:4px;}
+.s-header p{font-size:0.9rem;color:var(--muted);}
+.s-badge{display:inline-flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--bdr);border-radius:12px;padding:14px 22px;margin-bottom:24px;}
+.s-badge-icon{width:44px;height:44px;border-radius:10px;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#000;flex-shrink:0;}
+.s-badge-title{font-size:1.1rem;font-weight:900;color:var(--white);line-height:1.2;}
+.s-badge-sub{font-size:0.78rem;color:var(--muted);margin-top:2px;}
+.s-card{background:var(--panel);border:1px solid var(--bdr);border-radius:14px;padding:22px 26px;width:100%;max-width:740px;margin-bottom:16px;}
+.s-sl{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:14px;}
+.s-sl.teal{color:var(--teal);}.s-sl.gold{color:var(--gold);}.s-sl.purple{color:var(--purple);}
+.s-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.s-field label{display:block;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:700;margin-bottom:5px;}
+.s-input{width:100%;padding:10px 13px;border-radius:9px;border:2px solid var(--bdr);background:var(--lift);color:var(--text);font-family:inherit;font-size:0.9rem;font-weight:600;outline:none;transition:border-color 0.15s;}
+.s-input:focus{border-color:var(--teal);}
+.s-span2{grid-column:1/-1;}
+.s-obj-list{display:flex;flex-direction:column;gap:8px;}
+.s-obj-row{display:flex;align-items:center;gap:10px;}
+.s-obj-row input{flex:1;padding:8px 12px;border-radius:8px;border:2px solid var(--bdr);background:var(--lift);color:var(--text);font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.15s;}
+.s-obj-row input:focus{border-color:var(--teal);}
+.s-obj-rm{background:transparent;border:none;color:var(--muted);font-size:1.05rem;cursor:pointer;padding:4px 6px;border-radius:6px;transition:color 0.15s;}
+.s-obj-rm:hover{color:var(--red);}
+.s-add-obj{display:inline-flex;align-items:center;gap:6px;background:transparent;border:2px dashed var(--bdr);color:var(--muted);border-radius:8px;padding:7px 14px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-top:6px;}
+.s-add-obj:hover{border-color:var(--teal);color:var(--teal);}
+.s-tog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;}
+.s-tog{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--bdr);border-radius:9px;padding:11px 14px;cursor:pointer;transition:all 0.15s;user-select:none;}
+.s-tog:hover{border-color:var(--teal);}
+.s-tog.on{border-color:var(--teal);background:rgba(0,201,184,0.08);}
+.s-tog-icon{font-size:1.05rem;flex-shrink:0;}
+.s-tog-lbl{font-size:0.88rem;font-weight:700;line-height:1.2;}
+.s-tog-sub{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+.s-tog-chk{margin-left:auto;flex-shrink:0;width:18px;height:18px;border-radius:4px;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:transparent;transition:all 0.15s;}
+.s-tog.on .s-tog-chk{background:var(--teal);border-color:var(--teal);color:#000;}
+.s-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.s-chip{background:var(--lift);border:1px solid var(--bdr);border-radius:20px;padding:4px 14px;font-size:0.75rem;color:var(--muted);}
+.s-chip.on{background:rgba(0,201,184,0.12);border-color:var(--teal);color:var(--teal);}
+.s-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.s-mode{background:var(--card);border:2px solid var(--bdr);border-radius:9px;padding:13px 16px;cursor:pointer;transition:all 0.15s;user-select:none;}
+.s-mode:hover{border-color:var(--teal);}
+.s-mode.on{border-color:var(--teal);background:rgba(0,201,184,0.08);}
+.s-mode-title{font-size:0.9rem;font-weight:800;margin-bottom:4px;}
+.s-mode-desc{font-size:0.73rem;color:var(--muted);line-height:1.5;}
+.s-mode-sw{display:flex;gap:5px;margin-top:8px;}
+.s-sw{width:18px;height:18px;border-radius:4px;}
+.s-launch-wrap{width:100%;max-width:740px;padding:0 0 8px;}
+.s-launch{width:100%;padding:16px;border-radius:10px;border:none;background:var(--teal2);color:var(--white);font-size:1.1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.s-launch:hover{background:var(--teal);}
+.s-hint{font-size:0.76rem;color:var(--muted);text-align:center;margin-top:8px;}
+@media(max-width:520px){.s-grid2,.s-mode-grid{grid-template-columns:1fr;}.s-span2{grid-column:1;}.s-card{padding:18px 16px;}}
+</style>
+</head>
+<body>
+
+<!-- SETUP OVERLAY -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="s-chrome">
+    <div class="s-chrome-l"><div class="s-dot"></div><span class="s-lbl">Lesson Setup</span></div>
+    <span class="s-clock" id="sClock"></span>
+  </div>
+  <div class="s-header"><h1>&#128196; Lesson Setup</h1><p>Configure your lesson, then launch for the class.</p></div>
+  <div class="s-badge">
+    <div class="s-badge-icon">&#128300;</div>
+    <div><div class="s-badge-title">Multiplying Terms</div><div class="s-badge-sub">Year 9 Mathematics &nbsp;&middot;&nbsp; Algebra &nbsp;&middot;&nbsp; Lesson 1 of 3</div></div>
+  </div>
+
+  <div class="s-card">
+    <div class="s-sl teal">&#128218; Lesson Details</div>
+    <div class="s-grid2">
+      <div class="s-field s-span2"><label>Topic Title</label><input class="s-input" id="infoTopic" value="Multiplying Terms"></div>
+      <div class="s-field"><label>Highlight Word</label><input class="s-input" id="infoHighlight" value="Terms"></div>
+      <div class="s-field"><label>Course</label><input class="s-input" list="courseList" id="infoCourse" value="Year 9 Mathematics">
+        <datalist id="courseList"><option value="Year 7 Mathematics"><option value="Year 8 Mathematics"><option value="Year 9 Mathematics"><option value="Year 10 Mathematics"><option value="Year 11 Foundations"><option value="Year 11 Essentials"><option value="Year 11 Methods"><option value="Year 11 Apps"><option value="Year 12 Essentials"><option value="Year 12 Apps"></datalist>
+      </div>
+      <div class="s-field"><label>Unit</label><input class="s-input" id="infoUnit" value="Algebra"></div>
+      <div class="s-field"><label>Lesson Number</label><input class="s-input" type="number" id="infoLessonNum" value="1"></div>
+      <div class="s-field"><label>Lessons in Unit</label><input class="s-input" type="number" id="infoLessonOf" value="3"></div>
+      <div class="s-field"><label>Term</label><input class="s-input" type="number" id="infoTerm" value="1"></div>
+      <div class="s-field"><label>Week</label><input class="s-input" type="number" id="infoWeek" value="5"></div>
+    </div>
+    <div style="margin-top:18px;">
+      <div class="s-sl teal" style="margin-bottom:8px;">&#127919; Learning Intentions</div>
+      <div class="s-obj-list" id="sObjList"></div>
+      <button class="s-add-obj" onclick="sAddObj()">&#43; Add Intention</button>
+    </div>
+  </div>
+
+  <div class="s-card">
+    <div class="s-sl teal">&#9881; Lesson Components</div>
+    <div class="s-tog-grid" id="sTogsWrap">
+      <div class="s-tog on" data-key="starter"  ><span class="s-tog-icon">&#9733;</span><div><div class="s-tog-lbl">Starter</div><div class="s-tog-sub">Warm-up questions</div></div><span class="s-tog-chk">&#10003;</span></div>
+      <div class="s-tog on" data-key="notes"    ><span class="s-tog-icon">&#128208;</span><div><div class="s-tog-lbl">Notes</div><div class="s-tog-sub">Key concepts</div></div><span class="s-tog-chk">&#10003;</span></div>
+      <div class="s-tog on" data-key="examples" ><span class="s-tog-icon">&#128396;</span><div><div class="s-tog-lbl">Examples</div><div class="s-tog-sub">Worked solutions</div></div><span class="s-tog-chk">&#10003;</span></div>
+      <div class="s-tog on" data-key="yourturn" ><span class="s-tog-icon">&#9999;</span><div><div class="s-tog-lbl">Your Turn</div><div class="s-tog-sub">Guided practice</div></div><span class="s-tog-chk">&#10003;</span></div>
+      <div class="s-tog on" data-key="exercise" ><span class="s-tog-icon">&#128221;</span><div><div class="s-tog-lbl">Exercise</div><div class="s-tog-sub">Question sets</div></div><span class="s-tog-chk">&#10003;</span></div>
+      <div class="s-tog on" data-key="extension"><span class="s-tog-icon">&#11088;</span><div><div class="s-tog-lbl">Challenge</div><div class="s-tog-sub">Extension problems</div></div><span class="s-tog-chk">&#10003;</span></div>
+      <div class="s-tog on" data-key="plenary"  ><span class="s-tog-icon">&#128172;</span><div><div class="s-tog-lbl">Plenary</div><div class="s-tog-sub">Exit discussion</div></div><span class="s-tog-chk">&#10003;</span></div>
+      <div class="s-tog on" data-key="upload"   ><span class="s-tog-icon">&#128247;</span><div><div class="s-tog-lbl">Upload Work</div><div class="s-tog-sub">Submit button</div></div><span class="s-tog-chk">&#10003;</span></div>
+    </div>
+    <div style="margin-top:12px;"><div class="s-sl gold" style="margin-bottom:8px;">&#127775; Slide Overview</div><div class="s-chips" id="sChips"></div></div>
+  </div>
+
+  <div class="s-card">
+    <div class="s-sl teal">&#127775; Appearance</div>
+    <div class="s-mode-grid">
+      <div class="s-mode on" data-mode="dark"><div class="s-mode-title">&#127769; Dark</div><div class="s-mode-desc">Default dark theme.</div><div class="s-mode-sw"><div class="s-sw" style="background:#09121f;border:1px solid #1f3557;"></div><div class="s-sw" style="background:#00c9b8;"></div><div class="s-sw" style="background:#f0a500;"></div></div></div>
+      <div class="s-mode" data-mode="light"><div class="s-mode-title">&#9728; Light</div><div class="s-mode-desc">Good for bright projectors.</div><div class="s-mode-sw"><div class="s-sw" style="background:#eef5ff;border:1px solid #b8d4f0;"></div><div class="s-sw" style="background:#007a70;"></div><div class="s-sw" style="background:#c07800;"></div></div></div>
+      <div class="s-mode" data-mode="adhd"><div class="s-mode-title">&#129504; Focus Mode</div><div class="s-mode-desc">Softer contrast for ADHD.</div><div class="s-mode-sw"><div class="s-sw" style="background:#1a1a2e;border:1px solid #333;"></div><div class="s-sw" style="background:#7ecfcf;"></div><div class="s-sw" style="background:#e8c97e;"></div></div></div>
+      <div class="s-mode" data-mode="highcontrast"><div class="s-mode-title">&#9680; High Contrast</div><div class="s-mode-desc">Max contrast, bold text.</div><div class="s-mode-sw"><div class="s-sw" style="background:#000;border:1px solid #fff;"></div><div class="s-sw" style="background:#fff;"></div><div class="s-sw" style="background:#ffff00;"></div></div></div>
+    </div>
+  </div>
+
+  <div class="s-launch-wrap">
+    <button class="s-launch" onclick="sLaunch()">&#9654;&nbsp; Launch Lesson</button>
+    <p class="s-hint">The lesson loads instantly — use the theme button inside to switch appearance at any time.</p>
+  </div>
+</div>
+
+<!-- Floating Camera Button -->
+<button id="floatCamBtn" class="float-cam-btn" onclick="openUploadModal()" title="Submit Work">&#128247;</button>
+
+<!-- Upload Modal -->
+<div class="modal-overlay" id="uploadModal" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header"><div class="modal-title">&#128247; Submit Your Work</div><button class="modal-close" onclick="closeUploadModal()">&#10005;</button></div>
+    <div><div class="modal-step-label">Step 1 &mdash; Select your class</div>
+      <select class="modal-course-select" id="modalCourseSelect">
+        <option value="">&#8212; Choose your class &#8212;</option>
+        <option value="1Vxb9ntVNvd8wf_KOCRuQuuQISV1Iwcfc">Year 12 Essentials</option>
+        <option value="1xZzcqQXYiZEQAY3ncNXp0AemufhGAF1U">Year 12 Apps</option>
+        <option value="1e-j-Rlma9SSdbzXoLO0tauXr5tcMI1Js">Year 11 Methods</option>
+        <option value="1gJDhgHnFb7i6O7jX-phUQ3dYy9F6M2c7">Year 11 Foundations</option>
+        <option value="1HSl_x-FfUbn3DSUtz5qSMfRhg4eQWWy1">Year 11 Essentials</option>
+        <option value="1l8JLaeLBkUfbxVT9FB3eZQ5-czZkWFi9">Year 11 Apps</option>
+        <option value="1cq4lpxyou4qJfqOXaHONIKXtcMV7LIhs">Year 10</option>
+        <option value="1xaTPogudenjYWSwagLAIaozq-9bSV3Mz">Year 9</option>
+        <option value="1UOXPybIAQ7m03M8xnsDEiqHudjCk9BTe">Year 8</option>
+        <option value="11ts1_-UU6un5EfIA9WvqDeIhNUCOrrIB">Year 7</option>
+      </select>
+      <p class="modal-hint">Pick the class you are submitting work for</p>
+    </div>
+    <hr class="modal-divider">
+    <div><div class="modal-step-label">Step 2 &mdash; Enter your student ID</div>
+      <input class="modal-id-input" type="text" id="modalStudentId" maxlength="6" placeholder="ID" inputmode="numeric" autocomplete="off" spellcheck="false">
+      <p class="modal-hint">Your numeric student code</p>
+    </div>
+    <hr class="modal-divider">
+    <div><div class="modal-step-label">Step 3 &mdash; Take a photo of your work</div>
+      <input type="file" id="modalCameraInput" accept="image/*" capture="environment" multiple style="display:none;">
+      <button class="modal-photo-btn" id="modalTakePhotoBtn" onclick="document.getElementById('modalCameraInput').click()">&#128247; &nbsp; Take / Choose a Photo</button>
+      <p class="modal-hint">You can add multiple photos if your work spans more than one page.</p>
+    </div>
+    <div class="modal-preview-grid" id="modalPhotoPreview"></div>
+    <button class="modal-photo-btn modal-submit-btn" id="modalSubmitBtn" onclick="submitModalWork()" style="display:none;">&#9989; &nbsp; Submit to Teacher</button>
+    <div class="modal-status" id="modalStatus"></div>
+  </div>
+</div>
+
+<div class="pres">
+  <div class="chrome">
+    <div class="chrome-left"><div class="chrome-dot"></div><span class="chrome-label" id="chrome-label">Algebra</span></div>
+    <div class="chrome-title" id="chrome-title">Multiplying Terms</div>
+    <div class="chrome-right">
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">&#9728; Light</button>
+      <span id="live-clock"></span>
+    </div>
+  </div>
+  <div class="deck" id="deck"></div>
+  <div class="nav-bar" id="nav-bar"></div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   LESSON DATA
+══════════════════════════════════════════ */
+const lessonData = {
+  meta: {
+    course: "Year 9 Mathematics", unit: "Algebra",
+    lessonNum: 1, lessonOf: 3,
+    topic: "Multiplying Terms", topicHighlight: "Terms",
+    subtopics: ["Multiplying Algebraic Terms","Simplifying"],
+    pills: ["Algebra","Multiplication","Simplification"],
+    term: 1, week: 5
+  },
+  learningIntentions: [
+    "I can multiply numbers and algebraic terms together",
+    "I understand that the order of multiplication doesn't matter",
+    "I can simplify expressions by multiplying coefficients and variables",
+    "I can write algebraic expressions in the simplest form"
+  ],
+  starter: {
+    time: 5,
+    questions: [
+      { tag: "Collecting Like Terms", q: `Simplify: &ensp; \\(3a + 2a\\)` },
+      { tag: "Collecting Like Terms", q: `Simplify: &ensp; \\(5x + 3y - 2x\\)` },
+      { tag: "Integers",             q: `Calculate: &ensp; \\(-3 + 7\\)` },
+      { tag: "Scientific Notation",  q: `Write as an ordinary number: &ensp; \\(2.5 \\times 10^{2}\\)` },
+      { tag: "Integers",             q: `Calculate: &ensp; \\(-4 \\times -5\\)` }
+    ],
+    answers: [
+      { working: "Both terms have \\(a\\), so add the coefficients",                              answer: "\\(= 5a\\)" },
+      { working: "Collect \\(x\\) terms: \\(5x - 2x = 3x\\), keep the \\(y\\)",                  answer: "\\(= 3x + 3y\\)" },
+      { working: "Starting at \\(-3\\), move up 7 places",                                        answer: "\\(= 4\\)" },
+      { working: "Move the decimal point 2 places to the right",                                   answer: "\\(= 250\\)" },
+      { working: "Negative \\(\\times\\) negative \\(=\\) positive",                              answer: "\\(= 20\\)" }
+    ]
+  },
+  topics: [
+    {
+      title: "Multiplying Terms",
+      notes: [
+        {
+          title: "Multiplying Numbers and Letters",
+          formula: `\\(5 \\times a \\times a = 5 \\times a^{2} = 5a^{2}\\)`,
+          body: `When we multiply algebraic terms, we multiply the <em>coefficients</em> (numbers) together and the <em>variables</em> (letters) together. When a letter is multiplied by itself we use index notation: \\(a \\times a = a^{2}\\).`
+        },
+        {
+          title: "The General Rule",
+          formula: `\\(4x \\times 3x = (4 \\times 3)(x \\times x) = 12x^{2}\\)`,
+          body: `Multiply the <em>numbers</em> together to get the new coefficient, and <em>multiply the variables</em> using index notation.`
+        },
+        {
+          title: "With Multiple Variables",
+          formula: `\\(3a \\times 2b = (3 \\times 2)(a \\times b) = 6ab\\)`,
+          body: `When you multiply <em>different</em> variables, write them next to each other. Order doesn't matter: \\(ab = ba\\).`
+        }
+      ],
+      examples: [
+        { label: "Example 1", q: `\\(4x \\times x\\)`,     steps: [`\\(= 4 \\times x \\times x\\)`, `\\(= 4x^{2}\\)`] },
+        { label: "Example 2", q: `\\(3y \\times 2y\\)`,    steps: [`\\(= (3 \\times 2)(y \\times y)\\)`, `\\(= 6y^{2}\\)`] },
+        { label: "Example 3", q: `\\(2a \\times 6b\\)`,    steps: [`\\(= (2 \\times 6)(a \\times b)\\)`, `\\(= 12ab\\)`] },
+        { label: "Example 4", q: `\\(5m \\times 3n\\)`,    steps: [`\\(= (5 \\times 3)(m \\times n)\\)`, `\\(= 15mn\\)`] },
+        { label: "Example 5", q: `\\(4p \\times 2p\\)`,    steps: [`\\(= (4 \\times 2)(p \\times p)\\)`, `\\(= 8p^{2}\\)`] },
+        { label: "Example 6", q: `\\(7x \\times 3y \\times 2\\)`, steps: [`\\(= (7 \\times 3 \\times 2)(x \\times y)\\)`, `\\(= 42xy\\)`] }
+      ],
+      yourTurn: [
+        { label: "Try 1", q: `\\(3x \\times 2x\\)`,     ans: `\\(6x^{2}\\)`,   hint: `Multiply \\(3 \\times 2\\) and \\(x \\times x\\)` },
+        { label: "Try 2", q: `\\(4a \\times 5b\\)`,     ans: `\\(20ab\\)`,     hint: `Multiply the numbers, then write the different letters together` },
+        { label: "Try 3", q: `\\(6m \\times m\\)`,      ans: `\\(6m^{2}\\)`,   hint: `\\(m \\times m = m^{2}\\)` },
+        { label: "Try 4", q: `\\(2p \\times 3q\\)`,     ans: `\\(6pq\\)`,      hint: `Multiply \\(2 \\times 3\\), then write \\(pq\\)` },
+        { label: "Try 5", q: `\\(5x \\times 4y\\)`,     ans: `\\(20xy\\)`,     hint: `Multiply the coefficients and combine the variables` },
+        { label: "Try 6", q: `\\(3a \\times 3a\\)`,     ans: `\\(9a^{2}\\)`,   hint: `\\(3 \\times 3 = 9\\) and \\(a \\times a = a^{2}\\)` }
+      ],
+      exercises: [
+        {
+          label: "Exercise 1 — Multiply the terms",
+          questions: [
+            {label:"a", q:`\\(5 \\times a\\)`,           ans:`\\(5a\\)`},
+            {label:"b", q:`\\(3 \\times p\\)`,           ans:`\\(3p\\)`},
+            {label:"c", q:`\\(2 \\times t\\)`,           ans:`\\(2t\\)`},
+            {label:"d", q:`\\(7 \\times y\\)`,           ans:`\\(7y\\)`},
+            {label:"e", q:`\\(m \\times 8\\)`,           ans:`\\(8m\\)`},
+            {label:"f", q:`\\(w \\times 2\\)`,           ans:`\\(2w\\)`},
+            {label:"g", q:`\\(a \\times b\\)`,           ans:`\\(ab\\)`},
+            {label:"h", q:`\\(c \\times f\\)`,           ans:`\\(cf\\)`},
+            {label:"i", q:`\\(a \\times a\\)`,           ans:`\\(a^{2}\\)`},
+            {label:"j", q:`\\(b \\times b\\)`,           ans:`\\(b^{2}\\)`},
+            {label:"k", q:`\\(2d \\times e\\)`,          ans:`\\(2de\\)`},
+            {label:"l", q:`\\(5p \\times q\\)`,          ans:`\\(5pq\\)`},
+            {label:"m", q:`\\(4a \\times a\\)`,          ans:`\\(4a^{2}\\)`},
+            {label:"n", q:`\\(3x \\times 2x\\)`,         ans:`\\(6x^{2}\\)`},
+            {label:"o", q:`\\(5y \\times 4y\\)`,         ans:`\\(20y^{2}\\)`},
+            {label:"p", q:`\\(2a \\times 6b\\)`,         ans:`\\(12ab\\)`},
+            {label:"q", q:`\\(3m \\times 4n\\)`,         ans:`\\(12mn\\)`},
+            {label:"r", q:`\\(7p \\times 2q\\)`,         ans:`\\(14pq\\)`},
+            {label:"s", q:`\\(4x \\times 3y\\)`,         ans:`\\(12xy\\)`},
+            {label:"t", q:`\\(6a \\times 2a\\)`,         ans:`\\(12a^{2}\\)`}
+          ]
+        }
+      ]
+    }
+  ],
+  extension: {
+    title: "Challenge Questions",
+    questions: [
+      { label:"1", q:`What is \\(x^{2} \\times x\\)?`, hint:`\\(x^{2} = x \\times x\\) — count how many \\(x\\)'s there are in total`, answer:`\\(x^{3}\\)` },
+      { label:"2", q:`Simplify: \\(2a \\times 3a \\times a\\)`, hint:`Multiply all coefficients together, then count the \\(a\\)'s`, answer:`\\(6a^{3}\\)` },
+      { label:"3", q:`Simplify: \\(3x \\times 4y \\times 2z\\)`, hint:`Multiply all the numbers first, then write all letters`, answer:`\\(24xyz\\)` },
+      { label:"4", q:`Is \\(3ab \\times 2ab = 6a^{2}b^{2}\\)? Explain why.`, hint:`Multiply numbers together, then \\(a \\times a\\) and \\(b \\times b\\)`, answer:`Yes: \\((3 \\times 2)(a \\times a)(b \\times b) = 6a^{2}b^{2}\\)` }
+    ]
+  },
+  plenary: {
+    left: [
+      { q:`What is the coefficient in the term \\(5a\\)?` },
+      { q:`What is \\(x \\times x\\)?` },
+      { q:`Simplify: \\(2a \\times 3\\)` }
+    ],
+    right: [
+      { q:`Why is \\(3x \\times 2\\) the same as \\(6x\\)?` },
+      { q:`What does \\(a^{2}\\) mean?` },
+      { q:`Explain in your own words how to multiply algebraic terms.` }
+    ]
+  }
+};
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+let currentSlide = 0;
+const workSlideIndices = new Set();
+
+function next(){ const s=document.querySelectorAll('.slide'); if(currentSlide<s.length-1){currentSlide++;updateSlide();} }
+function prev(){ if(currentSlide>0){currentSlide--;updateSlide();} }
+function goTo(n){ currentSlide=n; updateSlide(); }
+
+function updateSlide(){
+  document.querySelectorAll('.slide').forEach((s,i)=>s.classList.toggle('active',i===currentSlide));
+  document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===currentSlide));
+  const cam=document.getElementById('floatCamBtn');
+  if(cam) cam.classList.toggle('cam-visible',workSlideIndices.has(currentSlide));
+}
+
+function sh(ic,icon,title,badge){
+  return `<div class="sh"><div class="sh-icon ${ic}">${icon}</div><div class="sh-title">${title}</div>${badge?`<div class="sh-badge">${badge}</div>`:''}</div>`;
+}
+function arrows(bk,fl,isFirst,isLast){
+  const back=isFirst?`<span class="ghost"><button class="arrow-btn">&#8592;</button></span>`:`<button class="arrow-btn" onclick="${bk}">&#8592; Back</button>`;
+  const fwd=isLast?`<button class="arrow-btn fwd" onclick="goTo(0)">&#8617; Restart</button>`:`<button class="arrow-btn fwd" onclick="next()">${fl} &#8594;</button>`;
+  return `<div class="arrows">${back}${fwd}</div>`;
+}
+
+function timer(seconds){
+  const id='t'+Math.random().toString(36).slice(2,8);
+  return `<div class="timer-bar-wrap">
+    <button class="tbar-btn" id="${id}_btn" onclick="toggleTimer('${id}')"><span class="ton">&#9200; Start Timer</span><span class="toff" style="display:none">&#9632; Reset</span></button>
+    <div class="tbar-track-outer" id="${id}_track"><div class="tbar-fill green" id="${id}_fill"></div></div>
+    <div class="tbar-done" id="${id}_done">&#9200; Time's Up!</div>
+  </div>`;
+}
+const timerInst={};
+function toggleTimer(id){
+  const btn=document.getElementById(id+'_btn'),track=document.getElementById(id+'_track'),fill=document.getElementById(id+'_fill'),done=document.getElementById(id+'_done');
+  if(timerInst[id]){clearInterval(timerInst[id]);delete timerInst[id];track.classList.remove('tbar-visible');done.classList.remove('tbar-show');btn.classList.remove('tbar-active');btn.querySelector('.ton').style.display='inline';btn.querySelector('.toff').style.display='none';fill.style.width='100%';fill.className='tbar-fill green';return;}
+  const total=300;track.classList.add('tbar-visible');btn.classList.add('tbar-active');btn.querySelector('.ton').style.display='none';btn.querySelector('.toff').style.display='inline';
+  const end=Date.now()+total*1000;
+  timerInst[id]=setInterval(()=>{const rem=Math.max(0,end-Date.now()),pct=rem/(total*1000)*100;fill.style.width=pct+'%';fill.className='tbar-fill '+(pct>40?'green':pct>12?'orange':'red');if(rem<=0){clearInterval(timerInst[id]);delete timerInst[id];done.classList.add('tbar-show');fill.style.width='0%';}},200);
+}
+
+/* ══════════════════════════════════════════
+   SLIDE BUILDERS
+══════════════════════════════════════════ */
+function buildCover(){
+  const m=lessonData.meta;
+  const th=m.topicHighlight?m.topic.replace(m.topicHighlight,`<span>${m.topicHighlight}</span>`):m.topic;
+  return{cls:'cover-slide',html:`
+    <div class="t-school">Mathematics Department</div>
+    <div class="t-unit">${m.course} &middot; ${m.unit} &middot; Lesson ${m.lessonNum}</div>
+    <div class="t-main">${th}</div>
+    <div class="t-sub">${m.subtopics.join(' &middot; ')}</div>
+    <div class="t-pills">${m.pills.map(p=>`<div class="t-pill">${p}</div>`).join('')}</div>
+    <div class="t-meta"><span>&#128218; ${m.unit} &mdash; Lesson ${m.lessonNum} of ${m.lessonOf}</span><span>&#128197; Term ${m.term}, Week ${m.week}</span></div>
+    ${arrows('','Begin Lesson',true,false)}`};
+}
+
+function buildLearningIntentions(){
+  return{html:`${sh('ic-teal','&#127919;','Learning Intentions','By the end of today...')}
+    <div class="obj-list">${lessonData.learningIntentions.map(o=>`<div class="obj-item"><div class="obj-tick">&#10003;</div>${o}</div>`).join('')}</div>
+    ${arrows('prev()','Lesson Starter',false,false)}`};
+}
+
+function buildStarter(){
+  const s=lessonData.starter;
+  const cards=s.questions.map((q,i)=>`<div class="qc"><div class="qlabel gd">${i+1}</div><div class="qtext">${q.q}</div></div>`).join('');
+  return{workSlide:true,html:`${sh('ic-gold','&#9733;','Lesson Starter',s.time+' minutes')}${timer(s.time*60)}<div class="qg g3" style="flex:1">${cards}</div>${arrows('prev()','Show Answers',false,false)}`};
+}
+
+function buildStarterAnswers(){
+  const s=lessonData.starter;
+  const cards=s.answers.map((a,i)=>`<div class="qc"><div class="qlabel ans">${i+1}</div><div class="qtext">${a.working?a.working+'<br>':''}<strong style="color:var(--green)">${a.answer}</strong></div></div>`).join('');
+  return{html:`${sh('ic-green','&#10003;','Starter &mdash; Answers','')}
+    <div class="qg g3" style="flex:1;align-content:center">${cards}</div>
+    ${arrows('prev()',lessonData.topics[0].title,false,false)}`};
+}
+
+function buildNotes(topic){
+  const rules=topic.notes.map(n=>`<div class="rule">
+    <div class="rule-title">${n.title}</div>
+    <div class="rule-body"><div class="rule-formula">${n.formula}</div>${n.body}</div>
+  </div>`).join('');
+  return{cls:'tinted',html:`${sh('ic-teal','&#128221;',topic.title,'Key Rules')}${rules}${arrows('prev()','Examples',false,false)}`};
+}
+
+function buildExamples(topic){
+  const cards=topic.examples.map(eg=>`<div class="eg-card">
+    <div class="eg-label">${eg.label}</div>
+    <div class="eg-q">${eg.q}</div>
+    <details><summary>Show Steps</summary>
+      <div class="sol-box">${eg.steps.map((s,i)=>`<strong style="color:var(--teal)">Step ${i+1}:</strong> ${s}`).join('<br>')}</div>
+    </details>
+  </div>`).join('');
+  const cols=topic.examples.length<=3?'g3':'g3';
+  return{cls:'eg-slide',html:`${sh('ic-gold','&#128300;','Examples',topic.examples.length+' worked examples')}
+    <div class="eg-grid ${cols}">${cards}</div>
+    ${arrows('prev()','Your Turn',false,false)}`};
+}
+
+function buildYourTurn(topic){
+  const cards=topic.yourTurn.map(yt=>`<div class="yt-card">
+    <div class="yt-label">${yt.label}</div>
+    <div class="yt-q">${yt.q}</div>
+    <details><summary>Hint</summary><div class="sol-box" style="border-color:var(--gold)">${yt.hint}</div></details>
+    <details><summary>Answer</summary><div class="sol-box">${yt.ans}</div></details>
+  </div>`).join('');
+  return{cls:'yt-slide',workSlide:true,html:`${sh('ic-purple','&#9999;','Your Turn!','Have a go')}
+    <div class="yt-grid g3">${cards}</div>
+    ${arrows('prev()','Exercise',false,false)}`};
+}
+
+function buildExercise(topic,idx){
+  const ex=topic.exercises[idx];
+  const cards=ex.questions.map(q=>`<div class="qc">
+    <div class="qlabel">${q.label}</div>
+    <div class="qtext">${q.q}
+      <details class="q-ans"><summary>Answer</summary><div class="q-ans-val">${q.ans}</div></details>
+    </div>
+  </div>`).join('');
+  return{workSlide:true,html:`${sh('ic-blue','&#128221;',ex.label,ex.questions.length+' questions')}
+    <div class="qg g4">${cards}</div>
+    ${arrows('prev()','Challenge',false,false)}`};
+}
+
+function buildExtension(){
+  const ext=lessonData.extension;
+  const cards=ext.questions.map(q=>`<div class="qc full">
+    <div class="qlabel gd">${q.label}</div>
+    <div class="qtext"><strong>${q.q}</strong><br><br>
+      <em style="color:var(--muted)">&#128161; ${q.hint}</em>
+      <details class="q-ans"><summary>Answer</summary><div class="q-ans-val">${q.answer}</div></details>
+    </div>
+  </div>`).join('');
+  return{html:`${sh('ic-red','&#11088;','Challenge','Push yourself')}
+    <div class="qg">${cards}</div>
+    ${arrows('prev()','Plenary',false,false)}`};
+}
+
+function buildPlenary(){
+  const ple=lessonData.plenary;
+  return{html:`${sh('ic-teal','&#127919;','Plenary','Reflect on your learning')}
+    <div class="ple-grid">
+      <div class="ple-card"><div class="ple-head">Quick Recall</div>${ple.left.map(q=>`<div class="ple-q"><div class="ple-num">&bull;</div><div>${q.q}</div></div>`).join('')}</div>
+      <div class="ple-card"><div class="ple-head">Think Deeply</div>${ple.right.map(q=>`<div class="ple-q"><div class="ple-num">&bull;</div><div>${q.q}</div></div>`).join('')}</div>
+    </div>
+    ${arrows('prev()','Finish',false,true)}`};
+}
+
+function buildLesson(){
+  const slides=[];
+  slides.push({title:'Cover',...buildCover()});
+  slides.push({title:'Objectives',...buildLearningIntentions()});
+  slides.push({title:'Starter',...buildStarter()});
+  slides.push({title:'Answers',...buildStarterAnswers()});
+  lessonData.topics.forEach(topic=>{
+    slides.push({title:'Notes',...buildNotes(topic)});
+    slides.push({title:'Examples',...buildExamples(topic)});
+    slides.push({title:'Your Turn',...buildYourTurn(topic)});
+    topic.exercises.forEach((ex,j)=>slides.push({title:ex.label,...buildExercise(topic,j)}));
+  });
+  slides.push({title:'Challenge',...buildExtension()});
+  slides.push({title:'Plenary',...buildPlenary()});
+  return slides;
+}
+
+function renderLesson(){
+  const m=lessonData.meta;
+  const slides=buildLesson();
+  document.getElementById('chrome-label').textContent=m.unit;
+  document.getElementById('chrome-title').textContent=m.topic;
+  document.title=m.topic+' \u2014 Maths';
+  workSlideIndices.clear();
+  slides.forEach((s,i)=>{if(s.workSlide)workSlideIndices.add(i);});
+  const deck=document.getElementById('deck');
+  deck.innerHTML=slides.map((s,i)=>`<section class="slide${i===0?' active':''}${s.cls?' '+s.cls:''}" data-index="${i}">${s.html}</section>`).join('');
+  const nav=document.getElementById('nav-bar');
+  nav.innerHTML=slides.map((s,i)=>`<div class="nav-dot${i===0?' active':''}" onclick="goTo(${i})" title="${s.title}"></div>`).join('');
+  if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise().catch(()=>{});
+}
+
+function applyMode(mode){
+  document.body.classList.remove('light','adhd','highcontrast');
+  if(mode==='light')document.body.classList.add('light');
+  else if(mode==='adhd')document.body.classList.add('adhd');
+  else if(mode==='highcontrast')document.body.classList.add('highcontrast');
+}
+
+/* ══════════════════════════════════════════
+   SETUP OVERLAY LOGIC
+══════════════════════════════════════════ */
+let sObjs=[...lessonData.learningIntentions];
+
+function sRenderObjs(){
+  const list=document.getElementById('sObjList');list.innerHTML='';
+  sObjs.forEach((t,i)=>{
+    const row=document.createElement('div');row.className='s-obj-row';
+    const inp=document.createElement('input');inp.type='text';inp.value=t;inp.placeholder='Learning intention...';
+    inp.addEventListener('input',function(){sObjs[i]=this.value;});
+    const btn=document.createElement('button');btn.className='s-obj-rm';btn.innerHTML='&#10005;';
+    btn.addEventListener('click',()=>{sSync();sObjs.splice(i,1);sRenderObjs();});
+    row.appendChild(inp);row.appendChild(btn);list.appendChild(row);
+  });
+}
+function sAddObj(){sSync();sObjs.push('');sRenderObjs();const r=document.querySelectorAll('#sObjList .s-obj-row input');if(r.length)r[r.length-1].focus();}
+function sSync(){sObjs=Array.from(document.querySelectorAll('#sObjList .s-obj-row input')).map(i=>i.value);}
+
+document.getElementById('sTogsWrap').addEventListener('click',function(e){
+  const tog=e.target.closest('.s-tog');if(tog){tog.classList.toggle('on');sUpdateChips();}
+});
+
+function sUpdateChips(){
+  const C={};document.querySelectorAll('.s-tog').forEach(t=>{C[t.dataset.key]=t.classList.contains('on');});
+  const defs=[
+    {l:'Cover',on:true},{l:'Objectives',on:true},
+    {l:'Starter',on:C.starter},{l:'Answers',on:C.starter},
+    {l:'Notes',on:C.notes},{l:'Examples',on:C.examples},
+    {l:'Your Turn',on:C.yourturn},{l:'Exercise',on:C.exercise},
+    {l:'Challenge',on:C.extension},{l:'Plenary',on:C.plenary}
+  ];
+  document.getElementById('sChips').innerHTML=defs.map(d=>`<div class="s-chip${d.on?' on':''}">${d.l}</div>`).join('');
+}
+
+document.querySelectorAll('.s-mode').forEach(m=>m.addEventListener('click',function(){
+  document.querySelectorAll('.s-mode').forEach(x=>x.classList.remove('on'));this.classList.add('on');
+}));
+
+function sLaunch(){
+  sSync();
+  const C={};document.querySelectorAll('.s-tog').forEach(t=>{C[t.dataset.key]=t.classList.contains('on');});
+  const mode=document.querySelector('.s-mode.on')?.dataset.mode||'dark';
+  applyMode(mode);
+  // Override meta from setup fields
+  lessonData.meta.topic=document.getElementById('infoTopic').value||lessonData.meta.topic;
+  lessonData.meta.topicHighlight=document.getElementById('infoHighlight').value;
+  lessonData.meta.unit=document.getElementById('infoUnit').value||lessonData.meta.unit;
+  lessonData.meta.course=document.getElementById('infoCourse').value||lessonData.meta.course;
+  lessonData.meta.lessonNum=parseInt(document.getElementById('infoLessonNum').value)||1;
+  lessonData.meta.lessonOf=parseInt(document.getElementById('infoLessonOf').value)||1;
+  lessonData.meta.term=parseInt(document.getElementById('infoTerm').value)||1;
+  lessonData.meta.week=parseInt(document.getElementById('infoWeek').value)||1;
+  lessonData.learningIntentions=sObjs.map(s=>s.trim()).filter(Boolean);
+  // Filter and re-render
+  renderLesson();
+  // Apply component filtering to slides
+  const allSlides=document.querySelectorAll('.slide');
+  const skipMap={'Starter':!C.starter,'Answers':!C.starter,'Notes':!C.notes,'Examples':!C.examples,'Your Turn':!C.yourturn,'Exercise 1':!C.exercise,'Challenge':!C.extension,'Plenary':!C.plenary};
+  let visible=[];
+  allSlides.forEach(s=>{
+    const title=s.querySelector('.sh-title')?.textContent||'';
+    const skip=Object.keys(skipMap).some(k=>skipMap[k]&&title.includes(k));
+    if(skip)s.remove(); else visible.push(s);
+  });
+  // Rebuild nav for remaining slides
+  const nav=document.getElementById('nav-bar');
+  nav.innerHTML='';
+  document.querySelectorAll('.slide').forEach((s,i)=>{
+    if(i===0)s.classList.add('active');
+    const d=document.createElement('div');d.className='nav-dot'+(i===0?' active':'');
+    const title=s.querySelector('.sh-title')?.textContent||'Slide '+(i+1);
+    d.title=title;d.onclick=()=>goTo(i);nav.appendChild(d);
+  });
+  currentSlide=0;
+  const cam=document.getElementById('floatCamBtn');
+  if(cam){if(C.upload!==false)cam.style.display='';else cam.style.display='none';}
+  if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise().catch(()=>{});
+  const ov=document.getElementById('setupOverlay');
+  ov.classList.add('hiding');
+  setTimeout(()=>ov.classList.add('gone'),380);
+}
+
+/* ══════════════════════════════════════════
+   CLOCKS
+══════════════════════════════════════════ */
+function fmtTime(){
+  const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,'0'),s=String(now.getSeconds()).padStart(2,'0'),ampm=h>=12?'PM':'AM',h12=h%12||12;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+'  '+h12+':'+m+':'+s+' '+ampm;
+}
+function updateClock(){const el=document.getElementById('live-clock');if(el)el.textContent=fmtTime();}
+function updateSClock(){const el=document.getElementById('sClock');if(el)el.textContent=fmtTime();}
+
+/* ══════════════════════════════════════════
+   THEME
+══════════════════════════════════════════ */
+function toggleTheme(){const l=document.body.classList.toggle('light');document.getElementById('theme-btn').innerHTML=l?'&#127769; Dark':'&#9728; Light';}
+
+/* ══════════════════════════════════════════
+   UPLOAD MODAL
+══════════════════════════════════════════ */
+const APPS_URL='https://script.google.com/macros/s/AKfycbwbUhLSI3N_BvK87YqVk4WLRtcGc9CJdGzLMsKC3WH3JxXE2oCmKVzn-xdWWY6PiRrqKw/exec';
+let modalPhotos=[];
+function openUploadModal(){document.getElementById('uploadModal').classList.add('open');document.body.style.overflow='hidden';}
+function closeUploadModal(){document.getElementById('uploadModal').classList.remove('open');document.body.style.overflow='';}
+function closeModalOutside(e){if(e.target===document.getElementById('uploadModal'))closeUploadModal();}
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('modalStudentId').addEventListener('input',function(){this.value=this.value.replace(/[^0-9]/g,'').slice(0,6);});
+  document.getElementById('modalCameraInput').addEventListener('change',function(){
+    Array.from(this.files).forEach(file=>{const r=new FileReader();r.onload=ev=>{modalPhotos.push({file,dataUrl:ev.target.result});renderModalPreviews();};r.readAsDataURL(file);});
+    this.value='';
+  });
+});
+function renderModalPreviews(){
+  const c=document.getElementById('modalPhotoPreview');c.innerHTML='';
+  modalPhotos.forEach((p,i)=>{const t=document.createElement('div');t.className='modal-thumb';t.innerHTML=`<img src="${p.dataUrl}"><button class="modal-remove" onclick="removeModalPhoto(${i})">&#10005;</button>`;c.appendChild(t);});
+  document.getElementById('modalSubmitBtn').style.display=modalPhotos.length>0?'flex':'none';
+}
+function removeModalPhoto(i){modalPhotos.splice(i,1);renderModalPreviews();}
+function showModalStatus(msg,type){const el=document.getElementById('modalStatus');el.className='modal-status '+type;el.textContent=msg;}
+async function submitModalWork(){
+  const fid=document.getElementById('modalCourseSelect').value,sid=document.getElementById('modalStudentId').value.trim();
+  if(!fid){showModalStatus('Please select your class.','error');return;}
+  if(!sid){showModalStatus('Please enter your student ID.','error');return;}
+  if(!modalPhotos.length){showModalStatus('Please take at least one photo.','error');return;}
+  document.getElementById('modalSubmitBtn').disabled=true;document.getElementById('modalTakePhotoBtn').disabled=true;
+  showModalStatus('Uploading\u2026 please wait.','loading');
+  try{
+    const now=new Date(),date=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+    const photos=modalPhotos.map((p,i)=>({base64:p.dataUrl.split(',')[1],mimeType:p.file.type||'image/jpeg',filename:sid+'_p'+(i+1)+'_'+Date.now()+'.jpg'}));
+    const res=await fetch(APPS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({studentId:sid,lessonDate:date,photos,courseFolderId:fid})});
+    const result=await res.json();
+    if(result.success){
+      showModalStatus(result.matched&&result.coursesUpdated>0?'Work submitted! Well done today! &#127881;':'Photos saved, but your ID wasn\'t found. Let your teacher know.',result.matched?'success':'error');
+      document.getElementById('modalSubmitBtn').style.display='none';document.getElementById('modalTakePhotoBtn').style.display='none';
+    }else{showModalStatus('Upload failed: '+(result.error||'Unknown error.'),'error');document.getElementById('modalSubmitBtn').disabled=false;document.getElementById('modalTakePhotoBtn').disabled=false;}
+  }catch(e){showModalStatus('Connection error. Check your internet and try again.','error');document.getElementById('modalSubmitBtn').disabled=false;document.getElementById('modalTakePhotoBtn').disabled=false;}
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+renderLesson();
+sRenderObjs();
+sUpdateChips();
+updateClock();
+updateSClock();
+setInterval(updateClock,1000);
+setInterval(updateSClock,1000);
+</script>
+</body>
+</html>
