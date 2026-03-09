@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maths Lessons</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#09121f;--bg-tint:#0d1a2e;--panel:#101d30;--card:#162540;--card-tint:#1b2d47;
+  --lift:#1e3256;--lift-tint:#22395e;--bdr:#1f3557;--bdr-tint:#263f65;
+  --teal:#00c9b8;--teal2:#009e90;--gold:#f0a500;--green:#2ecc71;
+  --red:#e74c3c;--blue:#4fa9ff;--text:#dde8f5;--muted:#6b87a8;--white:#ffffff;
+}
+body{
+  font-family:'Trebuchet MS',Trebuchet,Arial,sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;
+}
+body.light{
+  --bg:#eef5ff;--bg-tint:#e0eeff;--panel:#ffffff;--card:#ffffff;--card-tint:#f0f7ff;
+  --lift:#ddeeff;--lift-tint:#d0e8ff;--bdr:#b8d4f0;--bdr-tint:#a8c8e8;
+  --teal:#007a70;--teal2:#005f58;--gold:#c07800;--green:#1a8a45;
+  --red:#cc2200;--blue:#1a6fc4;--text:#0f1e30;--muted:#4a6a88;--white:#ffffff;
+}
+
+/* Chrome bar */
+.chrome{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--panel);border-bottom:2px solid var(--teal2);
+  padding:0 28px;height:46px;flex-shrink:0;
+}
+.chrome-left{display:flex;align-items:center;gap:10px;}
+.chrome-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);}
+.chrome-label{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:700;}
+.chrome-title{font-size:0.92rem;font-weight:700;color:var(--text);}
+.chrome-right{display:flex;align-items:center;gap:14px;}
+.chrome-clock{font-size:0.9rem;font-weight:700;color:var(--teal);font-variant-numeric:tabular-nums;}
+.theme-btn{
+  background:transparent;border:1.5px solid var(--bdr);border-radius:6px;
+  color:var(--muted);font-size:0.8rem;font-weight:700;padding:4px 12px;
+  cursor:pointer;font-family:inherit;transition:all 0.15s;
+}
+.theme-btn:hover{border-color:var(--teal);color:var(--teal);}
+
+/* Main content */
+.main{flex:1;display:flex;flex-direction:column;align-items:center;padding:36px 24px 40px;overflow-y:auto;}
+
+/* Hero */
+.hero{text-align:center;margin-bottom:44px;}
+.hero-logo{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:72px;height:72px;border-radius:18px;background:var(--teal2);
+  font-size:2.2rem;font-weight:900;color:#000;margin-bottom:16px;
+  box-shadow:0 0 32px rgba(0,201,184,0.25);
+}
+.hero h1{font-size:2.6rem;font-weight:900;color:var(--text);line-height:1.1;margin-bottom:8px;}
+.hero h1 span{color:var(--teal);}
+.hero p{font-size:1.05rem;color:var(--muted);max-width:480px;margin:0 auto;}
+
+/* Panels */
+.panel-wrap{width:100%;max-width:860px;}
+
+.panel{
+  background:var(--panel);border:1px solid var(--bdr);border-top:4px solid var(--teal2);
+  border-radius:12px;padding:28px 32px;margin-bottom:20px;
+  transition:opacity 0.22s ease,transform 0.22s ease;
+}
+.panel.hidden{display:none;}
+.panel.fading{opacity:0;transform:translateY(10px);pointer-events:none;}
+
+.panel-heading{
+  display:flex;align-items:center;gap:12px;
+  padding-bottom:14px;margin-bottom:20px;
+  border-bottom:1.5px solid var(--bdr);
+}
+.panel-icon{
+  width:40px;height:40px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;font-weight:900;color:#000;flex-shrink:0;
+  background:var(--teal);
+}
+.panel-title{font-size:1.4rem;font-weight:800;color:var(--text);}
+.panel-sub{font-size:0.85rem;color:var(--muted);margin-top:1px;}
+
+/* Year group grid */
+.year-grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:12px;
+}
+@media(max-width:640px){.year-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:400px){.year-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* Class grid */
+.class-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+@media(max-width:500px){.class-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* Choice cards */
+.choice-card{
+  background:var(--card);border:2px solid var(--bdr);border-radius:10px;
+  padding:18px 10px;text-align:center;cursor:pointer;
+  transition:all 0.15s ease;user-select:none;position:relative;overflow:hidden;
+}
+.choice-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,201,184,0.07) 0%,transparent 60%);
+  opacity:0;transition:opacity 0.15s;
+}
+.choice-card:hover{border-color:var(--teal);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,201,184,0.15);}
+.choice-card:hover::after{opacity:1;}
+.choice-card:active{transform:translateY(0);}
+.choice-card.selected{
+  border-color:var(--teal);background:var(--lift);
+  box-shadow:0 0 0 3px rgba(0,201,184,0.2);
+}
+
+.card-num{
+  font-size:2rem;font-weight:900;color:var(--teal);
+  line-height:1;margin-bottom:4px;
+}
+.card-label{font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;}
+
+/* Class card variant */
+.class-card .card-num{font-size:1rem;color:var(--text);letter-spacing:0.01em;}
+.class-card .card-accent{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  margin-bottom:8px;
+}
+
+/* Accent colours per class type */
+.acc-p1{background:var(--teal);}
+.acc-p2{background:var(--gold);}
+.acc-p3{background:var(--blue);}
+.acc-found{background:#c27aff;}
+.acc-ess{background:var(--gold);}
+.acc-app{background:var(--green);}
+.acc-meth{background:var(--red);}
+
+/* Breadcrumb */
+.breadcrumb{
+  display:flex;align-items:center;gap:6px;
+  font-size:0.82rem;color:var(--muted);margin-bottom:20px;flex-wrap:wrap;
+}
+.bc-item{cursor:pointer;transition:color 0.12s;font-weight:600;}
+.bc-item:hover{color:var(--teal);}
+.bc-sep{color:var(--bdr);}
+.bc-current{color:var(--text);font-weight:700;cursor:default;}
+
+/* Back btn */
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:transparent;border:2px solid var(--bdr);border-radius:7px;
+  color:var(--muted);padding:8px 18px;font-size:0.88rem;font-weight:700;
+  cursor:pointer;font-family:inherit;transition:all 0.15s;margin-top:18px;
+}
+.back-btn:hover{border-color:var(--teal);color:var(--teal);}
+
+/* Go button */
+.go-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--teal2);border:2px solid var(--teal2);border-radius:8px;
+  color:#fff;padding:11px 32px;font-size:1rem;font-weight:800;
+  cursor:pointer;font-family:inherit;transition:all 0.15s;
+  letter-spacing:0.02em;
+}
+.go-btn:hover{background:var(--teal);border-color:var(--teal);box-shadow:0 4px 18px rgba(0,201,184,0.3);}
+.go-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* Selection summary */
+.sel-summary{
+  background:var(--card);border:1px solid var(--bdr);border-left:5px solid var(--teal);
+  border-radius:10px;padding:14px 20px;margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.sel-label{font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--teal);font-weight:700;margin-bottom:3px;}
+.sel-value{font-size:1.1rem;font-weight:800;color:var(--text);}
+
+/* Footer */
+.footer{
+  text-align:center;padding:14px;
+  font-size:0.78rem;color:var(--muted);
+  border-top:1px solid var(--bdr);
+  background:var(--panel);
+}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.anim-in{animation:fadeUp 0.28s ease both;}
+</style>
+</head>
+<body>
+
+<!-- Chrome Bar -->
+<div class="chrome">
+  <div class="chrome-left">
+    <div class="chrome-dot"></div>
+    <span class="chrome-title">Mathematics</span>
+  </div>
+  <div class="chrome-right">
+    <span class="chrome-clock" id="live-clock"></span>
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Hero -->
+  <div class="hero anim-in">
+    <div class="hero-logo">∑</div>
+    <h1>Maths <span>Lessons</span></h1>
+    <p>Select your year group below to access your class resources.</p>
+  </div>
+
+  <div class="panel-wrap">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb" id="breadcrumb">
+      <span class="bc-current">Home</span>
+    </div>
+
+    <!-- STEP 1: Year Group -->
+    <div class="panel anim-in" id="panel-year">
+      <div class="panel-heading">
+        <div class="panel-icon">①</div>
+        <div>
+          <div class="panel-title">Choose Your Year Group</div>
+          <div class="panel-sub">Select the year you're currently in</div>
+        </div>
+      </div>
+      <div class="year-grid">
+        <div class="choice-card" onclick="selectYear(7)">
+          <div class="card-num">7</div>
+        </div>
+        <div class="choice-card" onclick="selectYear(8)">
+          <div class="card-num">8</div>
+        </div>
+        <div class="choice-card" onclick="selectYear(9)">
+          <div class="card-num">9</div>
+        </div>
+        <div class="choice-card" onclick="selectYear(10)">
+          <div class="card-num">10</div>
+        </div>
+        <div class="choice-card" onclick="selectYear(11)">
+          <div class="card-num">11</div>
+        </div>
+        <div class="choice-card" onclick="selectYear(12)">
+          <div class="card-num">12</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Class (shown after year selected) -->
+    <div class="panel hidden" id="panel-class">
+      <div class="panel-heading">
+        <div class="panel-icon">②</div>
+        <div>
+          <div class="panel-title" id="class-panel-title">Choose Your Class</div>
+          <div class="panel-sub" id="class-panel-sub">Select your pathway or course</div>
+        </div>
+      </div>
+      <div class="sel-summary">
+        <div>
+          <div class="sel-label">Year Group</div>
+          <div class="sel-value" id="sel-year-display">—</div>
+        </div>
+        <button class="back-btn" onclick="goBack()">← Change Year</button>
+      </div>
+      <div class="class-grid" id="class-grid"></div>
+    </div>
+
+    <!-- STEP 3: Go (shown after class selected) -->
+    <div class="panel hidden" id="panel-go">
+      <div class="panel-heading">
+        <div class="panel-icon" style="background:var(--green);color:#000;">✓</div>
+        <div>
+          <div class="panel-title">Ready to go!</div>
+          <div class="panel-sub">Your lessons are ready to load</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;">
+        <div class="sel-summary" style="flex:1;min-width:180px;">
+          <div>
+            <div class="sel-label">Year Group</div>
+            <div class="sel-value" id="go-year-display">—</div>
+          </div>
+        </div>
+        <div class="sel-summary" style="flex:1;min-width:180px;border-left-color:var(--gold);">
+          <div>
+            <div class="sel-label">Class</div>
+            <div class="sel-value" id="go-class-display">—</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:8px;">
+        <button class="go-btn" onclick="goToLessons()">Go to Lessons →</button>
+        <button class="back-btn" onclick="goBackToClass()">← Change Class</button>
+      </div>
+    </div>
+
+  </div><!-- /panel-wrap -->
+</div><!-- /main -->
+
+<div class="footer">Mathematics Department</div>
+
+<script>
+// ── State ─────────────────────────────────────────────
+let selectedYear = null;
+let selectedClass = null;
+
+// Class definitions
+const CLASSES = {
+  7:  null, // no class selection for Year 7
+  8:  [
+    {label:'Pathway 1', short:'P1', acc:'acc-p1'},
+    {label:'Pathway 2', short:'P2', acc:'acc-p2'},
+    {label:'Pathway 3', short:'P3', acc:'acc-p3'},
+  ],
+  9:  [
+    {label:'Pathway 1', short:'P1', acc:'acc-p1'},
+    {label:'Pathway 2', short:'P2', acc:'acc-p2'},
+    {label:'Pathway 3', short:'P3', acc:'acc-p3'},
+  ],
+  10: [
+    {label:'Pathway 1', short:'P1', acc:'acc-p1'},
+    {label:'Pathway 2', short:'P2', acc:'acc-p2'},
+    {label:'Pathway 3', short:'P3', acc:'acc-p3'},
+  ],
+  11: [
+    {label:'11 Foundations', short:'Foundations', acc:'acc-found'},
+    {label:'11 Essentials',  short:'Essentials',  acc:'acc-ess'},
+    {label:'11 Applications',short:'Applications',acc:'acc-app'},
+    {label:'11 Methods',     short:'Methods',     acc:'acc-meth'},
+  ],
+  12: [
+    {label:'12 Foundations', short:'Foundations', acc:'acc-found'},
+    {label:'12 Essentials',  short:'Essentials',  acc:'acc-ess'},
+    {label:'12 Applications',short:'Applications',acc:'acc-app'},
+    {label:'12 Methods',     short:'Methods',     acc:'acc-meth'},
+  ],
+};
+
+// ── Year selection ─────────────────────────────────────
+function selectYear(year) {
+  selectedYear = year;
+  selectedClass = null;
+
+  if (year === 7) {
+    // No class needed — go straight to go panel
+    showGoPanel();
+  } else {
+    showClassPanel(year);
+  }
+}
+
+function showClassPanel(year) {
+  const classes = CLASSES[year];
+  const grid = document.getElementById('class-grid');
+  const cols = classes.length === 3 ? 3 : 2;
+  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+  grid.innerHTML = classes.map((c, i) =>
+    `<div class="choice-card class-card" onclick="selectClass('${c.label}','${c.short}')">
+      <div class="card-accent ${c.acc}"></div>
+      <div class="card-num">${c.label}</div>
+    </div>`
+  ).join('');
+
+  document.getElementById('class-panel-title').textContent = `Choose Your Year ${year} Class`;
+  document.getElementById('class-panel-sub').textContent = `Select your pathway or course`;
+  document.getElementById('sel-year-display').textContent = `Year ${year}`;
+
+  transition('panel-year', 'panel-class');
+  updateBreadcrumb(year, null);
+}
+
+function selectClass(label, short) {
+  selectedClass = label;
+  document.getElementById('go-year-display').textContent = `Year ${selectedYear}`;
+  document.getElementById('go-class-display').textContent = label;
+
+  // Highlight selected card
+  document.querySelectorAll('#class-grid .choice-card').forEach(c => {
+    c.classList.toggle('selected', c.querySelector('.card-num').textContent === label);
+  });
+
+  setTimeout(() => {
+    transition('panel-class', 'panel-go');
+    updateBreadcrumb(selectedYear, label);
+  }, 160);
+}
+
+function showGoPanel() {
+  document.getElementById('go-year-display').textContent = `Year ${selectedYear}`;
+  document.getElementById('go-class-display').textContent = '—';
+  transition('panel-year', 'panel-go');
+  updateBreadcrumb(selectedYear, null);
+}
+
+// ── Navigation ─────────────────────────────────────────
+function goBack() {
+  selectedYear = null;
+  selectedClass = null;
+  transition('panel-class', 'panel-year');
+  updateBreadcrumb(null, null);
+}
+
+function goBackToClass() {
+  selectedClass = null;
+  if (selectedYear === 7) {
+    transition('panel-go', 'panel-year');
+    updateBreadcrumb(null, null);
+  } else {
+    transition('panel-go', 'panel-class');
+    updateBreadcrumb(selectedYear, null);
+  }
+}
+
+function transition(hideId, showId) {
+  const hide = document.getElementById(hideId);
+  const show = document.getElementById(showId);
+  hide.classList.add('fading');
+  setTimeout(() => {
+    hide.classList.add('hidden');
+    hide.classList.remove('fading');
+    show.classList.remove('hidden');
+    show.classList.add('anim-in');
+    setTimeout(() => show.classList.remove('anim-in'), 400);
+  }, 200);
+}
+
+function goToLessons() {
+  // Placeholder — wire up to your lesson pages
+  const y = selectedYear;
+  const c = selectedClass || '';
+  alert(`Navigate to: Year ${y}${c ? ' — ' + c : ''}\n\n(Connect this button to your lesson page links.)`);
+}
+
+// ── Breadcrumb ─────────────────────────────────────────
+function updateBreadcrumb(year, cls) {
+  const bc = document.getElementById('breadcrumb');
+  let html = `<span class="bc-item" onclick="resetAll()">Home</span>`;
+  if (year) {
+    html += `<span class="bc-sep">›</span>`;
+    if (cls) {
+      html += `<span class="bc-item" onclick="goBackToClass()">Year ${year}</span>`;
+      html += `<span class="bc-sep">›</span>`;
+      html += `<span class="bc-current">${cls}</span>`;
+    } else {
+      html += `<span class="bc-current">Year ${year}</span>`;
+    }
+  } else {
+    html = `<span class="bc-current">Home</span>`;
+  }
+  bc.innerHTML = html;
+}
+
+function resetAll() {
+  selectedYear = null;
+  selectedClass = null;
+  ['panel-class','panel-go'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('fading');
+    el.classList.add('hidden');
+  });
+  document.getElementById('panel-year').classList.remove('hidden','fading');
+  document.getElementById('panel-year').classList.add('anim-in');
+  setTimeout(() => document.getElementById('panel-year').classList.remove('anim-in'), 400);
+  updateBreadcrumb(null, null);
+}
+
+// ── Clock ─────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours(), m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
+  const ampm = h >= 12 ? 'PM' : 'AM', h12 = h % 12 || 12;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const el = document.getElementById('live-clock');
+  if (el) el.textContent = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}  ${h12}:${m}:${s} ${ampm}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ── Theme ─────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('theme-btn').innerHTML = isLight ? '🌙 Dark' : '☀ Light';
+}
+</script>
+</body>
+</html>
