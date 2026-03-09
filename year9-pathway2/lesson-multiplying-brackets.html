@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MTCC Lesson — Multiplying out Brackets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] },
+  startup: { typeset: false }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+<style>
+/* ─── RESET ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── DESIGN TOKENS ─── */
+:root {
+  --bg:        #09121f;
+  --bg-tint:   #0d1a2e;
+  --panel:     #101d30;
+  --card:      #162540;
+  --card-tint: #1b2d47;
+  --lift:      #1e3256;
+  --lift-tint: #22395e;
+  --bdr:       #1f3557;
+  --bdr-tint:  #263f65;
+  --teal:      #00c9b8;
+  --teal2:     #009e90;
+  --gold:      #f0a500;
+  --green:     #2ecc71;
+  --red:       #e74c3c;
+  --blue:      #4fa9ff;
+  --purple:    #a855f7;
+  --text:      #dde8f5;
+  --muted:     #6b87a8;
+  --white:     #ffffff;
+}
+
+/* ─── MATH FONT ─── */
+.math, .MathJax, mjx-container {
+  font-size: 1.05em !important;
+}
+.math-inline { display: inline; }
+
+/* ─── BODY ─── */
+body {
+  font-family: 'Trebuchet MS', Trebuchet, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  font-size: 18px;
+}
+
+/* ─── SHELL ─── */
+.pres { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+
+/* ─── CHROME ─── */
+.chrome {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--panel); border-bottom: 2px solid var(--teal2);
+  padding: 0 28px; height: 46px; flex-shrink: 0;
+}
+.chrome-left   { display: flex; align-items: center; gap: 10px; }
+.chrome-dot    { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); }
+.chrome-label  { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 700; }
+.chrome-title  { font-size: 0.92rem; font-weight: 700; color: var(--text); }
+.chrome-right  { font-size: 0.9rem; font-weight: 700; color: var(--teal); font-variant-numeric: tabular-nums; display:flex; align-items:center; gap:12px; }
+
+/* ─── DECK ─── */
+.deck { flex: 1; position: relative; overflow: hidden; }
+
+/* ─── SLIDES ─── */
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  padding: 22px 52px 12px;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.18s ease;
+  overflow-y: auto;
+}
+.slide.active { opacity: 1; visibility: visible; pointer-events: all; }
+.slide.tinted { background: var(--bg-tint); }
+.slide.tinted .rule    { background: var(--card-tint); border-color: var(--bdr-tint); }
+.slide.tinted .eg-card { background: var(--card-tint); border-color: var(--bdr-tint); }
+.slide.tinted .sol-box { background: var(--lift-tint); }
+
+/* ─── NAV BAR ─── */
+.nav-bar {
+  background: var(--panel); border-top: 1px solid var(--bdr);
+  height: 46px; display: flex; align-items: center; justify-content: center;
+  gap: 7px; padding: 0 20px; flex-shrink: 0; flex-wrap: wrap;
+}
+.nav-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--bdr); cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+}
+.nav-dot:hover  { background: var(--muted); transform: scale(1.5); }
+.nav-dot.active { background: var(--teal); width: 26px; border-radius: 5px; }
+.nav-section-gap { width: 1px; height: 18px; background: var(--bdr); margin: 0 4px; flex-shrink: 0; }
+
+/* ─── ARROWS ─── */
+.arrows {
+  margin-top: auto; padding-top: 8px;
+  display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+}
+.arrow-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 24px; border-radius: 7px; border: 2px solid var(--bdr);
+  color: var(--muted); cursor: pointer; font-size: 0.9rem; font-weight: 700;
+  letter-spacing: 0.02em; transition: all 0.15s;
+  background: transparent; font-family: inherit;
+}
+.arrow-btn:hover { border-color: var(--teal); color: var(--teal); }
+.arrow-btn.fwd   { background: var(--teal2); border-color: var(--teal2); color: var(--white); }
+.arrow-btn.fwd:hover { background: var(--teal); border-color: var(--teal); }
+.ghost { visibility: hidden; pointer-events: none; }
+
+/* ─── SLIDE HEADER ─── */
+.sh {
+  display: flex; align-items: center; gap: 14px;
+  padding-bottom: 12px; margin-bottom: 14px;
+  border-bottom: 2px solid var(--bdr); flex-shrink: 0;
+}
+.sh-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem; font-weight: 900; flex-shrink: 0; color: #000;
+}
+.ic-teal   { background: var(--teal); }
+.ic-gold   { background: var(--gold); }
+.ic-green  { background: var(--green); }
+.ic-blue   { background: var(--blue); }
+.ic-red    { background: var(--red); color: #fff; }
+.ic-purple { background: var(--purple); color: #fff; }
+.sh-title { font-size: 1.9rem; font-weight: 800; color: var(--text); flex: 1; line-height: 1; }
+.sh-badge {
+  flex-shrink: 0; background: var(--lift); border: 1px solid var(--bdr);
+  border-radius: 20px; padding: 5px 16px; font-size: 0.8rem; color: var(--muted); white-space: nowrap;
+}
+
+/* ─── SECTION DIVIDER ─── */
+.section-divider {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0 8px; flex-shrink: 0;
+}
+.section-divider-line { flex: 1; height: 1px; background: var(--bdr); }
+.section-divider-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--purple); font-weight: 800; background: var(--lift);
+  border: 1px solid var(--purple); border-radius: 20px; padding: 3px 14px;
+}
+
+/* ─── RULE BOX ─── */
+.rule {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-left: 5px solid var(--teal); border-radius: 10px;
+  padding: 13px 20px; margin-bottom: 10px; flex-shrink: 0;
+}
+.rule-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--teal); font-weight: 700; margin-bottom: 7px; }
+.rule-body  { font-size: 1rem; line-height: 1.85; }
+.rule-body em   { color: var(--gold); font-style: italic; font-weight: 700; font-family: 'Noto Serif', Georgia, serif; }
+.rule-formula {
+  display: block; background: var(--lift); padding: 8px 14px; border-radius: 6px;
+  font-size: 1.05em; color: var(--teal);
+  font-weight: 700; margin-bottom: 8px; line-height: 2.2;
+  white-space: normal; word-break: break-word;
+}
+
+/* ─── EXAMPLE CARDS ─── */
+.eg-grid    { display: grid; gap: 12px; }
+.eg-grid.g2 { grid-template-columns: 1fr 1fr; }
+.eg-grid.g3 { grid-template-columns: 1fr 1fr 1fr; }
+.eg-card {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-top: 4px solid var(--gold); border-radius: 10px; padding: 14px 18px;
+}
+.eg-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); font-weight: 700; margin-bottom: 6px; }
+.eg-q     { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; font-family: 'Noto Serif', Georgia, serif; }
+
+/* ─── YOUR TURN CARDS ─── */
+.yt-card {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-top: 4px solid var(--purple); border-radius: 10px; padding: 14px 18px;
+}
+.yt-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--purple); font-weight: 700; margin-bottom: 6px; }
+.yt-q     { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; font-family: 'Noto Serif', Georgia, serif; }
+
+/* ─── DETAILS/SUMMARY ─── */
+details summary {
+  list-style: none; cursor: pointer; font-size: 0.8rem; font-weight: 700;
+  color: var(--green); text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 5px 0; user-select: none;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '▶  '; font-size: 0.68rem; }
+details[open] summary::before { content: '▼  '; }
+.sol-box {
+  background: var(--lift); border-left: 3px solid var(--green);
+  border-radius: 6px; padding: 10px 14px; margin-top: 6px;
+  font-size: 0.9rem; line-height: 2; color: var(--text);
+  font-family: 'Noto Serif', Georgia, serif;
+}
+.sol-box strong { color: var(--green); }
+
+/* ─── QUESTION GRID ─── */
+.qg     { display: grid; gap: 9px; }
+.qg.g2  { grid-template-columns: 1fr 1fr; }
+.qg.g3  { grid-template-columns: 1fr 1fr 1fr; }
+.qg.g4  { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.qg.g5  { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
+.qc {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-radius: 9px; padding: 11px 14px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.qc.full { grid-column: 1 / -1; }
+.qlabel {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 7px;
+  background: var(--teal2); color: #fff; font-size: 0.8rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+.qlabel.gd  { background: var(--gold); color: #1a0800; }
+.qlabel.ans { background: var(--green); color: #000; }
+.qlabel.ch  { background: var(--red); color: #fff; }
+.qtext { font-size: 1rem; line-height: 1.7; flex: 1; font-family: 'Noto Serif', Georgia, serif; }
+
+/* ─── ANSWER TOGGLE ─── */
+.q-ans summary { font-size: 0.75rem; color: var(--green); }
+.q-ans-val {
+  font-size: 0.88rem; color: var(--green); margin-top: 4px; font-weight: 700;
+  font-family: 'Noto Serif', Georgia, serif;
+}
+
+/* ─── TIMER BAR ─── */
+.timer-bar-wrap {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--card); border: 1px solid var(--bdr);
+  border-radius: 10px; padding: 9px 16px; margin-bottom: 12px; flex-shrink: 0;
+}
+.tbar-btn {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+  padding: 6px 18px; border-radius: 7px; border: 2px solid var(--bdr);
+  cursor: pointer; font-size: 0.88rem; font-weight: 700; color: var(--muted);
+  background: transparent; transition: all 0.15s; user-select: none;
+  white-space: nowrap; min-width: 130px; font-family: inherit;
+}
+.tbar-btn:hover { border-color: var(--teal); color: var(--teal); }
+.tbar-btn.tbar-active { background: var(--teal2); border-color: var(--teal2); color: #fff; }
+.tbar-track-outer { flex: 1; height: 12px; background: var(--bg); border-radius: 6px; border: 1px solid var(--bdr); overflow: hidden; display: none; }
+.tbar-track-outer.tbar-visible { display: block; }
+.tbar-fill { height: 100%; border-radius: 6px; width: 100%; transition: width 0.5s linear; }
+.tbar-fill.green  { background: var(--green); }
+.tbar-fill.orange { background: #f39c12; }
+.tbar-fill.red    { background: var(--red); }
+.tbar-done { opacity: 0; flex-shrink: 0; font-size: 0.9rem; font-weight: 800; color: var(--red); display: none; }
+.tbar-done.tbar-show { display: block; opacity: 1; }
+
+/* ─── OBJECTIVES ─── */
+.obj-list { display: flex; flex-direction: column; gap: 10px; flex: 1; justify-content: center; }
+.obj-item { display: flex; align-items: center; gap: 16px; background: var(--card); border: 1px solid var(--bdr); border-radius: 10px; padding: 14px 22px; font-size: 1.15rem; line-height: 1.4; }
+.obj-tick { flex-shrink: 0; width: 28px; height: 28px; background: var(--teal2); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 900; }
+
+/* ─── COVER ─── */
+.cover-slide { background: radial-gradient(ellipse at 25% 50%, #0e2248 0%, var(--bg) 65%); align-items: center; justify-content: center; text-align: center; gap: 16px; }
+.t-school { font-size: 1rem; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.14em; }
+.t-unit   { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); border: 1px solid var(--bdr); display: inline-block; padding: 4px 18px; border-radius: 20px; }
+.t-main   { font-size: 3rem; font-weight: 900; color: var(--white); line-height: 1.1; }
+.t-main span { color: var(--teal); }
+.t-sub    { font-size: 1.3rem; color: var(--muted); }
+.t-pills  { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.t-pill   { background: var(--card); border: 1px solid var(--bdr); border-radius: 7px; padding: 7px 18px; font-size: 0.95rem; }
+.t-meta   { display: flex; gap: 24px; justify-content: center; color: var(--muted); font-size: 0.95rem; }
+
+/* ─── PLENARY ─── */
+.ple-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; min-height: 0; }
+.ple-card { background: var(--card); border: 1px solid var(--bdr); border-radius: 10px; padding: 16px 20px; overflow-y: auto; }
+.ple-head { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); font-weight: 700; margin-bottom: 10px; }
+.ple-q { font-size: 1rem; padding: 12px 0; border-bottom: 1px solid var(--bdr); line-height: 1.65; display: flex; gap: 10px; align-items: flex-start; font-family: 'Noto Serif', Georgia, serif; }
+.ple-q:last-of-type { border-bottom: none; }
+.ple-num  { flex-shrink: 0; color: var(--gold); font-weight: 700; padding-top: 3px; }
+
+/* ─── LIGHT THEME ─── */
+body.light {
+  --bg:        #eef5ff;
+  --bg-tint:   #e0eeff;
+  --panel:     #ffffff;
+  --card:      #ffffff;
+  --card-tint: #f0f7ff;
+  --lift:      #ddeeff;
+  --lift-tint: #d0e8ff;
+  --bdr:       #b8d4f0;
+  --bdr-tint:  #a8c8e8;
+  --teal:      #007a70;
+  --teal2:     #005f58;
+  --gold:      #c07800;
+  --green:     #1a8a45;
+  --red:       #cc2200;
+  --blue:      #1a6fc4;
+  --purple:    #7c3aed;
+  --text:      #0f1e30;
+  --muted:     #4a6a88;
+  --white:     #ffffff;
+}
+body.light .cover-slide { background: radial-gradient(ellipse at 25% 50%, #c8deff 0%, #eef5ff 65%); }
+body.light .t-main { color: var(--text); }
+body.light .t-main span { color: var(--teal); }
+body.light .t-pill { color: var(--text); }
+
+/* ─── THEME TOGGLE ─── */
+.theme-btn {
+  background: transparent; border: 1.5px solid var(--bdr);
+  color: var(--muted); border-radius: 7px; padding: 4px 11px;
+  font-size: 0.78rem; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: all 0.15s; white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+.theme-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+/* ─── EXAMPLE SLIDE TINT ─── */
+:root          { --eg-bg: #100e00; --eg-bg2: #1a1400; }
+body.light     { --eg-bg: #fffaea; --eg-bg2: #fff3cc; }
+.slide.eg-slide               { background: var(--eg-bg); }
+.slide.eg-slide .eg-card      { background: var(--eg-bg2); border-color: rgba(240,165,0,0.3); }
+.slide.eg-slide .yt-card      { background: var(--eg-bg2); border-color: rgba(168,85,247,0.3); }
+.slide.eg-slide .rule         { background: var(--eg-bg2); border-color: rgba(240,165,0,0.3); }
+.slide.eg-slide .sol-box      { background: rgba(240,165,0,0.08); border-color: var(--gold); }
+
+/* ─── FLOATING CAMERA BUTTON ─── */
+.float-cam-btn {
+  position: fixed; bottom: 60px; right: 18px;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--teal2); border: 2px solid var(--teal);
+  color: #fff; font-size: 1.3rem; cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+  z-index: 150; box-shadow: 0 4px 16px rgba(0,201,184,0.35);
+  transition: all 0.18s; font-family: inherit;
+}
+.float-cam-btn:hover { background: var(--teal); transform: scale(1.12); }
+.float-cam-btn.cam-visible { display: flex; }
+
+/* ─── BRACKET DIAGRAM ─── */
+.bracket-demo {
+  display: flex; align-items: center; justify-content: center; gap: 30px;
+  padding: 16px 0; flex-shrink: 0;
+}
+.bdemo-item {
+  text-align: center;
+}
+.bdemo-expr {
+  font-size: 2rem; font-weight: 800; font-family: 'Noto Serif', Georgia, serif;
+  color: var(--text); position: relative; display: inline-block;
+}
+.bdemo-expr .coeff { color: var(--teal); }
+.bdemo-expr .bracket-content { color: var(--gold); }
+.bdemo-arrow { font-size: 1.8rem; color: var(--muted); }
+.bdemo-result { font-size: 1.8rem; font-weight: 800; color: var(--green); font-family: 'Noto Serif', Georgia, serif; }
+.bdemo-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 4px; }
+.arch-wrap { position: relative; display: inline-block; }
+.arch-svg { position: absolute; top: -18px; left: 0; width: 100%; height: 20px; pointer-events: none; }
+
+/* ─── SETUP OVERLAY ─── */
+.setup-overlay {
+  position: fixed; inset: 0; z-index: 800;
+  background: var(--bg);
+  display: flex; flex-direction: column; align-items: center;
+  overflow-y: auto; padding: 0 0 60px;
+  transition: opacity 0.35s ease;
+}
+.setup-overlay.hiding { opacity: 0; pointer-events: none; }
+.setup-overlay.gone   { display: none; }
+
+/* Setup chrome */
+.setup-chrome {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  background: var(--panel); border-bottom: 2px solid var(--teal2);
+  padding: 0 28px; height: 52px; flex-shrink: 0; margin-bottom: 32px;
+  position: sticky; top: 0; z-index: 10;
+}
+.setup-chrome-left { display: flex; align-items: center; gap: 10px; }
+.setup-chrome-dot  { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); }
+.setup-chrome-label{ font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 700; }
+.setup-clock       { font-size: 0.82rem; font-weight: 700; color: var(--teal); }
+
+/* Setup page header */
+.setup-header { text-align: center; margin-bottom: 28px; padding: 0 24px; }
+.setup-header h1 { font-size: 1.7rem; font-weight: 900; color: var(--white); margin-bottom: 4px; }
+.setup-header p  { font-size: 0.9rem; color: var(--muted); }
+
+/* Lesson badge */
+.setup-badge {
+  display: inline-flex; align-items: center; gap: 14px;
+  background: var(--panel); border: 1px solid var(--bdr); border-radius: 12px;
+  padding: 14px 22px; margin-bottom: 24px;
+}
+.setup-badge-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #000; flex-shrink: 0; }
+.setup-badge-title { font-size: 1.1rem; font-weight: 900; color: var(--white); line-height: 1.2; }
+.setup-badge-sub   { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+/* Setup cards */
+.setup-card {
+  background: var(--panel); border: 1px solid var(--bdr); border-radius: 14px;
+  padding: 22px 26px; width: 100%; max-width: 740px; margin-bottom: 16px;
+}
+.setup-section-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 14px; }
+.setup-section-label.teal   { color: var(--teal); }
+.setup-section-label.gold   { color: var(--gold); }
+.setup-section-label.purple { color: var(--purple); }
+
+/* Info grid */
+.setup-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.setup-info-field label { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; margin-bottom: 5px; }
+.setup-input {
+  width: 100%; padding: 10px 13px; border-radius: 9px; border: 2px solid var(--bdr);
+  background: var(--lift); color: var(--text); font-family: inherit; font-size: 0.9rem;
+  font-weight: 600; outline: none; transition: border-color 0.15s;
+}
+.setup-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,201,184,0.12); }
+.setup-span2 { grid-column: 1 / -1; }
+
+/* Objectives */
+.setup-obj-list { display: flex; flex-direction: column; gap: 8px; }
+.setup-obj-row  { display: flex; align-items: center; gap: 10px; }
+.setup-obj-row input {
+  flex: 1; padding: 8px 12px; border-radius: 8px; border: 2px solid var(--bdr);
+  background: var(--lift); color: var(--text); font-family: inherit; font-size: 0.88rem;
+  outline: none; transition: border-color 0.15s;
+}
+.setup-obj-row input:focus { border-color: var(--teal); }
+.setup-obj-remove {
+  background: transparent; border: none; color: var(--muted); font-size: 1.05rem;
+  cursor: pointer; padding: 4px 6px; border-radius: 6px; transition: color 0.15s;
+}
+.setup-obj-remove:hover { color: var(--red); }
+.setup-add-obj {
+  display: inline-flex; align-items: center; gap: 6px; background: transparent;
+  border: 2px dashed var(--bdr); color: var(--muted); border-radius: 8px;
+  padding: 7px 14px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: all 0.15s; margin-top: 6px;
+}
+.setup-add-obj:hover { border-color: var(--teal); color: var(--teal); }
+
+/* Section toggles */
+.setup-section-tog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.setup-section-tog {
+  background: var(--card); border: 2px solid var(--bdr); border-radius: 10px;
+  padding: 14px 18px; cursor: pointer; user-select: none; transition: all 0.15s;
+}
+.setup-section-tog:hover { border-color: var(--teal); }
+.setup-section-tog.on { border-color: var(--purple); background: rgba(168,85,247,0.07); }
+.setup-st-head  { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.setup-st-title { font-size: 0.95rem; font-weight: 800; }
+.setup-st-check {
+  width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--bdr);
+  display: flex; align-items: center; justify-content: center; font-size: 0.75rem;
+  color: transparent; transition: all 0.15s;
+}
+.setup-section-tog.on .setup-st-check { background: var(--purple); border-color: var(--purple); color: #fff; }
+.setup-st-sub { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+
+/* Component toggles */
+.setup-toggle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; }
+.setup-tog {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--card); border: 2px solid var(--bdr);
+  border-radius: 9px; padding: 11px 14px; cursor: pointer;
+  transition: all 0.15s; user-select: none;
+}
+.setup-tog:hover { border-color: var(--teal); }
+.setup-tog.on { border-color: var(--teal); background: rgba(0,201,184,0.08); }
+.setup-tog-icon  { font-size: 1.05rem; flex-shrink: 0; }
+.setup-tog-label { font-size: 0.88rem; font-weight: 700; line-height: 1.2; }
+.setup-tog-sub   { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+.setup-tog-check {
+  margin-left: auto; flex-shrink: 0; width: 18px; height: 18px; border-radius: 4px;
+  border: 2px solid var(--bdr); display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; color: transparent; transition: all 0.15s;
+}
+.setup-tog.on .setup-tog-check { background: var(--teal); border-color: var(--teal); color: #000; }
+
+/* Slide preview chips */
+.setup-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.setup-chip {
+  background: var(--lift); border: 1px solid var(--bdr); border-radius: 20px;
+  padding: 4px 14px; font-size: 0.75rem; color: var(--muted);
+}
+.setup-chip.active { background: rgba(0,201,184,0.12); border-color: var(--teal); color: var(--teal); }
+
+/* Appearance */
+.setup-appear-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.setup-mode-card {
+  background: var(--card); border: 2px solid var(--bdr); border-radius: 9px;
+  padding: 13px 16px; cursor: pointer; transition: all 0.15s; user-select: none;
+}
+.setup-mode-card:hover { border-color: var(--teal); }
+.setup-mode-card.on { border-color: var(--teal); background: rgba(0,201,184,0.08); }
+.setup-mode-title { font-size: 0.9rem; font-weight: 800; margin-bottom: 4px; }
+.setup-mode-desc  { font-size: 0.73rem; color: var(--muted); line-height: 1.5; }
+.setup-mode-swatch { display: flex; gap: 5px; margin-top: 8px; }
+.setup-sw { width: 18px; height: 18px; border-radius: 4px; }
+
+/* Launch button */
+.setup-launch-wrap { width: 100%; max-width: 740px; padding: 0 0 8px; }
+.setup-launch-btn {
+  width: 100%; padding: 16px; border-radius: 10px; border: none;
+  background: var(--teal2); color: var(--white); font-size: 1.1rem;
+  font-weight: 800; cursor: pointer; font-family: inherit;
+  transition: all 0.15s; letter-spacing: 0.03em;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.setup-launch-btn:hover { background: var(--teal); }
+.setup-hint { font-size: 0.76rem; color: var(--muted); text-align: center; margin-top: 8px; }
+
+@media(max-width:520px) {
+  .setup-info-grid, .setup-appear-grid, .setup-section-tog-grid { grid-template-columns: 1fr; }
+  .setup-span2 { grid-column: 1; }
+  .setup-card { padding: 18px 16px; }
+}
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.72); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.18s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: var(--panel); border: 1px solid var(--bdr);
+  border-radius: 16px; padding: 26px 28px; width: 100%;
+  max-width: 480px; display: flex; flex-direction: column; gap: 18px;
+  max-height: 90vh; overflow-y: auto;
+  transform: translateY(20px); transition: transform 0.18s;
+}
+.modal-overlay.open .modal-box { transform: translateY(0); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-size: 1.2rem; font-weight: 900; color: var(--white); }
+.modal-close {
+  background: transparent; border: none; color: var(--muted);
+  font-size: 1.4rem; cursor: pointer; padding: 4px 8px; border-radius: 6px;
+  transition: color 0.15s; font-family: inherit; line-height: 1;
+}
+.modal-close:hover { color: var(--text); }
+.modal-step-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+.modal-hint { font-size: 0.78rem; color: var(--muted); margin-top: 5px; }
+.modal-divider { border: none; border-top: 1px solid var(--bdr); margin: 0; }
+.modal-course-select {
+  width: 100%; padding: 11px 14px; font-size: 0.95rem; font-weight: 700;
+  background: var(--lift); border: 2px solid var(--bdr);
+  border-radius: 10px; color: var(--text); outline: none; font-family: inherit;
+  cursor: pointer; transition: border-color 0.15s; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b87a8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+}
+.modal-course-select:focus { border-color: var(--teal); }
+.modal-course-select option { background: var(--card); color: var(--text); }
+.modal-id-input {
+  width: 150px; padding: 11px 14px; font-size: 1.5rem; font-weight: 800;
+  text-align: center; letter-spacing: 0.3em; background: var(--lift);
+  border: 2px solid var(--bdr); border-radius: 10px; color: var(--teal);
+  outline: none; font-family: inherit; display: block; transition: border-color 0.15s;
+}
+.modal-id-input:focus { border-color: var(--teal); }
+.modal-id-input::placeholder { color: var(--muted); letter-spacing: 0.1em; font-size: 0.95rem; }
+.modal-photo-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 13px 26px; border-radius: 12px; border: none;
+  background: var(--teal2); color: var(--white);
+  font-size: 0.95rem; font-weight: 700; cursor: pointer;
+  transition: all 0.15s; font-family: inherit;
+}
+.modal-photo-btn:hover { background: var(--teal); transform: scale(1.02); }
+.modal-photo-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.modal-submit-btn { background: var(--green); width: 100%; justify-content: center; font-size: 1rem; padding: 15px; }
+.modal-submit-btn:hover { background: #27ae60; }
+.modal-preview-grid { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.modal-thumb { position: relative; width: 88px; height: 88px; border-radius: 10px; overflow: hidden; border: 2px solid var(--bdr); }
+.modal-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.modal-thumb .modal-remove {
+  position: absolute; top: 4px; right: 4px; width: 22px; height: 22px;
+  border-radius: 50%; background: var(--red); color: #fff; border: none;
+  font-size: 0.78rem; font-weight: 900; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-status {
+  padding: 10px 16px; border-radius: 10px; font-weight: 700;
+  font-size: 0.88rem; text-align: center; display: none; width: 100%; line-height: 1.5;
+}
+.modal-status.success { background: rgba(46,204,113,0.15); border: 2px solid var(--green); color: var(--green); display: block; }
+.modal-status.error   { background: rgba(231,76,60,0.15);  border: 2px solid var(--red);   color: var(--red);   display: block; }
+.modal-status.loading { background: rgba(79,169,255,0.15); border: 2px solid var(--blue);  color: var(--blue);  display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SETUP OVERLAY
+══════════════════════════════════════════ -->
+<div class="setup-overlay" id="setupOverlay">
+
+  <div class="setup-chrome">
+    <div class="setup-chrome-left">
+      <div class="setup-chrome-dot"></div>
+      <span class="setup-chrome-label">Lesson Setup</span>
+    </div>
+    <span class="setup-clock" id="setup-clock"></span>
+  </div>
+
+  <div class="setup-header">
+    <h1>&#128196; Lesson Setup</h1>
+    <p>Configure your lesson, then launch for the class.</p>
+  </div>
+
+  <div class="setup-badge">
+    <div class="setup-badge-icon">&#10006;</div>
+    <div>
+      <div class="setup-badge-title">Multiplying out Brackets</div>
+      <div class="setup-badge-sub">Year 9 Mathematics &nbsp;&middot;&nbsp; Algebra &nbsp;&middot;&nbsp; Lesson 2 of 3</div>
+    </div>
+  </div>
+
+  <!-- LESSON DETAILS -->
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#128218; Lesson Details</div>
+    <div class="setup-info-grid">
+      <div class="setup-info-field setup-span2">
+        <label>Topic Title</label>
+        <input class="setup-input" type="text" id="infoTopic" value="Multiplying out Brackets">
+      </div>
+      <div class="setup-info-field">
+        <label>Highlight Word</label>
+        <input class="setup-input" type="text" id="infoHighlight" value="Brackets">
+      </div>
+      <div class="setup-info-field">
+        <label>Course</label>
+        <input class="setup-input" list="courseList" id="infoCourse" value="Year 9 Mathematics">
+        <datalist id="courseList">
+          <option value="Year 7 Mathematics"><option value="Year 8 Mathematics"><option value="Year 9 Mathematics">
+          <option value="Year 10 Mathematics"><option value="Year 11 Foundations"><option value="Year 11 Essentials">
+          <option value="Year 11 Methods"><option value="Year 11 Apps"><option value="Year 12 Essentials"><option value="Year 12 Apps">
+        </datalist>
+      </div>
+      <div class="setup-info-field">
+        <label>Unit</label>
+        <input class="setup-input" type="text" id="infoUnit" value="Algebra">
+      </div>
+      <div class="setup-info-field">
+        <label>Lesson Number</label>
+        <input class="setup-input" type="number" id="infoLessonNum" min="1" value="2">
+      </div>
+      <div class="setup-info-field">
+        <label>Lessons in Unit</label>
+        <input class="setup-input" type="number" id="infoLessonOf" min="1" value="3">
+      </div>
+      <div class="setup-info-field">
+        <label>Term</label>
+        <input class="setup-input" type="number" id="infoTerm" min="1" max="4" value="1">
+      </div>
+      <div class="setup-info-field">
+        <label>Week</label>
+        <input class="setup-input" type="number" id="infoWeek" min="1" value="6">
+      </div>
+    </div>
+    <div style="margin-top:18px;">
+      <div class="setup-section-label teal" style="margin-bottom:8px;">&#127919; Learning Intentions</div>
+      <div class="setup-obj-list" id="setupObjList"></div>
+      <button class="setup-add-obj" onclick="setupAddObjective()">&#43; Add Intention</button>
+    </div>
+  </div>
+
+  <!-- TOPIC SECTIONS -->
+  <div class="setup-card">
+    <div class="setup-section-label purple">&#9881; Lesson Sections</div>
+    <div class="setup-section-tog-grid">
+      <div class="setup-section-tog on" data-section="topic1" onclick="setupTogSection(this)">
+        <div class="setup-st-head">
+          <div class="setup-st-title">&#128221; Section 1</div>
+          <div class="setup-st-check">&#10003;</div>
+        </div>
+        <div class="setup-st-sub">Expanding with Numbers<br>Notes &bull; Examples &bull; Your Turn &bull; Exercise 1</div>
+      </div>
+      <div class="setup-section-tog on" data-section="topic2" onclick="setupTogSection(this)">
+        <div class="setup-st-head">
+          <div class="setup-st-title">&#11088; Section 2</div>
+          <div class="setup-st-check">&#10003;</div>
+        </div>
+        <div class="setup-st-sub">Expanding with Variables<br>Notes &bull; Examples &bull; Your Turn &bull; Exercise 2</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LESSON COMPONENTS -->
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#9881; Lesson Components</div>
+    <div class="setup-toggle-grid">
+      <div class="setup-tog on" data-key="starter"   onclick="setupTog(this)"><span class="setup-tog-icon">&#9733;</span><div><div class="setup-tog-label">Starter</div><div class="setup-tog-sub">Warm-up questions</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="notes"     onclick="setupTog(this)"><span class="setup-tog-icon">&#128208;</span><div><div class="setup-tog-label">Notes</div><div class="setup-tog-sub">Key concepts &amp; rules</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="examples"  onclick="setupTog(this)"><span class="setup-tog-icon">&#128396;</span><div><div class="setup-tog-label">Examples</div><div class="setup-tog-sub">Worked solutions</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="yourturn"  onclick="setupTog(this)"><span class="setup-tog-icon">&#9999;</span><div><div class="setup-tog-label">Your Turn</div><div class="setup-tog-sub">Guided practice</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="exercise"  onclick="setupTog(this)"><span class="setup-tog-icon">&#128221;</span><div><div class="setup-tog-label">Exercise</div><div class="setup-tog-sub">Question sets</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="challenge" onclick="setupTog(this)"><span class="setup-tog-icon">&#11088;</span><div><div class="setup-tog-label">Challenge</div><div class="setup-tog-sub">Extension problems</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="plenary"   onclick="setupTog(this)"><span class="setup-tog-icon">&#128172;</span><div><div class="setup-tog-label">Plenary</div><div class="setup-tog-sub">Exit discussion</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="upload"    onclick="setupTog(this)"><span class="setup-tog-icon">&#128247;</span><div><div class="setup-tog-label">Upload Work</div><div class="setup-tog-sub">Submit button</div></div><span class="setup-tog-check">&#10003;</span></div>
+    </div>
+    <div style="margin-top:12px;">
+      <div class="setup-section-label gold" style="margin-bottom:8px;">&#127775; Slide Overview</div>
+      <div class="setup-chips" id="setupSlidePreview"></div>
+    </div>
+  </div>
+
+  <!-- APPEARANCE -->
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#127775; Appearance</div>
+    <div class="setup-appear-grid">
+      <div class="setup-mode-card on" data-mode="dark" onclick="setupSetMode(this)">
+        <div class="setup-mode-title">&#127769; Dark</div>
+        <div class="setup-mode-desc">Default dark theme. Easy on the eyes in a dim classroom.</div>
+        <div class="setup-mode-swatch"><div class="setup-sw" style="background:#09121f;border:1px solid #1f3557;"></div><div class="setup-sw" style="background:#00c9b8;"></div><div class="setup-sw" style="background:#f0a500;"></div></div>
+      </div>
+      <div class="setup-mode-card" data-mode="light" onclick="setupSetMode(this)">
+        <div class="setup-mode-title">&#9728; Light</div>
+        <div class="setup-mode-desc">Bright white theme. Good for projectors in lit rooms.</div>
+        <div class="setup-mode-swatch"><div class="setup-sw" style="background:#eef5ff;border:1px solid #b8d4f0;"></div><div class="setup-sw" style="background:#007a70;"></div><div class="setup-sw" style="background:#c07800;"></div></div>
+      </div>
+      <div class="setup-mode-card" data-mode="adhd" onclick="setupSetMode(this)">
+        <div class="setup-mode-title">&#129504; Focus Mode</div>
+        <div class="setup-mode-desc">Reduced colour, softer contrast. Supports ADHD &amp; visual sensitivity.</div>
+        <div class="setup-mode-swatch"><div class="setup-sw" style="background:#1a1a2e;border:1px solid #333;"></div><div class="setup-sw" style="background:#7ecfcf;"></div><div class="setup-sw" style="background:#e8c97e;"></div></div>
+      </div>
+      <div class="setup-mode-card" data-mode="highcontrast" onclick="setupSetMode(this)">
+        <div class="setup-mode-title">&#9680; High Contrast</div>
+        <div class="setup-mode-desc">Maximum contrast, bold text. Helps students with low vision.</div>
+        <div class="setup-mode-swatch"><div class="setup-sw" style="background:#000;border:1px solid #fff;"></div><div class="setup-sw" style="background:#fff;"></div><div class="setup-sw" style="background:#ffff00;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAUNCH -->
+  <div class="setup-launch-wrap">
+    <button class="setup-launch-btn" onclick="setupLaunch()">&#9654;&nbsp; Launch Lesson</button>
+    <p class="setup-hint">The lesson loads instantly &mdash; use the theme button inside the lesson to switch appearance at any time.</p>
+  </div>
+
+</div><!-- /setup-overlay -->
+
+<!-- Floating Camera Button -->
+<button id="floatCamBtn" class="float-cam-btn" onclick="openUploadModal()" title="Submit Work">&#128247;</button>
+
+<!-- Upload Modal -->
+<div class="modal-overlay" id="uploadModal" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">&#128247; Submit Your Work</div>
+      <button class="modal-close" onclick="closeUploadModal()">&#10005;</button>
+    </div>
+    <div>
+      <div class="modal-step-label">Step 1 &mdash; Select your class</div>
+      <select class="modal-course-select" id="modalCourseSelect">
+        <option value="">&#8212; Choose your class &#8212;</option>
+        <option value="1Vxb9ntVNvd8wf_KOCRuQuuQISV1Iwcfc">Year 12 Essentials</option>
+        <option value="1xZzcqQXYiZEQAY3ncNXp0AemufhGAF1U">Year 12 Apps</option>
+        <option value="1e-j-Rlma9SSdbzXoLO0tauXr5tcMI1Js">Year 11 Methods</option>
+        <option value="1gJDhgHnFb7i6O7jX-phUQ3dYy9F6M2c7">Year 11 Foundations</option>
+        <option value="1HSl_x-FfUbn3DSUtz5qSMfRhg4eQWWy1">Year 11 Essentials</option>
+        <option value="1l8JLaeLBkUfbxVT9FB3eZQ5-czZkWFi9">Year 11 Apps</option>
+        <option value="1cq4lpxyou4qJfqOXaHONIKXtcMV7LIhs">Year 10</option>
+        <option value="1xaTPogudenjYWSwagLAIaozq-9bSV3Mz">Year 9</option>
+        <option value="1UOXPybIAQ7m03M8xnsDEiqHudjCk9BTe">Year 8</option>
+        <option value="11ts1_-UU6un5EfIA9WvqDeIhNUCOrrIB">Year 7</option>
+      </select>
+      <p class="modal-hint">Pick the class you are submitting work for</p>
+    </div>
+    <hr class="modal-divider">
+    <div>
+      <div class="modal-step-label">Step 2 &mdash; Enter your student ID</div>
+      <input class="modal-id-input" type="text" id="modalStudentId"
+        maxlength="6" placeholder="ID" inputmode="numeric" autocomplete="off" spellcheck="false">
+      <p class="modal-hint">Your numeric student code</p>
+    </div>
+    <hr class="modal-divider">
+    <div>
+      <div class="modal-step-label">Step 3 &mdash; Take a photo of your work</div>
+      <input type="file" id="modalCameraInput" accept="image/*" capture="environment" multiple style="display:none;">
+      <button class="modal-photo-btn" id="modalTakePhotoBtn" onclick="document.getElementById('modalCameraInput').click()">
+        &#128247; &nbsp; Take / Choose a Photo
+      </button>
+      <p class="modal-hint">You can add multiple photos if your work spans more than one page.</p>
+    </div>
+    <div class="modal-preview-grid" id="modalPhotoPreview"></div>
+    <button class="modal-photo-btn modal-submit-btn" id="modalSubmitBtn" onclick="submitModalWork()" style="display:none;">
+      &#9989; &nbsp; Submit to Teacher
+    </button>
+    <div class="modal-status" id="modalStatus"></div>
+  </div>
+</div>
+
+<div class="pres">
+  <div class="chrome">
+    <div class="chrome-left">
+      <div class="chrome-dot"></div>
+      <span class="chrome-label" id="chrome-label">Algebra</span>
+    </div>
+    <div class="chrome-title" id="chrome-title">Multiplying out Brackets</div>
+    <div class="chrome-right">
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">&#9728; Light</button>
+      <span id="live-clock">--:--:-- --</span>
+    </div>
+  </div>
+  <div class="deck" id="deck"></div>
+  <div class="nav-bar" id="nav-bar"></div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   LESSON DATA
+══════════════════════════════════════════ */
+const lessonData = {
+  meta: {
+    course:         "Year 9 Mathematics",
+    unit:           "Algebra",
+    lessonNum:      2,
+    lessonOf:       3,
+    topic:          "Multiplying out Brackets",
+    topicHighlight: "Brackets",
+    subtopics:      ["Expanding Single Brackets", "The Distributive Law"],
+    pills:          ["Algebra", "Expanding", "Brackets"],
+    term:           1,
+    week:           6
+  },
+
+  learningIntentions: [
+    "I can multiply a term outside brackets by each term inside",
+    "I understand and can apply the distributive law",
+    "I can expand single brackets with numbers and variables",
+    "I can expand and simplify expressions involving brackets"
+  ],
+
+  starter: {
+    time: 5,
+    questions: [
+      { tag: "Multiplying Terms", q: `Simplify: \\(5 \\times a\\)` },
+      { tag: "Multiplying Terms", q: `Simplify: \\(3x \\times 2x\\)` },
+      { tag: "Multiplying Terms", q: `Simplify: \\(4a \\times b\\)` },
+      { tag: "Arithmetic",       q: `Calculate: \\(3 \\times (4 + 2)\\)` },
+      { tag: "Arithmetic",       q: `Calculate: \\(5 \\times (10 - 3)\\)` }
+    ],
+    answers: [
+      { working: "Multiply the number and the letter", answer: "\\(= 5a\\)" },
+      { working: "Multiply coefficients: \\(3 \\times 2 = 6\\), multiply variables: \\(x \\times x = x^2\\)", answer: "\\(= 6x^2\\)" },
+      { working: "Different letters — write them next to each other", answer: "\\(= 4ab\\)" },
+      { working: "Work out the bracket first: \\(4 + 2 = 6\\), then \\(3 \\times 6\\)", answer: "\\(= 18\\)" },
+      { working: "Work out the bracket first: \\(10 - 3 = 7\\), then \\(5 \\times 7\\)", answer: "\\(= 35\\)" }
+    ]
+  },
+
+  topics: [
+    /* ── TOPIC 1: Expanding with Numbers ── */
+    {
+      title: "Expanding with Numbers",
+      notes: [
+        {
+          title: "The Distributive Law",
+          formula: `\\(a(b + c) = ab + ac\\)`,
+          body: "When you multiply a term outside brackets by a bracket, you must multiply <em>each</em> term inside the bracket by the outside term. This is called <em>expanding</em> or <em>multiplying out</em> the brackets."
+        },
+        {
+          title: "Step-by-Step Method",
+          formula: `\\(3(x + 4) = 3 \\times x + 3 \\times 4 = 3x + 12\\)`,
+          body: "Draw arrows from the outside term to <em>each</em> term inside the bracket. Multiply each one. Then write your answer without brackets."
+        }
+      ],
+      examples: [
+        { label: "Example 1", q: `\\(4(x + 3)\\)`, steps: [`\\(= 4 \\times x + 4 \\times 3\\)`, `\\(= 4x + 12\\)`] },
+        { label: "Example 2", q: `\\(3(x - 2)\\)`, steps: [`\\(= 3 \\times x + 3 \\times (-2)\\)`, `\\(= 3x - 6\\)`] },
+        { label: "Example 3", q: `\\(5(2a + 4)\\)`, steps: [`\\(= 5 \\times 2a + 5 \\times 4\\)`, `\\(= 10a + 20\\)`] }
+      ],
+      yourTurn: [
+        { label: "Try 1", q: `\\(2(x + 5)\\)`, ans: `\\(2x + 10\\)` },
+        { label: "Try 2", q: `\\(4(y - 3)\\)`, ans: `\\(4y - 12\\)` },
+        { label: "Try 3", q: `\\(6(2m + 1)\\)`, ans: `\\(12m + 6\\)` }
+      ],
+      exercises: [
+        {
+          label: "Exercise 1 — Multiply out the brackets",
+          questions: [
+            {label: "a", q: `\\(2(x + 1)\\)`,        ans: `\\(2x + 2\\)`},
+            {label: "b", q: `\\(3(x - 2)\\)`,        ans: `\\(3x - 6\\)`},
+            {label: "c", q: `\\(4(x + 7)\\)`,        ans: `\\(4x + 28\\)`},
+            {label: "d", q: `\\(5(x - 3)\\)`,        ans: `\\(5x - 15\\)`},
+            {label: "e", q: `\\(7(y - 1)\\)`,        ans: `\\(7y - 7\\)`},
+            {label: "f", q: `\\(9(t - 2)\\)`,        ans: `\\(9t - 18\\)`},
+            {label: "g", q: `\\(10(a + 7)\\)`,       ans: `\\(10a + 70\\)`},
+            {label: "h", q: `\\(20(w + 5)\\)`,       ans: `\\(20w + 100\\)`},
+            {label: "i", q: `\\(17(y + 1)\\)`,       ans: `\\(17y + 17\\)`},
+            {label: "j", q: `\\(3(x - y)\\)`,        ans: `\\(3x - 3y\\)`},
+            {label: "k", q: `\\(5(a + b)\\)`,        ans: `\\(5a + 5b\\)`},
+            {label: "l", q: `\\(2(p - q)\\)`,        ans: `\\(2p - 2q\\)`},
+            {label: "m", q: `\\(8(g + h)\\)`,        ans: `\\(8g + 8h\\)`},
+            {label: "n", q: `\\(2(x + y + 2)\\)`,    ans: `\\(2x + 2y + 4\\)`},
+            {label: "o", q: `\\(6(x + y + 1)\\)`,    ans: `\\(6x + 6y + 6\\)`},
+            {label: "p", q: `\\(5(x - y - 2)\\)`,    ans: `\\(5x - 5y - 10\\)`}
+          ]
+        }
+      ]
+    },
+
+    /* ── TOPIC 2: Expanding with Variables ── */
+    {
+      title: "Expanding with Variables",
+      notes: [
+        {
+          title: "When the Outside Term Contains a Variable",
+          formula: `\\(x(x + 3) = x^2 + 3x\\)`,
+          body: "When the term outside the bracket contains a variable, multiply it by each term inside. Remember: \\(x \\times x = x^2\\) and \\(x \\times 3 = 3x\\)."
+        },
+        {
+          title: "Expanding with Coefficients and Variables",
+          formula: `\\(3x(2x + 4) = 6x^2 + 12x\\)`,
+          body: "Multiply the <em>numbers</em> together and the <em>variables</em> together. For example: \\(3x \\times 2x = 6x^2\\) and \\(3x \\times 4 = 12x\\)."
+        }
+      ],
+      examples: [
+        { label: "Example 1", q: `\\(q(3q + 1)\\)`,    steps: [`\\(= q \\times 3q + q \\times 1\\)`, `\\(= 3q^2 + q\\)`] },
+        { label: "Example 2", q: `\\(3(2x + 1)\\)`,    steps: [`\\(= 3 \\times 2x + 3 \\times 1\\)`, `\\(= 6x + 3\\)`] },
+        { label: "Example 3", q: `\\(6(3a - 2)\\)`,    steps: [`\\(= 6 \\times 3a + 6 \\times (-2)\\)`, `\\(= 18a - 12\\)`] }
+      ],
+      yourTurn: [
+        { label: "Try 1", q: `\\(x(x + 4)\\)`,     ans: `\\(x^2 + 4x\\)` },
+        { label: "Try 2", q: `\\(2x(3x - 1)\\)`,   ans: `\\(6x^2 - 2x\\)` },
+        { label: "Try 3", q: `\\(4a(a + 2b)\\)`,   ans: `\\(4a^2 + 8ab\\)` }
+      ],
+      exercises: [
+        {
+          label: "Exercise 2 — Multiply out the brackets",
+          questions: [
+            {label: "q",  q: `\\(3(2x + 1)\\)`,      ans: `\\(6x + 3\\)`},
+            {label: "r",  q: `\\(6(3a - 2)\\)`,      ans: `\\(18a - 12\\)`},
+            {label: "s",  q: `\\(2(6p - 4)\\)`,      ans: `\\(12p - 8\\)`},
+            {label: "t",  q: `\\(7(2t + 5)\\)`,      ans: `\\(14t + 35\\)`},
+            {label: "u",  q: `\\(4(5q - 1)\\)`,      ans: `\\(20q - 4\\)`},
+            {label: "v",  q: `\\(100(5v - 2)\\)`,    ans: `\\(500v - 200\\)`},
+            {label: "w",  q: `\\(3(2x + 3y + 1)\\)`, ans: `\\(6x + 9y + 3\\)`},
+            {label: "x",  q: `\\(2(4x - y + 5)\\)`,  ans: `\\(8x - 2y + 10\\)`}
+          ]
+        }
+      ]
+    }
+  ],
+
+  extension: {
+    title: "Challenge Questions",
+    questions: [
+      {
+        label: "1",
+        q: `Expand and simplify: \\(2(x + 3) + 3(x + 1)\\)`,
+        hint: "Expand each bracket first, then collect like terms.",
+        answer: "\\(2x + 6 + 3x + 3 = 5x + 9\\)"
+      },
+      {
+        label: "2",
+        q: `Expand and simplify: \\(4(2x - 1) - 2(x + 3)\\)`,
+        hint: "Be careful with the minus sign in front of the second bracket — it multiplies everything inside.",
+        answer: "\\(8x - 4 - 2x - 6 = 6x - 10\\)"
+      },
+      {
+        label: "3",
+        q: `A rectangle has length \\(3(x + 2)\\) and width \\(2\\). Write and simplify an expression for its perimeter.`,
+        hint: "Perimeter = \\(2 \\times (\\text{length} + \\text{width})\\). Expand the length first.",
+        answer: "Length \\(= 3x + 6\\). Perimeter \\(= 2(3x + 6 + 2) = 2(3x + 8) = 6x + 16\\)"
+      }
+    ]
+  },
+
+  plenary: {
+    left: [
+      { q: "What does it mean to 'expand' brackets?" },
+      { q: "Expand: \\(5(x + 2)\\)" },
+      { q: "How many terms are inside \\(3(2a - b + 4)\\)? What are they?" }
+    ],
+    right: [
+      { q: "Why must you multiply the outside term by <strong>every</strong> term inside the bracket?" },
+      { q: "Sam says \\(4(x + 3) = 4x + 3\\). What mistake has Sam made?" },
+      { q: "Explain in your own words how to expand \\(a(b + c)\\)." }
+    ]
+  }
+};
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+let currentSlide = 0;
+const workSlideIndices = new Set();
+
+function next() {
+  const slides = document.querySelectorAll('.slide');
+  if (currentSlide < slides.length - 1) { currentSlide++; updateSlide(); }
+}
+function prev() {
+  if (currentSlide > 0) { currentSlide--; updateSlide(); }
+}
+function goTo(n) { currentSlide = n; updateSlide(); }
+
+function updateSlide() {
+  document.querySelectorAll('.slide').forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+  document.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+  const camBtn = document.getElementById('floatCamBtn');
+  if (camBtn) camBtn.classList.toggle('cam-visible', workSlideIndices.has(currentSlide));
+  // Re-typeset MathJax on the newly visible slide
+  if (window.MathJax && MathJax.typesetPromise) {
+    const activeSlide = document.querySelector('.slide.active');
+    if (activeSlide) MathJax.typesetPromise([activeSlide]).catch(()=>{});
+  }
+}
+
+/* ══════════════════════════════════════════
+   BUILD HELPERS
+══════════════════════════════════════════ */
+function sh(iconClass, icon, title, badge) {
+  return `<div class="sh">
+    <div class="sh-icon ${iconClass}">${icon}</div>
+    <div class="sh-title">${title}</div>
+    ${badge ? `<div class="sh-badge">${badge}</div>` : ''}
+  </div>`;
+}
+
+function arrows(backFn, fwdLabel, isFirst, isLast) {
+  const back = isFirst
+    ? `<span class="ghost"><button class="arrow-btn">&#8592;</button></span>`
+    : `<button class="arrow-btn" onclick="${backFn}">&#8592; Back</button>`;
+  const fwd = isLast
+    ? `<button class="arrow-btn fwd" onclick="goTo(0)">&#8617; Restart</button>`
+    : `<button class="arrow-btn fwd" onclick="next()">${fwdLabel} &#8594;</button>`;
+  return `<div class="arrows">${back}${fwd}</div>`;
+}
+
+function timer(seconds) {
+  const id = 'timer_' + Math.random().toString(36).substring(7);
+  return `<div class="timer-bar-wrap">
+    <button class="tbar-btn" id="${id}_btn" onclick="toggleTimer('${id}')">
+      <span class="tbar-on">&#9200; Start Timer</span>
+      <span class="tbar-off" style="display:none;">&#9632; Reset</span>
+    </button>
+    <div class="tbar-track-outer" id="${id}_track"><div class="tbar-fill green" id="${id}_fill"></div></div>
+    <div class="tbar-done" id="${id}_done">&#9200; Time&rsquo;s Up!</div>
+  </div>`;
+}
+
+const timerInstances = {};
+function toggleTimer(id) {
+  const btn = document.getElementById(id+'_btn');
+  const track = document.getElementById(id+'_track');
+  const fill = document.getElementById(id+'_fill');
+  const done = document.getElementById(id+'_done');
+  if (timerInstances[id]) {
+    clearInterval(timerInstances[id].interval);
+    delete timerInstances[id];
+    track.classList.remove('tbar-visible');
+    done.classList.remove('tbar-show');
+    btn.classList.remove('tbar-active');
+    btn.querySelector('.tbar-on').style.display = 'inline';
+    btn.querySelector('.tbar-off').style.display = 'none';
+    fill.style.width = '100%';
+    fill.className = 'tbar-fill green';
+    return;
+  }
+  const totalSeconds = 300;
+  track.classList.add('tbar-visible');
+  btn.classList.add('tbar-active');
+  btn.querySelector('.tbar-on').style.display = 'none';
+  btn.querySelector('.tbar-off').style.display = 'inline';
+  const endTime = Date.now() + totalSeconds * 1000;
+  timerInstances[id] = {
+    interval: setInterval(() => {
+      const remaining = Math.max(0, endTime - Date.now());
+      const pct = remaining / (totalSeconds * 1000) * 100;
+      fill.style.width = pct + '%';
+      if (pct > 40) fill.className = 'tbar-fill green';
+      else if (pct > 12) fill.className = 'tbar-fill orange';
+      else fill.className = 'tbar-fill red';
+      if (remaining <= 0) {
+        clearInterval(timerInstances[id].interval);
+        delete timerInstances[id];
+        done.classList.add('tbar-show');
+        fill.style.width = '0%';
+      }
+    }, 200)
+  };
+}
+
+/* ══════════════════════════════════════════
+   SLIDE BUILDERS
+══════════════════════════════════════════ */
+function buildCover() {
+  const m = lessonData.meta;
+  const titleWords = m.topic.split(m.topicHighlight);
+  const titleHtml = m.topicHighlight
+    ? titleWords[0] + '<span>' + m.topicHighlight + '</span>' + (titleWords[1] || '')
+    : m.topic;
+  return {
+    cls: 'cover-slide',
+    html: `<div class="t-school">Mother Teresa Catholic College</div>
+      <div class="t-unit">${m.course} &nbsp;&middot;&nbsp; ${m.unit} &nbsp;&middot;&nbsp; Lesson ${m.lessonNum}</div>
+      <div class="t-main">${titleHtml}</div>
+      <div class="t-sub">${m.subtopics.join(' &nbsp;&middot;&nbsp; ')}</div>
+      <div class="t-pills">${m.pills.map(p => '<div class="t-pill">'+p+'</div>').join('')}</div>
+      <div class="t-meta">
+        <span>&#128208; 2 exercises + challenge</span>
+        <span>&#128218; ${m.unit} &mdash; Lesson ${m.lessonNum} of ${m.lessonOf}</span>
+      </div>
+      ${arrows('', 'Begin Lesson', true, false)}`
+  };
+}
+
+function buildLearningIntentions() {
+  const objectives = lessonData.learningIntentions;
+  return {
+    html: `${sh('ic-teal', '&#127919;', 'Learning Intentions', 'By the end of today&hellip;')}
+      <div class="obj-list">
+        ${objectives.map(o => '<div class="obj-item"><div class="obj-tick">&#10003;</div>' + o + '</div>').join('')}
+      </div>
+      ${arrows('prev()', 'Lesson Starter', false, false)}`
+  };
+}
+
+function buildStarter() {
+  const s = lessonData.starter;
+  const qCards = s.questions.map((q, i) => {
+    return '<div class="qc"><div class="qlabel gd">' + (i+1) + '</div><div class="qtext">' + q.q + '</div></div>';
+  }).join('');
+  return {
+    workSlide: true,
+    html: `${sh('ic-gold', '&#9733;', 'Lesson Starter', s.time + ' minutes')}
+      ${timer(s.time * 60)}
+      <div class="qg g3" style="flex:1;">${qCards}</div>
+      ${arrows('prev()', 'Show Answers', false, false)}`
+  };
+}
+
+function buildStarterAnswers() {
+  const s = lessonData.starter;
+  const aCards = s.answers.map((a, i) => '<div class="qc"><div class="qlabel ans">' + (i+1) + '</div><div class="qtext">' +
+    (a.working ? a.working + '<br>' : '') +
+    '<strong style="color:var(--green);">' + a.answer + '</strong></div></div>').join('');
+  return {
+    html: `${sh('ic-green', '&#10003;', 'Starter &mdash; Answers', '')}
+      <div class="qg g3" style="flex:1; align-content:center;">${aCards}</div>
+      ${arrows('prev()', lessonData.topics[0].title, false, false)}`
+  };
+}
+
+function buildNotes(topic, topicIdx) {
+  const rulesHtml = topic.notes.map(n => `
+    <div class="rule">
+      <div class="rule-title">${n.title}</div>
+      <div class="rule-body">
+        <span class="rule-formula">${n.formula}</span>
+        ${n.body}
+      </div>
+    </div>`).join('');
+  const nextLabel = 'Examples';
+  return {
+    cls: 'tinted',
+    html: `${sh('ic-teal', '&#128221;', topic.title, 'Key Rules')}
+      ${topicIdx > 0 ? '<div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Section ' + (topicIdx+1) + '</div><div class="section-divider-line"></div></div>' : ''}
+      ${rulesHtml}
+      ${arrows('prev()', nextLabel, false, false)}`
+  };
+}
+
+function buildExamples(topic) {
+  const egCards = topic.examples.map(eg => `
+    <div class="eg-card">
+      <div class="eg-label">${eg.label}</div>
+      <div class="eg-q">${eg.q}</div>
+      <details>
+        <summary>Show working</summary>
+        <div class="sol-box">${eg.steps.map((s,i) => (i===eg.steps.length-1 ? '<strong>' + s + '</strong>' : s)).join('<br>')}</div>
+      </details>
+    </div>`).join('');
+  return {
+    cls: 'eg-slide',
+    html: `${sh('ic-gold', '&#128300;', 'Worked Examples', topic.examples.length + ' examples')}
+      <div class="eg-grid g3" style="flex:1;">${egCards}</div>
+      ${arrows('prev()', 'Your Turn', false, false)}`
+  };
+}
+
+function buildYourTurn(topic) {
+  const ytCards = topic.yourTurn.map(yt => `
+    <div class="yt-card">
+      <div class="yt-label">${yt.label}</div>
+      <div class="yt-q">${yt.q}</div>
+      <details>
+        <summary>Check Answer</summary>
+        <div class="sol-box"><strong>${yt.ans}</strong></div>
+      </details>
+    </div>`).join('');
+  return {
+    workSlide: true,
+    cls: 'eg-slide',
+    html: `${sh('ic-purple', '&#9999;&#65039;', 'Your Turn!', 'Try these yourself')}
+      <div class="eg-grid g3" style="flex:1;">${ytCards}</div>
+      ${arrows('prev()', 'Exercise', false, false)}`
+  };
+}
+
+function buildExercise(topic, exIndex) {
+  const ex = topic.exercises[exIndex];
+  const qCards = ex.questions.map(q => `
+    <div class="qc">
+      <div class="qlabel">${q.label}</div>
+      <div class="qtext">${q.q}
+        <details class="q-ans">
+          <summary>Answer</summary>
+          <div class="q-ans-val">${q.ans}</div>
+        </details>
+      </div>
+    </div>`).join('');
+  const cols = ex.questions.length > 12 ? 'g4' : 'g3';
+  return {
+    workSlide: true,
+    html: `${sh('ic-blue', '&#128221;', ex.label, ex.questions.length + ' questions')}
+      <div class="qg ${cols}">${qCards}</div>
+      ${arrows('prev()', 'Next', false, false)}`
+  };
+}
+
+function buildExtension() {
+  const ext = lessonData.extension;
+  const extCards = ext.questions.map((q, i) => `
+    <div class="qc full">
+      <div class="qlabel ch">${q.label}</div>
+      <div class="qtext">
+        <strong>${q.q}</strong><br><br>
+        <em style="color:var(--muted);">&#128161; ${q.hint}</em>
+        <details class="q-ans">
+          <summary>Answer</summary>
+          <div class="q-ans-val">${q.answer}</div>
+        </details>
+      </div>
+    </div>`).join('');
+  return {
+    workSlide: true,
+    html: `${sh('ic-red', '&#11088;', 'Challenge Questions', 'Extension')}
+      <div class="qg">${extCards}</div>
+      ${arrows('prev()', 'Plenary', false, false)}`
+  };
+}
+
+function buildPlenary() {
+  const ple = lessonData.plenary;
+  return {
+    html: `${sh('ic-teal', '&#127919;', 'Plenary', 'Reflect on your learning')}
+      <div class="ple-grid">
+        <div class="ple-card">
+          <div class="ple-head">Quick Recall</div>
+          ${ple.left.map(q => '<div class="ple-q"><div class="ple-num">&bull;</div><div>' + q.q + '</div></div>').join('')}
+        </div>
+        <div class="ple-card">
+          <div class="ple-head">Think Deeply</div>
+          ${ple.right.map(q => '<div class="ple-q"><div class="ple-num">&bull;</div><div>' + q.q + '</div></div>').join('')}
+        </div>
+      </div>
+      ${arrows('prev()', 'Finish', false, true)}`
+  };
+}
+
+/* ══════════════════════════════════════════
+   ASSEMBLE LESSON
+══════════════════════════════════════════ */
+function buildLesson() {
+  const slides = [];
+  slides.push({ title: 'Cover', ...buildCover() });
+  slides.push({ title: 'Objectives', ...buildLearningIntentions() });
+  slides.push({ title: 'Starter', ...buildStarter() });
+  slides.push({ title: 'Answers', ...buildStarterAnswers() });
+
+  lessonData.topics.forEach((topic, i) => {
+    slides.push({ title: topic.title + ' — Notes', ...buildNotes(topic, i) });
+    slides.push({ title: topic.title + ' — Examples', ...buildExamples(topic) });
+    slides.push({ title: topic.title + ' — Your Turn', ...buildYourTurn(topic) });
+    topic.exercises.forEach((ex, j) => {
+      slides.push({ title: ex.label, ...buildExercise(topic, j) });
+    });
+  });
+
+  slides.push({ title: 'Challenge', ...buildExtension() });
+  slides.push({ title: 'Plenary', ...buildPlenary() });
+  return slides;
+}
+
+function renderLesson() {
+  const m = lessonData.meta;
+  const slides = buildLesson();
+  document.getElementById('chrome-label').textContent = m.unit;
+  document.getElementById('chrome-title').textContent = m.topic;
+  document.title = m.topic + ' \u2014 Mother Teresa Catholic College';
+
+  workSlideIndices.clear();
+  slides.forEach((s, i) => { if (s.workSlide) workSlideIndices.add(i); });
+
+  const deck = document.getElementById('deck');
+  deck.innerHTML = slides.map((s, i) =>
+    '<section class="slide' + (i === 0 ? ' active' : '') + (s.cls ? ' ' + s.cls : '') + '" data-index="' + i + '">' + s.html + '</section>'
+  ).join('');
+
+  // Build nav — insert dividers between sections
+  const nav = document.getElementById('nav-bar');
+  const sectionBoundaries = new Set();
+  // mark where topic 2 starts
+  let topic2StartIdx = 4 + lessonData.topics[0].exercises.length + 3; // cover, obj, starter, ans, t1notes, t1eg, t1yt, t1ex
+  sectionBoundaries.add(topic2StartIdx);
+
+  nav.innerHTML = slides.map((s, i) => {
+    const gap = sectionBoundaries.has(i) ? '<div class="nav-section-gap"></div>' : '';
+    return gap + '<div class="nav-dot' + (i === 0 ? ' active' : '') + '" onclick="goTo(' + i + ')" title="' + s.title + '"></div>';
+  }).join('');
+
+  if (workSlideIndices.has(0)) document.getElementById('floatCamBtn').classList.add('cam-visible');
+
+  // Typeset all math
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(() => {});
+  }
+}
+
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours(), m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
+  const ampm = h >= 12 ? 'PM' : 'AM', h12 = h % 12 || 12;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const el = document.getElementById('live-clock');
+  if (el) el.textContent = days[now.getDay()] + ' ' + now.getDate() + ' ' + months[now.getMonth()] + '  ' + h12 + ':' + m + ':' + s + ' ' + ampm;
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('theme-btn').innerHTML = isLight ? '&#127769; Dark' : '&#9728; Light';
+}
+
+/* ══════════════════════════════════════════
+   SETUP OVERLAY LOGIC
+══════════════════════════════════════════ */
+let setupObjectives = [
+  "I can multiply a term outside brackets by each term inside",
+  "I understand and can apply the distributive law",
+  "I can expand single brackets with numbers and variables",
+  "I can expand and simplify expressions involving brackets"
+];
+
+function setupRenderObjectives() {
+  const list = document.getElementById('setupObjList');
+  list.innerHTML = '';
+  setupObjectives.forEach((text, i) => {
+    const row = document.createElement('div');
+    row.className = 'setup-obj-row';
+    const inp = document.createElement('input');
+    inp.type = 'text'; inp.value = text; inp.placeholder = 'Learning intention...';
+    inp.addEventListener('input', function() { setupObjectives[i] = this.value; });
+    const btn = document.createElement('button');
+    btn.className = 'setup-obj-remove'; btn.title = 'Remove'; btn.innerHTML = '&#10005;';
+    btn.addEventListener('click', () => { setupSyncObjectives(); setupObjectives.splice(i,1); setupRenderObjectives(); });
+    row.appendChild(inp); row.appendChild(btn);
+    list.appendChild(row);
+  });
+}
+
+function setupAddObjective() {
+  setupSyncObjectives();
+  setupObjectives.push('');
+  setupRenderObjectives();
+  const rows = document.querySelectorAll('#setupObjList .setup-obj-row input');
+  if (rows.length) rows[rows.length-1].focus();
+}
+
+function setupSyncObjectives() {
+  const inputs = document.querySelectorAll('#setupObjList .setup-obj-row input');
+  setupObjectives = Array.from(inputs).map(i => i.value);
+}
+
+function setupTog(el) { el.classList.toggle('on'); setupUpdatePreview(); }
+function setupTogSection(el) { el.classList.toggle('on'); setupUpdatePreview(); }
+function setupSetMode(el) {
+  document.querySelectorAll('.setup-mode-card').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function setupUpdatePreview() {
+  const comps = {};
+  document.querySelectorAll('.setup-tog').forEach(t => { comps[t.dataset.key] = t.classList.contains('on'); });
+  const sec1 = document.querySelector('[data-section="topic1"]').classList.contains('on');
+  const sec2 = document.querySelector('[data-section="topic2"]').classList.contains('on');
+  const slides = [
+    { label: 'Cover', always: true },
+    { label: 'Objectives', always: true },
+    { label: 'Starter', key: 'starter' },
+    { label: 'Answers', key: 'starter' },
+    ...(sec1 ? [
+      { label: 'S1: Notes', key: 'notes' }, { label: 'S1: Examples', key: 'examples' },
+      { label: 'S1: Your Turn', key: 'yourturn' }, { label: 'Exercise 1', key: 'exercise' }
+    ] : []),
+    ...(sec2 ? [
+      { label: 'S2: Notes', key: 'notes' }, { label: 'S2: Examples', key: 'examples' },
+      { label: 'S2: Your Turn', key: 'yourturn' }, { label: 'Exercise 2', key: 'exercise' }
+    ] : []),
+    { label: 'Challenge', key: 'challenge' },
+    { label: 'Plenary', key: 'plenary' }
+  ];
+  const container = document.getElementById('setupSlidePreview');
+  container.innerHTML = slides.map(s => {
+    const on = s.always || comps[s.key];
+    return '<div class="setup-chip' + (on ? ' active' : '') + '">' + s.label + '</div>';
+  }).join('');
+}
+
+function setupLaunch() {
+  setupSyncObjectives();
+  const finalObjs = setupObjectives.map(s => s.trim()).filter(Boolean);
+  const components = {};
+  document.querySelectorAll('.setup-tog').forEach(t => { components[t.dataset.key] = t.classList.contains('on'); });
+  const sections = {
+    topic1: document.querySelector('[data-section="topic1"]').classList.contains('on'),
+    topic2: document.querySelector('[data-section="topic2"]').classList.contains('on')
+  };
+  const mode = document.querySelector('.setup-mode-card.on')?.dataset.mode || 'dark';
+  const meta = {
+    topic:          document.getElementById('infoTopic').value.trim() || 'Lesson',
+    topicHighlight: document.getElementById('infoHighlight').value.trim(),
+    course:         document.getElementById('infoCourse').value.trim(),
+    unit:           document.getElementById('infoUnit').value.trim(),
+    lessonNum:      parseInt(document.getElementById('infoLessonNum').value) || 1,
+    lessonOf:       parseInt(document.getElementById('infoLessonOf').value) || 1,
+    term:           parseInt(document.getElementById('infoTerm').value) || 1,
+    week:           parseInt(document.getElementById('infoWeek').value) || 1,
+  };
+
+  // Apply theme
+  applyMode(mode);
+
+  // Store prefs and render lesson
+  const prefs = { components, sections, mode, meta, objectives: finalObjs };
+  try { sessionStorage.setItem('lessonPrefs', JSON.stringify(prefs)); } catch(e) {}
+
+  // Re-render lesson with chosen prefs
+  renderLessonWithPrefs(prefs);
+
+  // Hide overlay with fade
+  const overlay = document.getElementById('setupOverlay');
+  overlay.classList.add('hiding');
+  setTimeout(() => overlay.classList.add('gone'), 380);
+}
+
+function applyMode(mode) {
+  document.body.classList.remove('light','adhd','highcontrast');
+  if (mode === 'light') document.body.classList.add('light');
+  else if (mode === 'adhd') document.body.classList.add('adhd');
+  else if (mode === 'highcontrast') document.body.classList.add('highcontrast');
+}
+
+// ── Setup clock (separate from lesson clock) ──
+function updateSetupClock() {
+  const now = new Date();
+  const h = now.getHours(), m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
+  const ampm = h >= 12 ? 'PM' : 'AM', h12 = h % 12 || 12;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const el = document.getElementById('setup-clock');
+  if (el) el.textContent = days[now.getDay()] + ' ' + now.getDate() + ' ' + months[now.getMonth()] + '  ' + h12 + ':' + m + ':' + s + ' ' + ampm;
+}
+
+// ── Render lesson with prefs from setup ──
+function renderLessonWithPrefs(prefs) {
+  const C = prefs.components || {};
+  const S = prefs.sections || { topic1: true, topic2: true };
+  const m = prefs.meta || lessonData.meta;
+  const objs = prefs.objectives || lessonData.learningIntentions;
+
+  // Override lesson meta with setup values
+  const overrideMeta = Object.assign({}, lessonData.meta, m);
+
+  // Override learning intentions
+  const savedObjs = objs;
+
+  // Filter topics by section toggles
+  const filteredTopics = lessonData.topics.filter((t, i) => {
+    if (i === 0) return S.topic1 !== false;
+    if (i === 1) return S.topic2 !== false;
+    return true;
+  });
+
+  // Build slides
+  const allSlides = buildLesson();
+  const SKIP = {
+    Starter: !C.starter, Answers: !C.starter,
+    Notes: !C.notes, Examples: !C.examples,
+    'Your Turn': !C.yourturn, Exercise: !C.exercise,
+    Challenge: !C.challenge, Plenary: !C.plenary
+  };
+
+  const slides = allSlides.filter(s => {
+    if (s.title === 'Cover' || s.title === 'Objectives') return true;
+    if (s.title === 'Starter' && !C.starter) return false;
+    if (s.title === 'Answers' && !C.starter) return false;
+    if (s.title.includes('Notes') && !C.notes) return false;
+    if (s.title.includes('Examples') && !C.examples) return false;
+    if (s.title.includes('Your Turn') && !C.yourturn) return false;
+    if (s.title.startsWith('Exercise') && !C.exercise) return false;
+    if (s.title === 'Challenge' && !C.challenge) return false;
+    if (s.title === 'Plenary' && !C.plenary) return false;
+    // Filter by section
+    if (!S.topic1 && s.title.includes(lessonData.topics[0]?.title)) return false;
+    if (lessonData.topics[1] && !S.topic2 && s.title.includes(lessonData.topics[1]?.title)) return false;
+    return true;
+  });
+
+  document.getElementById('chrome-label').textContent = overrideMeta.unit || lessonData.meta.unit;
+  document.getElementById('chrome-title').textContent = overrideMeta.topic || lessonData.meta.topic;
+  document.title = (overrideMeta.topic || lessonData.meta.topic) + ' \u2014 Maths';
+
+  workSlideIndices.clear();
+  slides.forEach((s, i) => { if (s.workSlide) workSlideIndices.add(i); });
+
+  const deck = document.getElementById('deck');
+  deck.innerHTML = slides.map((s, i) =>
+    '<section class="slide' + (i === 0 ? ' active' : '') + (s.cls ? ' ' + s.cls : '') + '" data-index="' + i + '">' + s.html + '</section>'
+  ).join('');
+
+  const nav = document.getElementById('nav-bar');
+  nav.innerHTML = slides.map((s, i) =>
+    '<div class="nav-dot' + (i === 0 ? ' active' : '') + '" onclick="goTo(' + i + ')" title="' + s.title + '"></div>'
+  ).join('');
+
+  const camBtn = document.getElementById('floatCamBtn');
+  if (camBtn) {
+    if (C.upload !== false) { camBtn.style.display = ''; if (workSlideIndices.has(0)) camBtn.classList.add('cam-visible'); }
+    else camBtn.style.display = 'none';
+  }
+
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise().catch(() => {});
+}
+
+// ── Init: render lesson in background, show setup overlay ──
+renderLesson(); // renders lesson behind overlay
+setupRenderObjectives();
+setupUpdatePreview();
+updateClock();
+updateSetupClock();
+setInterval(updateClock, 1000);
+setInterval(updateSetupClock, 1000);
+
+/* ══════════════════════════════════════════
+   UPLOAD MODAL
+══════════════════════════════════════════ */
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbUhLSI3N_BvK87YqVk4WLRtcGc9CJdGzLMsKC3WH3JxXE2oCmKVzn-xdWWY6PiRrqKw/exec';
+let modalPhotos = [];
+
+function openUploadModal() {
+  document.getElementById('uploadModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeUploadModal() {
+  document.getElementById('uploadModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('uploadModal')) closeUploadModal();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('modalStudentId').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+  });
+  document.getElementById('modalCameraInput').addEventListener('change', function() {
+    Array.from(this.files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = ev => { modalPhotos.push({ file, dataUrl: ev.target.result }); renderModalPreviews(); };
+      reader.readAsDataURL(file);
+    });
+    this.value = '';
+  });
+});
+
+function renderModalPreviews() {
+  const container = document.getElementById('modalPhotoPreview');
+  container.innerHTML = '';
+  modalPhotos.forEach((photo, idx) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'modal-thumb';
+    thumb.innerHTML = '<img src="' + photo.dataUrl + '" alt="Photo ' + (idx+1) + '"><button class="modal-remove" onclick="removeModalPhoto(' + idx + ')">&#10005;</button>';
+    container.appendChild(thumb);
+  });
+  document.getElementById('modalSubmitBtn').style.display = modalPhotos.length > 0 ? 'flex' : 'none';
+}
+
+function removeModalPhoto(idx) { modalPhotos.splice(idx, 1); renderModalPreviews(); }
+
+function showModalStatus(msg, type) {
+  const el = document.getElementById('modalStatus');
+  el.className = 'modal-status ' + type;
+  el.textContent = msg;
+}
+
+async function submitModalWork() {
+  const courseFolderId = document.getElementById('modalCourseSelect').value;
+  const studentId = document.getElementById('modalStudentId').value.trim();
+  if (!courseFolderId) { showModalStatus('Please select your class.', 'error'); return; }
+  if (!studentId) { showModalStatus('Please enter your student ID.', 'error'); return; }
+  if (modalPhotos.length === 0) { showModalStatus('Please take at least one photo.', 'error'); return; }
+  document.getElementById('modalSubmitBtn').disabled = true;
+  document.getElementById('modalTakePhotoBtn').disabled = true;
+  showModalStatus('Uploading your work\u2026 please wait.', 'loading');
+  try {
+    const now = new Date();
+    const lessonDate = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+    const photos = modalPhotos.map((p, i) => ({
+      base64: p.dataUrl.split(',')[1], mimeType: p.file.type || 'image/jpeg',
+      filename: studentId + '_p' + (i+1) + '_' + Date.now() + '.jpg'
+    }));
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ studentId, lessonDate, photos, courseFolderId })
+    });
+    const result = await response.json();
+    if (result.success) {
+      const msg = result.matched && result.coursesUpdated > 0
+        ? 'Work submitted! Found you in ' + result.coursesUpdated + ' course' + (result.coursesUpdated > 1 ? 's' : '') + '. Well done today!'
+        : 'Photos saved, but your ID was not found in any register. Let your teacher know.';
+      showModalStatus(msg, result.matched ? 'success' : 'error');
+      document.getElementById('modalSubmitBtn').style.display = 'none';
+      document.getElementById('modalTakePhotoBtn').style.display = 'none';
+    } else {
+      showModalStatus('Upload failed: ' + (result.error || 'Unknown error.'), 'error');
+      document.getElementById('modalSubmitBtn').disabled = false;
+      document.getElementById('modalTakePhotoBtn').disabled = false;
+    }
+  } catch (err) {
+    showModalStatus('Connection error. Check your internet and try again.', 'error');
+    document.getElementById('modalSubmitBtn').disabled = false;
+    document.getElementById('modalTakePhotoBtn').disabled = false;
+  }
+}
+</script>
+</body>
+</html>
