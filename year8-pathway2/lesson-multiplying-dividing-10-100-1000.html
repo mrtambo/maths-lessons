@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multiplying & Dividing by 10, 100, 1000 — Maths</title>
+
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] },
+  startup: { typeset: false }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #09121f;
+  --bg-tint:   #0d1a2e;
+  --panel:     #101d30;
+  --card:      #162540;
+  --card-tint: #1b2d47;
+  --lift:      #1e3256;
+  --lift-tint: #22395e;
+  --bdr:       #1f3557;
+  --bdr-tint:  #263f65;
+  --teal:      #00c9b8;
+  --teal2:     #009e90;
+  --gold:      #f0a500;
+  --green:     #2ecc71;
+  --red:       #e74c3c;
+  --blue:      #4fa9ff;
+  --purple:    #a855f7;
+  --orange:    #e67e22;
+  --text:      #dde8f5;
+  --muted:     #6b87a8;
+  --white:     #ffffff;
+}
+
+body {
+  font-family: 'Trebuchet MS', Trebuchet, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  width: 100vw; height: 100vh; overflow: hidden; font-size: 18px;
+}
+
+.pres { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+
+.chrome {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--panel); border-bottom: 2px solid var(--teal2);
+  padding: 0 28px; height: 46px; flex-shrink: 0;
+}
+.chrome-left   { display: flex; align-items: center; gap: 10px; }
+.chrome-dot    { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); }
+.chrome-label  { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 700; }
+.chrome-title  { font-size: 0.92rem; font-weight: 700; color: var(--text); }
+.chrome-right  { font-size: 0.9rem; font-weight: 700; color: var(--teal); font-variant-numeric: tabular-nums; }
+
+.deck { flex: 1; position: relative; overflow: hidden; }
+
+.slide {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  padding: 28px 56px 16px;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.18s ease; overflow-y: auto;
+}
+.slide.active { opacity: 1; visibility: visible; pointer-events: all; }
+.slide.tinted { background: var(--bg-tint); }
+.slide.tinted .rule    { background: var(--card-tint); border-color: var(--bdr-tint); }
+.slide.tinted .eg-card { background: var(--card-tint); border-color: var(--bdr-tint); }
+.slide.tinted .sol-box { background: var(--lift-tint); }
+
+/* Part divider tints */
+.slide.part-a { background: #090e1f; }
+.slide.part-b { background: #0e0f09; }
+body.light .slide.part-a { background: #eef5ff; }
+body.light .slide.part-b { background: #fffaea; }
+
+.nav-bar {
+  background: var(--panel); border-top: 1px solid var(--bdr);
+  height: 48px; display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 0 24px; flex-shrink: 0; flex-wrap: wrap;
+}
+.nav-dot {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--bdr); cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+}
+.nav-dot:hover { background: var(--muted); transform: scale(1.5); }
+.nav-dot.active { background: var(--teal); width: 28px; border-radius: 6px; }
+.nav-dot.part-a-dot { background: rgba(79,169,255,0.4); }
+.nav-dot.part-a-dot.active { background: var(--blue); }
+.nav-dot.part-b-dot { background: rgba(240,165,0,0.4); }
+.nav-dot.part-b-dot.active { background: var(--gold); }
+
+.arrows {
+  margin-top: auto; padding-top: 10px;
+  display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+}
+.arrow-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 24px; border-radius: 7px; border: 2px solid var(--bdr);
+  color: var(--muted); cursor: pointer; font-size: 0.9rem; font-weight: 700;
+  letter-spacing: 0.02em; transition: all 0.15s; background: transparent; font-family: inherit;
+}
+.arrow-btn:hover { border-color: var(--teal); color: var(--teal); }
+.arrow-btn.fwd   { background: var(--teal2); border-color: var(--teal2); color: var(--white); }
+.arrow-btn.fwd:hover { background: var(--teal); border-color: var(--teal); }
+.arrow-btn.fwd-b { background: var(--gold); border-color: var(--gold); color: #000; }
+.arrow-btn.fwd-b:hover { background: #f5b800; border-color: #f5b800; }
+.ghost { visibility: hidden; pointer-events: none; }
+
+.sh {
+  display: flex; align-items: center; gap: 14px;
+  padding-bottom: 14px; margin-bottom: 18px;
+  border-bottom: 2px solid var(--bdr); flex-shrink: 0;
+}
+.sh-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.35rem; font-weight: 900; flex-shrink: 0; color: #000;
+}
+.ic-teal   { background: var(--teal); }
+.ic-gold   { background: var(--gold); }
+.ic-green  { background: var(--green); }
+.ic-blue   { background: var(--blue); }
+.ic-red    { background: var(--red); color: #fff; }
+.ic-purple { background: var(--purple); color: #fff; }
+.ic-orange { background: var(--orange); color: #fff; }
+.sh-title { font-size: 2rem; font-weight: 800; color: var(--text); flex: 1; line-height: 1; }
+.sh-badge {
+  flex-shrink: 0; background: var(--lift); border: 1px solid var(--bdr);
+  border-radius: 20px; padding: 5px 16px; font-size: 0.82rem; color: var(--muted); white-space: nowrap;
+}
+/* Part badges */
+.sh-part-a { background: rgba(79,169,255,0.12); border-color: var(--blue); color: var(--blue); }
+.sh-part-b { background: rgba(240,165,0,0.12); border-color: var(--gold); color: var(--gold); }
+
+.rule {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-left: 5px solid var(--teal); border-radius: 10px;
+  padding: 15px 22px; margin-bottom: 12px; flex-shrink: 0;
+}
+.rule.rule-blue { border-left-color: var(--blue); }
+.rule.rule-gold { border-left-color: var(--gold); }
+.rule-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--teal); font-weight: 700; margin-bottom: 8px; }
+.rule.rule-blue .rule-title { color: var(--blue); }
+.rule.rule-gold .rule-title { color: var(--gold); }
+.rule-body  { font-size: 1.1rem; line-height: 1.9; }
+.rule-body em { color: var(--gold); font-style: normal; font-weight: 700; }
+
+.rule-formula {
+  display: block; background: var(--lift); padding: 10px 16px; border-radius: 6px;
+  font-size: 1.15em; color: var(--teal); font-weight: 700; margin-bottom: 10px;
+  line-height: 2.6; white-space: normal; word-break: break-word; text-align: center;
+}
+.rule-formula.f-blue { color: var(--blue); }
+.rule-formula.f-gold { color: var(--gold); }
+
+/* ── Place Value Arrow Diagram ── */
+.pv-diagram {
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; margin: 10px 0 4px; flex-wrap: wrap;
+}
+.pv-cell {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  min-width: 52px;
+}
+.pv-label {
+  font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted); font-weight: 700; text-align: center; line-height: 1.3;
+}
+.pv-box {
+  width: 48px; height: 44px; border-radius: 8px;
+  border: 2px solid var(--bdr); background: var(--lift);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 900; color: var(--text);
+  position: relative;
+}
+.pv-box.pv-highlight-blue { border-color: var(--blue); background: rgba(79,169,255,0.14); color: var(--blue); }
+.pv-box.pv-highlight-gold { border-color: var(--gold); background: rgba(240,165,0,0.14); color: var(--gold); }
+.pv-box.pv-point { background: transparent; border: none; font-size: 2rem; color: var(--teal); min-width: 18px; width: 18px; }
+.pv-arrow {
+  font-size: 1.5rem; color: var(--blue); font-weight: 900; align-self: center;
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+}
+.pv-arrow.arr-gold { color: var(--gold); }
+.pv-arrow-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+.pv-caption { font-size: 0.78rem; color: var(--muted); text-align: center; margin-top: 4px; font-style: italic; }
+
+.eg-grid    { display: grid; gap: 14px; }
+.eg-grid.g2 { grid-template-columns: 1fr 1fr; }
+.eg-grid.g3 { grid-template-columns: 1fr 1fr 1fr; }
+.eg-card {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-top: 4px solid var(--gold); border-radius: 10px; padding: 16px 20px;
+}
+.eg-card.eg-blue { border-top-color: var(--blue); }
+.eg-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+.eg-card.eg-blue .eg-label { color: var(--blue); }
+.eg-q     { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; line-height: 1.7; }
+
+details summary {
+  list-style: none; cursor: pointer; font-size: 0.82rem; font-weight: 700;
+  color: var(--green); text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 6px 0; user-select: none;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '▶  '; font-size: 0.7rem; }
+details[open] summary::before { content: '▼  '; }
+.sol-box {
+  background: var(--lift); border-left: 3px solid var(--green);
+  border-radius: 6px; padding: 12px 16px; margin-top: 8px;
+  font-size: 0.92rem; line-height: 2.2; color: var(--text);
+}
+.sol-box strong { color: var(--green); }
+
+.qg     { display: grid; gap: 10px; }
+.qg.g2  { grid-template-columns: 1fr 1fr; }
+.qg.g3  { grid-template-columns: 1fr 1fr 1fr; }
+.qg.g4  { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.qc {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-radius: 9px; padding: 13px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.qc.full { grid-column: 1 / -1; }
+.qlabel {
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: 7px;
+  background: var(--teal2); color: #fff; font-size: 0.82rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+.qtext { font-size: 1.1rem; line-height: 1.9; flex: 1; }
+
+.timer-bar-wrap {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--card); border: 1px solid var(--bdr);
+  border-radius: 10px; padding: 10px 18px; margin-bottom: 14px; flex-shrink: 0;
+}
+.tbar-btn {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+  padding: 7px 20px; border-radius: 7px; border: 2px solid var(--bdr);
+  cursor: pointer; font-size: 0.9rem; font-weight: 700; color: var(--muted);
+  background: transparent; transition: all 0.15s; user-select: none;
+  white-space: nowrap; min-width: 130px;
+}
+.tbar-btn:hover { border-color: var(--teal); color: var(--teal); }
+.tbar-btn.tbar-active { background: var(--teal2); border-color: var(--teal2); color: #fff; }
+.tbar-track-outer { flex: 1; height: 14px; background: var(--bg); border-radius: 7px; border: 1px solid var(--bdr); overflow: hidden; display: none; }
+.tbar-track-outer.tbar-visible { display: block; }
+.tbar-fill { height: 100%; border-radius: 7px; width: 100%; transition: width 0.5s linear; }
+.tbar-fill.green  { background: var(--green); }
+.tbar-fill.orange { background: #f39c12; }
+.tbar-fill.red    { background: var(--red); }
+.tbar-done { opacity: 0; flex-shrink: 0; font-size: 0.95rem; font-weight: 800; color: var(--red); display: none; }
+.tbar-done.tbar-show { display: block; opacity: 1; }
+.tbar-time-input {
+  width: 52px; padding: 5px 6px; border-radius: 6px;
+  border: 2px solid var(--bdr); background: var(--bg);
+  color: var(--teal); font-size: 0.95rem; font-weight: 700;
+  text-align: center; font-family: inherit; outline: none;
+}
+.tbar-time-input:focus { border-color: var(--teal); box-shadow: 0 0 0 2px rgba(0,201,184,0.2); }
+.tbar-time-label { font-size: 0.8rem; color: var(--muted); font-weight: 600; white-space: nowrap; }
+
+.obj-list { display: flex; flex-direction: column; gap: 12px; flex: 1; justify-content: center; }
+.obj-item { display: flex; align-items: center; gap: 18px; background: var(--card); border: 1px solid var(--bdr); border-radius: 10px; padding: 16px 24px; font-size: 1.25rem; line-height: 1.4; }
+.obj-tick { flex-shrink: 0; width: 30px; height: 30px; background: var(--teal2); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 900; }
+
+.cover-slide { background: radial-gradient(ellipse at 25% 50%, #0e2248 0%, var(--bg) 65%); align-items: center; justify-content: center; text-align: center; gap: 18px; }
+.t-school { font-size: 1.05rem; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.14em; }
+.t-unit   { font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); border: 1px solid var(--bdr); display: inline-block; padding: 5px 20px; border-radius: 20px; }
+.t-main   { font-size: 3.2rem; font-weight: 900; color: var(--white); line-height: 1.1; }
+.t-main span { color: var(--teal); }
+.t-sub    { font-size: 1.4rem; color: var(--muted); }
+.t-pills  { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.t-pill   { background: var(--card); border: 1px solid var(--bdr); border-radius: 7px; padding: 9px 20px; font-size: 1rem; }
+.t-meta   { display: flex; gap: 28px; justify-content: center; color: var(--muted); font-size: 1rem; }
+
+/* Part transition slide */
+.part-transition {
+  background: radial-gradient(ellipse at 60% 50%, #1a1400 0%, var(--bg) 65%);
+  align-items: center; justify-content: center; text-align: center; gap: 20px;
+}
+.pt-tag { font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--gold); border: 1px solid var(--gold); display: inline-block; padding: 5px 20px; border-radius: 20px; opacity: 0.8; }
+.pt-num { font-size: 5rem; font-weight: 900; color: var(--gold); line-height: 1; }
+.pt-title { font-size: 2.4rem; font-weight: 900; color: var(--white); line-height: 1.1; }
+.pt-title span { color: var(--gold); }
+.pt-sub { font-size: 1.2rem; color: var(--muted); }
+.pt-rule {
+  background: var(--card); border: 2px solid rgba(240,165,0,0.4);
+  border-radius: 12px; padding: 16px 28px; font-size: 1.1rem;
+  line-height: 2; max-width: 540px;
+}
+.pt-rule em { color: var(--gold); font-style: normal; font-weight: 700; }
+
+.hl-box { background: rgba(240,165,0,0.08); border: 2px solid rgba(240,165,0,0.35); border-radius: 9px; padding: 14px 20px; margin-bottom: 12px; font-size: 1.05rem; flex-shrink: 0; line-height: 1.8; }
+.hl-box strong { color: var(--gold); }
+.hl-box.hl-blue { background: rgba(79,169,255,0.08); border-color: rgba(79,169,255,0.35); }
+.hl-box.hl-blue strong { color: var(--blue); }
+
+.warn-box { background: rgba(231,76,60,0.08); border: 2px solid rgba(231,76,60,0.35); border-radius: 9px; padding: 12px 18px; margin: 10px 0 0; font-size: 0.98rem; line-height: 1.8; flex-shrink: 0; }
+.warn-box strong { color: var(--red); }
+.warn-box em     { color: var(--gold); font-style: normal; }
+
+.ple-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex: 1; min-height: 0; }
+.ple-card { background: var(--card); border: 1px solid var(--bdr); border-radius: 10px; padding: 18px 22px; overflow-y: auto; }
+.ple-head { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); font-weight: 700; margin-bottom: 12px; }
+.ple-q { font-size: 1.05rem; padding: 14px 0; border-bottom: 1px solid var(--bdr); line-height: 1.7; display: flex; gap: 10px; align-items: flex-start; }
+.ple-q:last-of-type { border-bottom: none; }
+.ple-num { flex-shrink: 0; color: var(--gold); font-weight: 700; padding-top: 4px; }
+
+.step-reveal { margin-top: 10px; }
+.step-item { padding: 9px 14px; margin-bottom: 6px; background: rgba(240,165,0,0.07); border-left: 3px solid var(--gold); border-radius: 0 6px 6px 0; font-size: 0.95rem; line-height: 2.2; }
+.step-explain { font-size: 0.82rem; color: var(--muted); margin-top: 4px; font-style: italic; line-height: 1.5; }
+.step-answer { padding: 8px 14px; margin-top: 8px; background: rgba(46,204,113,0.1); border-left: 3px solid var(--green); border-radius: 0 6px 6px 0; font-size: 1rem; line-height: 2; }
+.step-btn { margin-top: 10px; padding: 7px 20px; border-radius: 7px; background: transparent; border: 2px solid var(--gold); color: var(--gold); font-size: 0.85rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.step-btn:hover { background: var(--gold); color: #000; }
+.step-btn:disabled { opacity: 0.35; cursor: default; }
+
+.qc details.q-ans { margin-top: 6px; }
+.qc details.q-ans summary { font-size: 0.75rem; color: var(--green); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; user-select: none; list-style: none; padding: 2px 0; }
+.qc details.q-ans summary::-webkit-details-marker { display: none; }
+.qc details.q-ans summary::before { content: '▶ '; font-size: 0.65rem; }
+.qc details.q-ans[open] summary::before { content: '▼ '; }
+.qc details.q-ans .q-ans-val { margin-top: 4px; font-weight: 700; color: var(--green); font-size: 0.95rem; line-height: 2.2; }
+.qc details.q-ans .q-ans-working { margin-top: 2px; font-size: 0.85rem; color: var(--muted); line-height: 1.9; }
+
+.starter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; }
+.starter-card { background: var(--card); border: 1px solid var(--bdr); border-radius: 10px; padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+.starter-card.span2 { grid-column: 1 / -1; }
+.starter-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--gold); border-bottom: 1px solid var(--bdr); padding-bottom: 8px; margin-bottom: 2px; }
+.starter-qlist { display: flex; flex-direction: column; gap: 6px; }
+.starter-qrow  { display: flex; align-items: baseline; gap: 10px; font-size: 1.05rem; line-height: 1.9; }
+.starter-lbl   { flex-shrink: 0; width: 26px; height: 26px; border-radius: 6px; background: var(--gold); color: #1a0800; font-size: 0.75rem; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+.starter-ans-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--green); font-weight: 700; text-transform: uppercase; background: none; border: none; cursor: pointer; font-family: inherit; letter-spacing: 0.05em; padding: 3px 0; margin-top: 6px; }
+.starter-ans-btn::before { content: '▶ '; font-size: 0.65rem; }
+.starter-ans-btn.open::before { content: '▼ '; }
+.starter-ans-reveal { display: none; margin-top: 4px; }
+.starter-ans-reveal.show { display: block; }
+.starter-ans-inner { background: var(--lift); border-left: 3px solid var(--green); border-radius: 0 6px 6px 0; padding: 8px 14px; font-size: 0.88rem; line-height: 2.1; color: var(--text); }
+.starter-ans-inner strong { color: var(--green); }
+
+:root      { --eg-bg: #100e00; --eg-bg2: #1a1400; }
+body.light { --eg-bg: #fffaea; --eg-bg2: #fff3cc; }
+.slide.eg-slide               { background: var(--eg-bg); }
+.slide.eg-slide .eg-card      { background: var(--eg-bg2); border-color: rgba(240,165,0,0.3); }
+.slide.eg-slide .rule         { background: var(--eg-bg2); border-color: rgba(240,165,0,0.3); }
+.slide.eg-slide .sol-box      { background: rgba(240,165,0,0.08); border-color: var(--gold); }
+.slide.eg-slide-blue          { background: #000d1a; }
+.slide.eg-slide-blue .eg-card { background: #001428; border-color: rgba(79,169,255,0.3); border-top-color: var(--blue); }
+.slide.eg-slide-blue .rule    { background: #001428; border-color: rgba(79,169,255,0.25); }
+.slide.eg-slide-blue .sol-box { background: rgba(79,169,255,0.06); border-color: var(--blue); }
+body.light .slide.eg-slide-blue { background: #e8f4ff; }
+body.light .slide.eg-slide-blue .eg-card { background: #d4eaff; border-color: rgba(79,169,255,0.4); }
+
+body.light {
+  --bg: #eef5ff; --bg-tint: #e0eeff; --panel: #ffffff; --card: #ffffff;
+  --card-tint: #f0f7ff; --lift: #ddeeff; --lift-tint: #d0e8ff;
+  --bdr: #b8d4f0; --bdr-tint: #a8c8e8;
+  --teal: #007a70; --teal2: #005f58; --gold: #c07800; --green: #1a8a45;
+  --red: #cc2200; --blue: #1a6fc4; --text: #0f1e30; --muted: #4a6a88; --white: #ffffff;
+}
+body.light .cover-slide { background: radial-gradient(ellipse at 25% 50%, #c8deff 0%, #eef5ff 65%); }
+body.light .t-main { color: var(--text); }
+body.light .t-main span { color: var(--teal); }
+body.light .t-pill { color: var(--text); }
+body.light .part-transition { background: radial-gradient(ellipse at 60% 50%, #fff3cc 0%, #eef5ff 65%); }
+
+.theme-btn { background: transparent; border: 1.5px solid var(--bdr); color: var(--muted); border-radius: 7px; padding: 5px 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; letter-spacing: 0.04em; }
+.theme-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+/* ── SETUP OVERLAY ── */
+.setup-overlay{position:fixed;inset:0;z-index:800;background:var(--bg);display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:0 0 60px;transition:opacity 0.35s ease;}
+.setup-overlay.hiding{opacity:0;pointer-events:none;}
+.setup-overlay.gone{display:none;}
+.setup-chrome{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:2px solid var(--teal2);padding:0 28px;height:52px;flex-shrink:0;margin-bottom:32px;position:sticky;top:0;z-index:10;}
+.setup-chrome-left{display:flex;align-items:center;gap:10px;}
+.setup-chrome-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);}
+.setup-chrome-label{font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:700;}
+.setup-clock{font-size:0.82rem;font-weight:700;color:var(--teal);}
+.setup-header{text-align:center;margin-bottom:28px;padding:0 24px;}
+.setup-header h1{font-size:1.7rem;font-weight:900;color:var(--white);margin-bottom:4px;}
+.setup-header p{font-size:0.9rem;color:var(--muted);}
+.setup-badge{display:inline-flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--bdr);border-radius:12px;padding:14px 22px;margin-bottom:24px;}
+.setup-badge-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--gold));display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:#000;flex-shrink:0;}
+.setup-badge-title{font-size:1.1rem;font-weight:900;color:var(--white);line-height:1.2;}
+.setup-badge-sub{font-size:0.78rem;color:var(--muted);margin-top:2px;}
+.setup-card{background:var(--panel);border:1px solid var(--bdr);border-radius:14px;padding:22px 26px;width:100%;max-width:760px;margin-bottom:16px;}
+.setup-section-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:14px;}
+.setup-section-label.teal{color:var(--teal);}.setup-section-label.gold{color:var(--gold);}
+.setup-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.setup-info-field label{display:block;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:700;margin-bottom:5px;}
+.setup-input{width:100%;padding:10px 13px;border-radius:9px;border:2px solid var(--bdr);background:var(--lift);color:var(--text);font-family:inherit;font-size:0.9rem;font-weight:600;outline:none;transition:border-color 0.15s;}
+.setup-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,201,184,0.12);}
+.setup-span2{grid-column:1/-1;}
+.setup-obj-list{display:flex;flex-direction:column;gap:8px;}
+.setup-obj-row{display:flex;align-items:center;gap:10px;}
+.setup-obj-row input{flex:1;padding:8px 12px;border-radius:8px;border:2px solid var(--bdr);background:var(--lift);color:var(--text);font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.15s;}
+.setup-obj-row input:focus{border-color:var(--teal);}
+.setup-obj-remove{background:transparent;border:none;color:var(--muted);font-size:1.05rem;cursor:pointer;padding:4px 6px;border-radius:6px;transition:color 0.15s;}
+.setup-obj-remove:hover{color:var(--red);}
+.setup-add-obj{display:inline-flex;align-items:center;gap:6px;background:transparent;border:2px dashed var(--bdr);color:var(--muted);border-radius:8px;padding:7px 14px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-top:6px;}
+.setup-add-obj:hover{border-color:var(--teal);color:var(--teal);}
+.setup-toggle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;}
+.setup-tog{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--bdr);border-radius:9px;padding:11px 14px;cursor:pointer;transition:all 0.15s;user-select:none;}
+.setup-tog:hover{border-color:var(--teal);}
+.setup-tog.on{border-color:var(--teal);background:rgba(0,201,184,0.08);}
+.setup-tog-icon{font-size:1.05rem;flex-shrink:0;}
+.setup-tog-label{font-size:0.88rem;font-weight:700;line-height:1.2;}
+.setup-tog-sub{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+.setup-tog-check{margin-left:auto;flex-shrink:0;width:18px;height:18px;border-radius:4px;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:transparent;transition:all 0.15s;}
+.setup-tog.on .setup-tog-check{background:var(--teal);border-color:var(--teal);color:#000;}
+.setup-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.setup-chip{background:var(--lift);border:1px solid var(--bdr);border-radius:20px;padding:4px 14px;font-size:0.75rem;color:var(--muted);}
+.setup-chip.active{background:rgba(0,201,184,0.12);border-color:var(--teal);color:var(--teal);}
+.setup-chip.parta{background:rgba(79,169,255,0.1);border-color:var(--blue);color:var(--blue);}
+.setup-chip.partb{background:rgba(240,165,0,0.1);border-color:var(--gold);color:var(--gold);}
+.setup-chip.ext{background:rgba(168,85,247,0.1);border-color:var(--purple);color:var(--purple);}
+.setup-appear-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.setup-mode-card{background:var(--card);border:2px solid var(--bdr);border-radius:9px;padding:13px 16px;cursor:pointer;transition:all 0.15s;user-select:none;}
+.setup-mode-card:hover{border-color:var(--teal);}
+.setup-mode-card.on{border-color:var(--teal);background:rgba(0,201,184,0.08);}
+.setup-mode-title{font-size:0.9rem;font-weight:800;margin-bottom:4px;}
+.setup-mode-desc{font-size:0.73rem;color:var(--muted);line-height:1.5;}
+.setup-mode-swatch{display:flex;gap:5px;margin-top:8px;}
+.setup-sw{width:18px;height:18px;border-radius:4px;}
+.setup-launch-wrap{width:100%;max-width:760px;padding:0 0 8px;}
+.setup-launch-btn{width:100%;padding:16px;border-radius:10px;border:none;background:var(--teal2);color:var(--white);font-size:1.1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.15s;letter-spacing:0.03em;display:flex;align-items:center;justify-content:center;gap:10px;}
+.setup-launch-btn:hover{background:var(--teal);}
+.setup-hint{font-size:0.76rem;color:var(--muted);text-align:center;margin-top:8px;}
+@media(max-width:520px){.setup-info-grid,.setup-appear-grid{grid-template-columns:1fr;}.setup-span2{grid-column:1;}.setup-card{padding:18px 16px;}}
+
+.float-cam-btn {
+  position: fixed; bottom: 62px; right: 18px; width: 50px; height: 50px; border-radius: 50%;
+  background: var(--teal2); border: 2px solid var(--teal); color: #fff; font-size: 1.35rem;
+  cursor: pointer; display: none; align-items: center; justify-content: center;
+  z-index: 150; box-shadow: 0 4px 16px rgba(0,201,184,0.35); transition: all 0.18s; font-family: inherit;
+}
+.float-cam-btn:hover { background: var(--teal); transform: scale(1.12); }
+.float-cam-btn.cam-visible { display: flex; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.72); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; }
+.modal-overlay.modal-open { display: flex; }
+.modal-box { background: var(--panel); border: 1px solid var(--bdr); border-radius: 16px; padding: 26px 30px; width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
+body.light .modal-box { background: #fff; }
+.modal-head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--bdr); padding-bottom: 14px; }
+.modal-title { font-size: 1rem; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.modal-close-btn { background: transparent; border: 1.5px solid var(--bdr); color: var(--muted); font-size: 1.1rem; cursor: pointer; padding: 4px 10px; border-radius: 7px; font-family: inherit; transition: all 0.15s; }
+.modal-close-btn:hover { border-color: var(--red); color: var(--red); }
+.m-step-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); font-weight: 700; margin-bottom: 6px; }
+.m-hint { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+.modal-divider { border: none; border-top: 1px solid var(--bdr); margin: 0; }
+.m-select { width: 100%; padding: 11px 14px; font-size: 1rem; font-weight: 700; background: var(--lift); border: 2px solid var(--bdr); border-radius: 10px; color: var(--text); outline: none; font-family: inherit; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%2300c9b8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+.m-select:focus { border-color: var(--teal); }
+.m-select option { background: var(--card); }
+.m-id-input { width: 150px; padding: 11px 14px; font-size: 1.5rem; font-weight: 800; text-align: center; letter-spacing: 0.28em; background: var(--lift); border: 2px solid var(--bdr); border-radius: 10px; color: var(--teal); outline: none; font-family: inherit; display: block; }
+.m-id-input:focus { border-color: var(--teal); }
+.m-id-input::placeholder { color: var(--muted); letter-spacing: 0.1em; font-size: 0.95rem; }
+.m-photo-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 10px; border: none; background: var(--teal2); color: var(--white); font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+.m-photo-btn:hover { background: var(--teal); }
+.m-photo-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.m-submit-btn { background: var(--green); width: 100%; justify-content: center; font-size: 1rem; padding: 14px; border-radius: 10px; border: none; display: flex; align-items: center; gap: 8px; color: #fff; font-weight: 700; font-family: inherit; cursor: pointer; }
+.m-submit-btn:hover { background: #27ae60; }
+.m-submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.m-preview-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.m-thumb { position: relative; width: 80px; height: 80px; border-radius: 9px; overflow: hidden; border: 2px solid var(--bdr); }
+.m-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.m-thumb .m-remove { position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--red); color: #fff; border: none; font-size: 0.75rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.m-status { padding: 10px 16px; border-radius: 9px; font-weight: 700; font-size: 0.9rem; text-align: center; display: none; line-height: 1.5; }
+.m-status.m-success { background: rgba(46,204,113,0.15); border: 2px solid var(--green); color: var(--green); display: block; }
+.m-status.m-error   { background: rgba(231,76,60,0.15);  border: 2px solid var(--red);   color: var(--red);   display: block; }
+.m-status.m-loading { background: rgba(79,169,255,0.15); border: 2px solid var(--blue);  color: var(--blue);  display: block; }
+</style>
+</head>
+<body>
+
+<button class="float-cam-btn" id="floatCamBtn" title="Submit your work" onclick="openUploadModal()">&#128247;</button>
+
+<!-- UPLOAD MODAL -->
+<div class="modal-overlay" id="uploadModal" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">&#128247; &nbsp; Submit Your Work</div>
+      <button class="modal-close-btn" onclick="closeUploadModal()">&#10005; Close</button>
+    </div>
+    <div>
+      <div class="m-step-label">Step 1 &mdash; Select your class</div>
+      <select class="m-select" id="m-courseSelect">
+        <option value="">&#8212; Choose your class &#8212;</option>
+        <option value="1Vxb9ntVNvd8wf_KOCRuQuuQISV1Iwcfc">Year 12 Essentials</option>
+        <option value="1xZzcqQXYiZEQAY3ncNXp0AemufhGAF1U">Year 12 Apps</option>
+        <option value="1e-j-Rlma9SSdbzXoLO0tauXr5tcMI1Js">Year 11 Methods</option>
+        <option value="1gJDhgHnFb7i6O7jX-phUQ3dYy9F6M2c7">Year 11 Foundations</option>
+        <option value="1HSl_x-FfUbn3DSUtz5qSMfRhg4eQWWy1">Year 11 Essentials</option>
+        <option value="1l8JLaeLBkUfbxVT9FB3eZQ5-czZkWFi9">Year 11 Apps</option>
+        <option value="1cq4lpxyou4qJfqOXaHONIKXtcMV7LIhs">Year 10</option>
+        <option value="1xaTPogudenjYWSwagLAIaozq-9bSV3Mz">Year 9</option>
+        <option value="1UOXPybIAQ7m03M8xnsDEiqHudjCk9BTe">Year 8</option>
+        <option value="11ts1_-UU6un5EfIA9WvqDeIhNUCOrrIB">Year 7</option>
+      </select>
+      <p class="m-hint">Pick the class you are submitting work for</p>
+    </div>
+    <hr class="modal-divider">
+    <div>
+      <div class="m-step-label">Step 2 &mdash; Enter your student ID</div>
+      <input class="m-id-input" type="text" id="m-studentId" maxlength="6" placeholder="ID" inputmode="numeric" autocomplete="off" spellcheck="false">
+      <p class="m-hint">Your 6-digit student number</p>
+    </div>
+    <hr class="modal-divider">
+    <div>
+      <div class="m-step-label">Step 3 &mdash; Take a photo of your work</div>
+      <input type="file" id="m-cameraInput" accept="image/*" capture="environment" multiple style="display:none;">
+      <button class="m-photo-btn" id="m-photoBtn" onclick="document.getElementById('m-cameraInput').click()">&#128247; &nbsp; Take / Choose Photo(s)</button>
+      <p class="m-hint">You can add multiple photos if your work spans more than one page.</p>
+    </div>
+    <div class="m-preview-grid" id="m-preview"></div>
+    <button class="m-submit-btn" id="m-submitBtn" onclick="submitModalWork()" style="display:none;">&#9989; &nbsp; Submit to Teacher</button>
+    <div class="m-status" id="m-status"></div>
+  </div>
+</div>
+
+<!-- SETUP OVERLAY -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-chrome">
+    <div class="setup-chrome-left"><div class="setup-chrome-dot"></div><span class="setup-chrome-label">Lesson Setup</span></div>
+    <span class="setup-clock" id="setup-clock"></span>
+  </div>
+  <div class="setup-header">
+    <h1>&#128196; Lesson Setup</h1>
+    <p>Configure your lesson, then launch for the class.</p>
+  </div>
+  <div class="setup-badge">
+    <div class="setup-badge-icon">&#215; &#247;</div>
+    <div>
+      <div class="setup-badge-title">Multiplying &amp; Dividing by 10, 100, 1000</div>
+      <div class="setup-badge-sub">Year 8 Mathematics &nbsp;&middot;&nbsp; Decimals &nbsp;&middot;&nbsp; Lesson 3 of 3</div>
+    </div>
+  </div>
+
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#128218; Lesson Details</div>
+    <div class="setup-info-grid">
+      <div class="setup-info-field setup-span2"><label>Topic Title</label><input class="setup-input" type="text" id="infoTopic" value="Multiplying &amp; Dividing by 10, 100, 1000"></div>
+      <div class="setup-info-field"><label>Course</label>
+        <input class="setup-input" list="courseList" id="infoCourse" value="Year 8 Mathematics">
+        <datalist id="courseList">
+          <option value="Year 7 Mathematics"><option value="Year 8 Mathematics">
+          <option value="Year 9 Mathematics"><option value="Year 10 Mathematics">
+        </datalist>
+      </div>
+      <div class="setup-info-field"><label>Unit</label><input class="setup-input" type="text" id="infoUnit" value="Decimals"></div>
+      <div class="setup-info-field"><label>Lesson Number</label><input class="setup-input" type="number" id="infoLessonNum" min="1" value="3"></div>
+      <div class="setup-info-field"><label>Lessons in Unit</label><input class="setup-input" type="number" id="infoLessonOf" min="1" value="3"></div>
+      <div class="setup-info-field"><label>Term</label><input class="setup-input" type="number" id="infoTerm" min="1" max="4" value="1"></div>
+      <div class="setup-info-field"><label>Week</label><input class="setup-input" type="number" id="infoWeek" min="1" value="6"></div>
+    </div>
+    <div style="margin-top:18px;">
+      <div class="setup-section-label teal" style="margin-bottom:8px;">&#127919; Learning Intentions</div>
+      <div class="setup-obj-list" id="setupObjList"></div>
+      <button class="setup-add-obj" onclick="setupAddObjective()">&#43; Add Intention</button>
+    </div>
+  </div>
+
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#9881; Lesson Components</div>
+    <div class="setup-toggle-grid">
+      <div class="setup-tog on" data-key="starter"   onclick="setupTog(this)"><span class="setup-tog-icon">&#9733;</span><div><div class="setup-tog-label">Starter</div><div class="setup-tog-sub">Warm-up questions</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="partA"     onclick="setupTog(this)"><span class="setup-tog-icon">&#215;</span><div><div class="setup-tog-label">Part A: Multiply</div><div class="setup-tog-sub">Notes, examples, exercise</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="partB"     onclick="setupTog(this)"><span class="setup-tog-icon">&#247;</span><div><div class="setup-tog-label">Part B: Divide</div><div class="setup-tog-sub">Notes, examples, exercise</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="extension" onclick="setupTog(this)"><span class="setup-tog-icon">&#11088;</span><div><div class="setup-tog-label">Extension</div><div class="setup-tog-sub">Challenge</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="plenary"   onclick="setupTog(this)"><span class="setup-tog-icon">&#128172;</span><div><div class="setup-tog-label">Plenary</div><div class="setup-tog-sub">Exit ticket</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="upload"    onclick="setupTog(this)"><span class="setup-tog-icon">&#128247;</span><div><div class="setup-tog-label">Upload Work</div><div class="setup-tog-sub">Submit button</div></div><span class="setup-tog-check">&#10003;</span></div>
+    </div>
+    <div style="margin-top:16px;">
+      <div class="setup-section-label gold" style="margin-bottom:8px;">&#128196; Slide Overview</div>
+      <div class="setup-chips" id="setupSlidePreview"></div>
+    </div>
+  </div>
+
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#127775; Appearance</div>
+    <div class="setup-appear-grid">
+      <div class="setup-mode-card on" data-mode="dark" onclick="setupSetMode(this)"><div class="setup-mode-title">&#127769; Dark</div><div class="setup-mode-desc">Default dark theme.</div><div class="setup-mode-swatch"><div class="setup-sw" style="background:#09121f;border:1px solid #1f3557;"></div><div class="setup-sw" style="background:#00c9b8;"></div><div class="setup-sw" style="background:#f0a500;"></div></div></div>
+      <div class="setup-mode-card" data-mode="light" onclick="setupSetMode(this)"><div class="setup-mode-title">&#9728; Light</div><div class="setup-mode-desc">Bright white theme.</div><div class="setup-mode-swatch"><div class="setup-sw" style="background:#eef5ff;border:1px solid #b8d4f0;"></div><div class="setup-sw" style="background:#007a70;"></div><div class="setup-sw" style="background:#c07800;"></div></div></div>
+      <div class="setup-mode-card" data-mode="adhd" onclick="setupSetMode(this)"><div class="setup-mode-title">&#129504; Focus Mode</div><div class="setup-mode-desc">Softer contrast.</div><div class="setup-mode-swatch"><div class="setup-sw" style="background:#1a1a2e;border:1px solid #333;"></div><div class="setup-sw" style="background:#7ecfcf;"></div><div class="setup-sw" style="background:#e8c97e;"></div></div></div>
+      <div class="setup-mode-card" data-mode="highcontrast" onclick="setupSetMode(this)"><div class="setup-mode-title">&#9680; High Contrast</div><div class="setup-mode-desc">Maximum contrast.</div><div class="setup-mode-swatch"><div class="setup-sw" style="background:#000;border:1px solid #fff;"></div><div class="setup-sw" style="background:#fff;"></div><div class="setup-sw" style="background:#ffff00;"></div></div></div>
+    </div>
+  </div>
+
+  <div class="setup-launch-wrap">
+    <button class="setup-launch-btn" onclick="setupLaunch()">&#9654;&nbsp; Launch Lesson</button>
+    <p class="setup-hint">Lesson opens instantly — use the theme toggle inside the lesson to switch appearance at any time.</p>
+  </div>
+</div>
+
+<!-- MAIN SHELL -->
+<div class="pres">
+  <div class="chrome">
+    <div class="chrome-left"><div class="chrome-dot"></div><span class="chrome-label" id="chrome-label"></span></div>
+    <span class="chrome-title" id="chrome-title"></span>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">&#9728; Light</button>
+      <span class="chrome-right" id="live-clock">--:--:-- --</span>
+    </div>
+  </div>
+  <div class="deck" id="deck"></div>
+  <div class="nav-bar" id="nav-bar"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════
+   LESSON DATA
+═══════════════════════════════ */
+const lessonData = {
+  meta: {
+    course: "Year 8 Mathematics", unit: "Decimals", lessonNum: 3, lessonOf: 3,
+    topic: "Multiplying & Dividing by 10, 100, 1000",
+    topicHighlight: "",
+    subtopics: ["Moving the Decimal Point", "×10, ×100, ×1000", "÷10, ÷100, ÷1000"],
+    pills: ["Point moves RIGHT to multiply", "Point moves LEFT to divide", "Count the zeros!"],
+    term: 1, week: 6
+  },
+
+  learningIntentions: [
+    "I can multiply a decimal by 10, 100 or 1000 by moving the decimal point right",
+    "I can divide a decimal by 10, 100 or 1000 by moving the decimal point left",
+    "I know that the number of places the point moves equals the number of zeros",
+    "I can apply these skills to solve real-world measurement and context problems"
+  ],
+
+  starter: {
+    time: 6,
+    groups: [
+      {
+        tag: "1 — Adding & Subtracting Integers",
+        span: false,
+        items: [
+          { lbl: "a", q: "627 + 485",   ans: "<strong>1 112</strong>" },
+          { lbl: "b", q: "901 − 364",   ans: "<strong>537</strong>" },
+          { lbl: "c", q: "−9 + 17",     ans: "<strong>8</strong>" },
+          { lbl: "d", q: "−5 − (−11)",  ans: "<strong>6</strong>" }
+        ]
+      },
+      {
+        tag: "2 — Dividing Decimals (Last Lesson)",
+        span: false,
+        items: [
+          { lbl: "a", q: "8.4 ÷ 4",   ans: "<strong>2.1</strong>" },
+          { lbl: "b", q: "9.54 ÷ 9",  ans: "<strong>1.06</strong>" }
+        ]
+      },
+      {
+        tag: "3 — Adding Decimals",
+        span: false,
+        items: [
+          { lbl: null, q: "3.08 + 17.4 + 0.65", ans: "<strong>21.13</strong>" }
+        ]
+      },
+      {
+        tag: "4 — Integers in Context",
+        span: false,
+        items: [
+          { lbl: null, q: "A diver is 14 m below sea level. She rises 9 m, then dives a further 6 m. What is her final depth?", ans: "−14 + 9 − 6 = <strong>−11 m</strong> (11 m below sea level)" }
+        ]
+      }
+    ]
+  },
+
+  partA: {
+    title: "Part A: Multiplying by 10, 100 and 1000",
+    notes: [
+      {
+        title: "The Rule — Moving Right to Multiply",
+        ruleClass: "rule-blue",
+        formulaClass: "f-blue",
+        formula: "× 10 → move point 1 place RIGHT &emsp; × 100 → 2 places &emsp; × 1000 → 3 places",
+        body: `Multiplying makes numbers <em>bigger</em>, so the decimal point moves to the <em>RIGHT</em>. The number of places it moves equals the number of zeros: ×10 has 1 zero → move 1 place. Fill any gaps with zeros.`
+      },
+      {
+        title: "⚠ Filling Gaps with Zeros",
+        ruleClass: "",
+        formulaClass: "",
+        formula: "2.54 × 10 = 25.4 &emsp;|&emsp; 2.54 × 100 = 254 &emsp;|&emsp; 2.54 × 1000 = 2540",
+        body: `When the point moves past the last digit, <em>fill the gap with a zero</em>. For example, 2.54 × 1000: the point moves 3 places right to give <em>2540</em> (a zero is added as a placeholder).`
+      }
+    ],
+    examples: [
+      {
+        label: "Example A1 — Multiply by 10",
+        egClass: "eg-blue",
+        q: `Calculate 3.72 × 10`,
+        hint: "×10 → point moves 1 place RIGHT.",
+        steps: [
+          { line: "3.72 → move point 1 place right", explain: "×10 has one zero → 1 place." },
+          { line: "= 37.2", explain: "The 3 moves from units to tens, 7 to units, 2 to tenths." }
+        ],
+        answer: "37.2"
+      },
+      {
+        label: "Example A2 — Multiply by 100",
+        egClass: "eg-blue",
+        q: `Calculate 4.68 × 100`,
+        hint: "×100 → point moves 2 places RIGHT.",
+        steps: [
+          { line: "4.68 → move point 2 places right", explain: "×100 has two zeros → 2 places." },
+          { line: "= 468", explain: "All digits shift two columns left; point disappears (whole number)." }
+        ],
+        answer: "468"
+      },
+      {
+        label: "Example A3 — Multiply by 1000",
+        egClass: "eg-blue",
+        q: `Calculate 0.057 × 1000`,
+        hint: "×1000 → point moves 3 places RIGHT.",
+        steps: [
+          { line: "0.057 → move point 3 places right", explain: "×1000 has three zeros → 3 places." },
+          { line: "= 57", explain: "0.057 → 0.57 → 5.7 → 57. Leading zero disappears." }
+        ],
+        answer: "57"
+      }
+    ],
+    yourTurn: [
+      { label: "Your Turn A (a)", q: "Calculate 5.96 × 100", steps: ["Point moves 2 places right", "5.96 → 596"], answer: "596" },
+      { label: "Your Turn A (b)", q: "Calculate 0.0147 × 1000", steps: ["Point moves 3 places right", "0.0147 → 14.7"], answer: "14.7" }
+    ],
+    yourTurnTime: 3,
+    exercise: {
+      title: "Exercise A: Multiplying by 10, 100 and 1000",
+      instruction: `Write down the answers. No working out needed — just move the decimal point!`,
+      time: 10,
+      cols: 4,
+      questions: [
+        "3.7 × 10", "4.5 × 10", "4.52 × 10", "10 × 7.21",
+        "10 × 12.78", "0.94 × 10", "10 × 3.008", "0.0147 × 10",
+        "5.96 × 100", "8.74 × 100", "100 × 2.05", "100 × 2.6",
+        "5.47 × 100", "100 × 2.68", "100 × 0.0589", "0.0068 × 100",
+        "3.7 × 1000", "0.45 × 1000", "2.06 × 1000", "0.008 × 1000",
+        "1.16 × 10", "1.16 × 100", "1.16 × 1000", "0.003 × 1000"
+      ],
+      answers: [
+        {answer:"37"},{answer:"45"},{answer:"45.2"},{answer:"72.1"},
+        {answer:"127.8"},{answer:"9.4"},{answer:"30.08"},{answer:"0.147"},
+        {answer:"596"},{answer:"874"},{answer:"205"},{answer:"260"},
+        {answer:"547"},{answer:"268"},{answer:"5.89"},{answer:"0.68"},
+        {answer:"3700"},{answer:"450"},{answer:"2060"},{answer:"8"},
+        {answer:"11.6"},{answer:"116"},{answer:"1160"},{answer:"3"}
+      ]
+    }
+  },
+
+  partB: {
+    title: "Part B: Dividing by 10, 100 and 1000",
+    notes: [
+      {
+        title: "The Rule — Moving Left to Divide",
+        ruleClass: "rule-gold",
+        formulaClass: "f-gold",
+        formula: "÷ 10 → move point 1 place LEFT &emsp; ÷ 100 → 2 places &emsp; ÷ 1000 → 3 places",
+        body: `Dividing makes numbers <em>smaller</em>, so the decimal point moves to the <em>LEFT</em>. Again, the number of places equals the number of zeros: ÷10 has 1 zero → move 1 place. Add a leading zero if needed.`
+      },
+      {
+        title: "⚠ Adding a Leading Zero",
+        ruleClass: "",
+        formulaClass: "",
+        formula: "47.8 ÷ 10 = 4.78 &emsp;|&emsp; 247.3 ÷ 100 = 2.473 &emsp;|&emsp; 65 ÷ 1000 = 0.065",
+        body: `When the point moves past the first digit, <em>write a zero before the decimal point</em>. For example, 65 ÷ 1000: the point moves 3 places left to give <em>0.065</em>, not ".065".`
+      }
+    ],
+    examples: [
+      {
+        label: "Example B1 — Divide by 10",
+        egClass: "",
+        q: `Calculate 47.8 ÷ 10`,
+        hint: "÷10 → point moves 1 place LEFT.",
+        steps: [
+          { line: "47.8 → move point 1 place left", explain: "÷10 has one zero → 1 place." },
+          { line: "= 4.78", explain: "Each digit shifts one column right." }
+        ],
+        answer: "4.78"
+      },
+      {
+        label: "Example B2 — Divide by 100",
+        egClass: "",
+        q: `Calculate 488.4 ÷ 100`,
+        hint: "÷100 → point moves 2 places LEFT.",
+        steps: [
+          { line: "488.4 → move point 2 places left", explain: "÷100 has two zeros → 2 places." },
+          { line: "= 4.884", explain: "488.4 → 48.84 → 4.884." }
+        ],
+        answer: "4.884"
+      },
+      {
+        label: "Example B3 — Divide by 1000",
+        egClass: "",
+        q: `Calculate 65 ÷ 1000`,
+        hint: "÷1000 → point moves 3 places LEFT. Need a leading zero.",
+        steps: [
+          { line: "65 = 65.0 → move point 3 places left", explain: "÷1000 has three zeros → 3 places." },
+          { line: "65.0 → 6.50 → 0.650 → 0.065", explain: "Write a leading zero before the decimal point." }
+        ],
+        answer: "0.065"
+      }
+    ],
+    yourTurn: [
+      { label: "Your Turn B (a)", q: "Calculate 247.5 ÷ 10", steps: ["Point moves 1 place left", "247.5 → 24.75"], answer: "24.75" },
+      { label: "Your Turn B (b)", q: "Calculate 9 ÷ 100", steps: ["9 = 9.0 → point moves 2 places left", "9.0 → 0.90 → 0.09"], answer: "0.09" }
+    ],
+    yourTurnTime: 3,
+    exercise: {
+      title: "Exercise B: Dividing by 10, 100 and 1000",
+      instruction: `Write down the answers. No working out needed — just move the decimal point!`,
+      time: 10,
+      cols: 4,
+      questions: [
+        "14.2 ÷ 10", "35.9 ÷ 10", "7.84 ÷ 10", "247.5 ÷ 10",
+        "23.82 ÷ 10", "478.27 ÷ 10", "57.02 ÷ 10", "46 ÷ 10",
+        "8 ÷ 10", "0.34 ÷ 10", "0.2 ÷ 10", "0.047 ÷ 10",
+        "488.4 ÷ 100", "417.12 ÷ 100", "15.8 ÷ 100", "42.04 ÷ 100",
+        "470 ÷ 100", "9 ÷ 100", "5.6 ÷ 100", "0.6 ÷ 100",
+        "3700 ÷ 1000", "450 ÷ 1000", "2060 ÷ 1000", "8 ÷ 1000"
+      ],
+      answers: [
+        {answer:"1.42"},{answer:"3.59"},{answer:"0.784"},{answer:"24.75"},
+        {answer:"2.382"},{answer:"47.827"},{answer:"5.702"},{answer:"4.6"},
+        {answer:"0.8"},{answer:"0.034"},{answer:"0.02"},{answer:"0.0047"},
+        {answer:"4.884"},{answer:"4.1712"},{answer:"0.158"},{answer:"0.4204"},
+        {answer:"4.7"},{answer:"0.09"},{answer:"0.056"},{answer:"0.006"},
+        {answer:"3.7"},{answer:"0.45"},{answer:"2.06"},{answer:"0.008"}
+      ]
+    }
+  },
+
+  wordProblems: {
+    title: "Exercise C: Word Problems",
+    instruction: `Show all working. Think: are you making the number <strong>bigger</strong> (×) or <strong>smaller</strong> (÷)?`,
+    time: 10,
+    cols: 1,
+    questions: [
+      `A bag of rice weighs 1.16 kg. What is the total weight of:<br><strong>(a)</strong> &nbsp;10 bags &emsp; <strong>(b)</strong> &nbsp;100 bags &emsp; <strong>(c)</strong> &nbsp;1000 bags?`,
+      `There are 100 centimetres in 1 metre. Convert these to centimetres:<br><strong>(a)</strong> &nbsp;4.14 m &emsp; <strong>(b)</strong> &nbsp;27.6 m &emsp; <strong>(c)</strong> &nbsp;0.9 m &emsp; <strong>(d)</strong> &nbsp;0.003 m`,
+      `There are 1000 metres in 1 kilometre. Convert these distances to metres:<br><strong>(a)</strong> &nbsp;3.72 km &emsp; <strong>(b)</strong> &nbsp;0.45 km &emsp; <strong>(c)</strong> &nbsp;12.006 km`,
+      `There are 10 millimetres in 1 centimetre. Convert to centimetres:<br><strong>(a)</strong> &nbsp;60 mm &emsp; <strong>(b)</strong> &nbsp;427 mm &emsp; <strong>(c)</strong> &nbsp;0.6 mm`,
+      `A school buys 100 identical pens for a total cost of $38.00. How much does each pen cost?`,
+      `At a school fair, 10 students share a prize of $63.50 equally. How much does each student receive? If instead 100 students shared the same prize, how much would each receive?`
+    ],
+    answers: [
+      { working: "×10, ×100, ×1000", answer: "(a) 11.6 kg &nbsp; (b) 116 kg &nbsp; (c) 1160 kg" },
+      { working: "metres × 100 = centimetres", answer: "(a) 414 cm &nbsp; (b) 2760 cm &nbsp; (c) 90 cm &nbsp; (d) 0.3 cm" },
+      { working: "km × 1000 = metres", answer: "(a) 3720 m &nbsp; (b) 450 m &nbsp; (c) 12 006 m" },
+      { working: "mm ÷ 10 = centimetres", answer: "(a) 6 cm &nbsp; (b) 42.7 cm &nbsp; (c) 0.06 cm" },
+      { working: "$38.00 ÷ 100", answer: "$0.38 per pen" },
+      { working: "$63.50 ÷ 10 and $63.50 ÷ 100", answer: "$6.35 each (10 students) &nbsp;|&nbsp; $0.635 each (100 students)" }
+    ]
+  },
+
+  extension: [
+    {
+      label: "Extension 1 — Missing Operation",
+      q: `Fill in the box: &nbsp; 0.047 &#9744; = 47 &nbsp;&nbsp; What did you multiply or divide by?`,
+      steps: ["0.047 → 47: point moves 3 places right", "That means × 1000"],
+      answer: "× 1000"
+    },
+    {
+      label: "Extension 2 — Chain Calculation",
+      q: `A factory produces 1000 bolts per hour. Each bolt weighs 2.35 g. After 10 hours, the bolts are packed into boxes of 100. How many boxes are there, and how much does each box weigh in kg?`,
+      steps: [
+        "Total bolts: 1000 × 10 = 10 000",
+        "Number of boxes: 10 000 ÷ 100 = 100 boxes",
+        "Weight per box: 100 bolts × 2.35 g = 235 g = 235 ÷ 1000 kg = 0.235 kg"
+      ],
+      answer: "100 boxes, each weighing 0.235 kg"
+    },
+    {
+      label: "Extension 3 — Spot the Pattern",
+      q: `Complete the sequence and explain the rule:<br>3.5, &nbsp; 35, &nbsp; 350, &nbsp; 3500, &nbsp; &#9744;, &nbsp; &#9744;`,
+      steps: [
+        "Each term is ×10 the previous term",
+        "35 000, 350 000",
+        "Rule: multiply by 10 each time (decimal point moves 1 place right)"
+      ],
+      answer: "35 000 and 350 000 — each term is the previous term × 10"
+    }
+  ],
+
+  plenary: {
+    questions: [
+      "How do you know whether to move the decimal point left or right?",
+      "Sam says 4.7 ÷ 100 = 47. What mistake has he made? What is the correct answer?",
+      `Without a calculator, put these in order from smallest to largest: &nbsp; 0.45 × 100, &nbsp; 4500 ÷ 1000, &nbsp; 45 ÷ 10, &nbsp; 0.0045 × 10 000`
+    ],
+    answers: [
+      "When multiplying, the number gets bigger so the point moves RIGHT. When dividing, the number gets smaller so the point moves LEFT. The number of places moved equals the number of zeros in 10, 100 or 1000.",
+      "Sam moved the point the wrong way — he multiplied instead of dividing. Dividing makes the number smaller. Correct answer: 4.7 ÷ 100 = 0.047.",
+      `All four equal 45. 0.45 × 100 = 45. 4500 ÷ 1000 = 4.5. 45 ÷ 10 = 4.5. 0.0045 × 10 000 = 45. Order: 4.5, 4.5, 45, 45 — they pair up at 4.5 and 45.`
+    ],
+    summary: "To multiply by 10, 100 or 1000: move the decimal point RIGHT by 1, 2 or 3 places. To divide by 10, 100 or 1000: move the decimal point LEFT by 1, 2 or 3 places. Always count the zeros to know how many places to move, and fill any gaps with zeros.",
+    reminder: "Multiply → point RIGHT (bigger). Divide → point LEFT (smaller)."
+  },
+
+  appsScriptUrl: "https://script.google.com/macros/s/AKfycbz_TWHf7W7XSNQ4bJ5iNYbPLj1JUSnLq7G_BuRwmxKEPK-PrGiR4TOMZhyPg6-KHdvZvA/exec"
+};
+
+/* ═══════════════════════════════
+   RENDERER STATE
+═══════════════════════════════ */
+let currentSlide = 0;
+let timerCount = 0;
+const timerInstances = {};
+let workSlideIndices = new Set();
+
+function typeset(el) {
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise(el ? [el] : []).catch(() => {});
+}
+function goTo(n) {
+  const slides = document.querySelectorAll('.slide');
+  const dots   = document.querySelectorAll('.nav-dot');
+  if (n < 0 || n >= slides.length) return;
+  slides[currentSlide].classList.remove('active');
+  dots[currentSlide].classList.remove('active');
+  currentSlide = n;
+  slides[currentSlide].classList.add('active');
+  dots[currentSlide].classList.add('active');
+  const camBtn = document.getElementById('floatCamBtn');
+  if (camBtn) camBtn.classList.toggle('cam-visible', workSlideIndices.has(currentSlide));
+  typeset(slides[currentSlide]);
+}
+function next() { goTo(currentSlide + 1); }
+function prev() { goTo(currentSlide - 1); }
+document.addEventListener('keydown', e => { if (e.key==='ArrowRight') next(); if (e.key==='ArrowLeft') prev(); });
+
+function timer(defaultSeconds, uid) {
+  const id = `timer_${uid !== undefined ? uid : timerCount++}`;
+  const mins = Math.round(defaultSeconds / 60);
+  return `<div class="timer-bar-wrap" id="${id}_wrap">
+    <label class="tbar-time-label" for="${id}_mins">Time:</label>
+    <input class="tbar-time-input" type="number" id="${id}_mins" value="${mins}" min="1" max="60" step="1">
+    <label class="tbar-time-label">min</label>
+    <button class="tbar-btn" id="${id}_btn" onclick="toggleTimer('${id}')">
+      <span class="tbar-on">&#9654; Start Timer</span><span class="tbar-off" style="display:none;">&#9632; Reset</span>
+    </button>
+    <div class="tbar-track-outer" id="${id}_track"><div class="tbar-fill green" id="${id}_fill"></div></div>
+    <div class="tbar-done" id="${id}_done">&#9200; Time&rsquo;s Up!</div>
+  </div>`;
+}
+function toggleTimer(id) {
+  const btn=document.getElementById(`${id}_btn`),track=document.getElementById(`${id}_track`),fill=document.getElementById(`${id}_fill`),done=document.getElementById(`${id}_done`),input=document.getElementById(`${id}_mins`);
+  const onS=btn.querySelector('.tbar-on'),offS=btn.querySelector('.tbar-off');
+  if (timerInstances[id]) { clearInterval(timerInstances[id].interval); delete timerInstances[id]; track.classList.remove('tbar-visible'); done.classList.remove('tbar-show'); btn.classList.remove('tbar-active'); onS.style.display='inline'; offS.style.display='none'; input.disabled=false; fill.style.width='100%'; fill.className='tbar-fill green'; return; }
+  const total=parseInt(input.value)*60; if(isNaN(total)||total<=0)return;
+  input.disabled=true; track.classList.add('tbar-visible'); btn.classList.add('tbar-active'); onS.style.display='none'; offS.style.display='inline';
+  const end=Date.now()+total*1000;
+  timerInstances[id]={interval:setInterval(()=>{ const rem=Math.max(0,end-Date.now()),pct=rem/(total*1000)*100; fill.style.width=pct+'%'; fill.className=pct>40?'tbar-fill green':pct>12?'tbar-fill orange':'tbar-fill red'; if(rem<=0){clearInterval(timerInstances[id].interval);delete timerInstances[id];done.classList.add('tbar-show');fill.style.width='0%';} },200)};
+}
+
+function arrows(backFn, fwdLabel, isFirst, isLast, fwdClass) {
+  const back = isFirst ? `<span class="ghost"><button class="arrow-btn">&#8592;</button></span>` : `<button class="arrow-btn" onclick="${backFn}">&#8592; Back</button>`;
+  const cls = fwdClass || 'fwd';
+  const fwd = isLast ? `<button class="arrow-btn fwd" onclick="goTo(0)">&#8617; Restart</button>` : `<button class="arrow-btn ${cls}" onclick="next()">${fwdLabel} &#8594;</button>`;
+  return `<div class="arrows">${back}${fwd}</div>`;
+}
+function sh(iconClass, icon, title, badge, badgeClass) {
+  return `<div class="sh"><div class="sh-icon ${iconClass}">${icon}</div><div class="sh-title">${title}</div>${badge?`<div class="sh-badge ${badgeClass||''}">${badge}</div>`:''}</div>`;
+}
+function solBox(steps, answer) {
+  return `<div class="sol-box">${steps&&steps.length?steps.map(s=>`Step: ${s}<br>`).join(''):''}<strong>${answer}</strong></div>`;
+}
+let stepCount=0;
+function stepReveal(steps, answer) {
+  const id=`sr${stepCount++}`;
+  const stepsHtml=steps.map((s,i)=>{const line=typeof s==='string'?s:s.line;const expl=(typeof s==='object'&&s.explain)?s.explain:'';return `<div class="step-item" id="${id}_s${i}" style="display:none;">${line}${expl?`<div class="step-explain">&#128161; ${expl}</div>`:''}</div>`;}).join('');
+  return `<div class="step-reveal" id="${id}_box">${stepsHtml}<div class="step-answer" id="${id}_ans" style="display:none;"><strong>${answer}</strong></div><button class="step-btn" id="${id}_btn" onclick="revealStep('${id}',${steps.length})">Show Step 1</button></div>`;
+}
+function revealStep(id,total){let next=-1;for(let i=0;i<total;i++){if(document.getElementById(`${id}_s${i}`).style.display==='none'){next=i;break;}}if(next===-1){document.getElementById(`${id}_ans`).style.display='block';document.getElementById(`${id}_btn`).style.display='none';return;}document.getElementById(`${id}_s${next}`).style.display='block';const btn=document.getElementById(`${id}_btn`);btn.textContent=next===total-1?'Show Answer':`Show Step ${next+2}`;}
+function toggleStarterAns(btn,revealId){const box=document.getElementById(revealId);const open=box.classList.toggle('show');btn.classList.toggle('open',open);btn.textContent=open?'▼ Hide answer':'▶ Show answer';if(open)typeset(box);}
+
+/* ═══════════════════════════════
+   PLACE VALUE DIAGRAM HELPER
+═══════════════════════════════ */
+function pvDiagram(digits, pointPos, highlights, caption) {
+  /* digits: array of {lbl,val} e.g. [{lbl:'Hundreds',val:'2'},{lbl:'.',val:'.'}]
+     highlights: array of indices to highlight */
+  const cells = digits.map((d, i) => {
+    if (d.val === '.') return `<div class="pv-cell"><div class="pv-box pv-point">.</div></div>`;
+    const hl = highlights && highlights.includes(i) ? (highlights._color === 'gold' ? 'pv-highlight-gold' : 'pv-highlight-blue') : '';
+    return `<div class="pv-cell"><div class="pv-label">${d.lbl}</div><div class="pv-box ${hl}">${d.val}</div></div>`;
+  }).join('');
+  return `<div class="pv-diagram">${cells}</div>${caption?`<div class="pv-caption">${caption}</div>`:''}`;
+}
+
+/* ═══════════════════════════════
+   BUILD FUNCTIONS
+═══════════════════════════════ */
+function buildCover() {
+  const m=lessonData.meta;
+  return {cls:'cover-slide', navClass:'', workSlide:false, html:`
+    <div class="t-school">Mother Teresa Catholic College</div>
+    <div class="t-unit">${m.course} &nbsp;&middot;&nbsp; ${m.unit} &nbsp;&middot;&nbsp; Lesson ${m.lessonNum}</div>
+    <div class="t-main"><span>Multiplying &amp; Dividing</span> by 10, 100, 1000</div>
+    <div class="t-sub">${m.subtopics.join(' &nbsp;&middot;&nbsp; ')}</div>
+    <div class="t-pills">${m.pills.map(p=>`<div class="t-pill">${p}</div>`).join('')}</div>
+    <div class="t-meta"><span>&#128208; 2 exercises + word problems + extension</span><span>&#128218; ${m.unit} &mdash; Lesson ${m.lessonNum} of ${m.lessonOf}</span></div>
+    <div class="arrows"><span class="ghost"><button class="arrow-btn">&#8592;</button></span><button class="arrow-btn fwd" onclick="next()">Begin Lesson &#8594;</button></div>`};
+}
+
+function buildLearningIntentions() {
+  return {cls:'', navClass:'', workSlide:false, html:`
+    ${sh('ic-teal','&#127919;','Learning Intentions','By the end of today&hellip;')}
+    <div class="obj-list">${lessonData.learningIntentions.map(o=>`<div class="obj-item"><div class="obj-tick">&#10003;</div>${o}</div>`).join('')}</div>
+    ${arrows('prev()','Lesson Starter',false,false)}`};
+}
+
+function buildStarter() {
+  const s=lessonData.starter; let cardId=0;
+  const cards=s.groups.map(g=>{
+    const rowsHtml=g.items.map((item,idx)=>{const rid=`srans_${cardId}_${idx}`;const qHtml=item.lbl?`<span class="starter-lbl">${item.lbl}</span><span>${item.q}</span>`:`<span>${item.q}</span>`;return `<div class="starter-qrow">${qHtml}</div><button class="starter-ans-btn" onclick="toggleStarterAns(this,'${rid}')">&#9654; Show answer</button><div class="starter-ans-reveal" id="${rid}"><div class="starter-ans-inner">${item.ans}</div></div>`;}).join('');
+    cardId++;
+    return `<div class="starter-card${g.span?' span2':''}"><div class="starter-tag">${g.tag}</div><div class="starter-qlist">${rowsHtml}</div></div>`;
+  }).join('');
+  return {cls:'', navClass:'', workSlide:true, html:`
+    ${sh('ic-gold','&#9733;','Lesson Starter',`${s.time} minutes`)}
+    ${timer(s.time*60)}
+    <div class="starter-grid" style="flex:1;">${cards}</div>
+    ${arrows('prev()','Part A: Multiply',false,false,'fwd')}`};
+}
+
+/* ── PART TRANSITION SLIDE ── */
+function buildPartTransition(partLetter, title, subtitle, rule1, rule2) {
+  return {cls:'part-transition', navClass:'', workSlide:false, html:`
+    <div class="pt-tag">Lesson Part</div>
+    <div class="pt-num">${partLetter}</div>
+    <div class="pt-title">${title}</div>
+    <div class="pt-sub">${subtitle}</div>
+    <div class="pt-rule">${rule1}<br>${rule2}</div>
+    <div class="arrows" style="width:100%;max-width:600px;">
+      <button class="arrow-btn" onclick="prev()">&#8592; Back</button>
+      <button class="arrow-btn fwd${partLetter==='B'?'-b':''}" onclick="next()">Start Part ${partLetter} &#8594;</button>
+    </div>`};
+}
+
+function buildPartANotes() {
+  const p=lessonData.partA;
+  const rulesHtml=p.notes.map(n=>`
+    <div class="rule ${n.ruleClass}">
+      <div class="rule-title">${n.title}</div>
+      <div class="rule-body">
+        ${n.formula?`<div class="rule-formula ${n.formulaClass}">${n.formula}</div>`:''}
+        ${n.body}
+      </div>
+    </div>`).join('');
+  /* Quick visual reference table */
+  const table = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px;flex-shrink:0;">
+    ${[['× 10','Move point<br>1 place →','var(--blue)'],['× 100','Move point<br>2 places →','var(--blue)'],['× 1000','Move point<br>3 places →','var(--blue)'],['Count the<br>zeros!','= places<br>to move','var(--teal)']].map(([h,b,c])=>`
+    <div style="background:var(--card);border:1px solid var(--bdr);border-top:3px solid ${c};border-radius:8px;padding:10px;text-align:center;">
+      <div style="font-size:1.1rem;font-weight:900;color:${c};margin-bottom:4px;">${h}</div>
+      <div style="font-size:0.82rem;color:var(--muted);line-height:1.6;">${b}</div>
+    </div>`).join('')}
+  </div>`;
+  return {cls:'tinted part-a', navClass:'part-a-dot', workSlide:false, html:`
+    ${sh('ic-blue','&#215;',p.title,'Part A','sh-part-a')}
+    ${rulesHtml}
+    ${table}
+    ${arrows('prev()','Examples',false,false)}`};
+}
+
+function buildPartAExamples() {
+  const p=lessonData.partA;
+  const cards=p.examples.map(e=>`
+    <div class="eg-card ${e.egClass}">
+      <div class="eg-label">${e.label}</div>
+      <div class="eg-q">${e.q}</div>
+      ${e.hint?`<p style="font-size:0.9rem;color:var(--muted);margin-bottom:6px;">&#128161; ${e.hint}</p>`:''}
+      ${stepReveal(e.steps,e.answer)}
+    </div>`).join('');
+  return {cls:'eg-slide-blue', navClass:'part-a-dot', workSlide:false, html:`
+    ${sh('ic-blue','Ex',`Worked Examples: ×10, ×100, ×1000`,'Part A','sh-part-a')}
+    <div class="eg-grid g3" style="flex:1;">${cards}</div>
+    ${arrows('prev()','Your Turn!',false,false)}`};
+}
+
+function buildPartAYourTurn() {
+  const p=lessonData.partA;
+  const cards=p.yourTurn.map(q=>`
+    <div class="eg-card eg-blue">
+      <div class="eg-label">${q.label}</div>
+      <div class="eg-q">${q.q}</div>
+      <details><summary>Show answer</summary>${solBox(q.steps,q.answer)}</details>
+    </div>`).join('');
+  return {cls:'eg-slide-blue', navClass:'part-a-dot', workSlide:true, html:`
+    ${sh('ic-purple','&#9999;',`Your Turn! &mdash; Multiplying`,'Try it yourself!')}
+    ${timer(p.yourTurnTime*60,'ytA')}
+    <div class="eg-grid g2" style="flex:1;">${cards}</div>
+    ${arrows('prev()',p.exercise.title,false,false)}`};
+}
+
+function buildPartAExercise() {
+  const ex=lessonData.partA.exercise;
+  const labels='abcdefghijklmnopqrstuvwxyz'.split('');
+  const qCards=ex.questions.map((q,i)=>`
+    <div class="qc">
+      <div class="qlabel" style="background:var(--blue);">${labels[i]}</div>
+      <div class="qtext">${q}
+        <details class="q-ans"><summary>Answer</summary>
+          <div class="q-ans-val">${ex.answers[i].answer}</div>
+        </details>
+      </div>
+    </div>`).join('');
+  return {cls:'', navClass:'part-a-dot', workSlide:true, html:`
+    ${sh('ic-blue','&#9999;',ex.title,'Part A','sh-part-a')}
+    ${timer(ex.time*60,'exA')}
+    <div class="hl-box hl-blue">${ex.instruction}</div>
+    <div class="qg g4" style="flex:1;">${qCards}</div>
+    ${arrows('prev()','Part B: Divide',false,false,'fwd-b')}`};
+}
+
+function buildPartBNotes() {
+  const p=lessonData.partB;
+  const rulesHtml=p.notes.map(n=>`
+    <div class="rule ${n.ruleClass}">
+      <div class="rule-title">${n.title}</div>
+      <div class="rule-body">
+        ${n.formula?`<div class="rule-formula ${n.formulaClass}">${n.formula}</div>`:''}
+        ${n.body}
+      </div>
+    </div>`).join('');
+  const table = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px;flex-shrink:0;">
+    ${[['÷ 10','Move point<br>1 place ←','var(--gold)'],['÷ 100','Move point<br>2 places ←','var(--gold)'],['÷ 1000','Move point<br>3 places ←','var(--gold)'],['Count the<br>zeros!','= places<br>to move','var(--teal)']].map(([h,b,c])=>`
+    <div style="background:var(--card);border:1px solid var(--bdr);border-top:3px solid ${c};border-radius:8px;padding:10px;text-align:center;">
+      <div style="font-size:1.1rem;font-weight:900;color:${c};margin-bottom:4px;">${h}</div>
+      <div style="font-size:0.82rem;color:var(--muted);line-height:1.6;">${b}</div>
+    </div>`).join('')}
+  </div>`;
+  return {cls:'tinted part-b', navClass:'part-b-dot', workSlide:false, html:`
+    ${sh('ic-gold','&#247;',p.title,'Part B','sh-part-b')}
+    ${rulesHtml}
+    ${table}
+    ${arrows('prev()','Examples',false,false)}`};
+}
+
+function buildPartBExamples() {
+  const p=lessonData.partB;
+  const cards=p.examples.map(e=>`
+    <div class="eg-card">
+      <div class="eg-label">${e.label}</div>
+      <div class="eg-q">${e.q}</div>
+      ${e.hint?`<p style="font-size:0.9rem;color:var(--muted);margin-bottom:6px;">&#128161; ${e.hint}</p>`:''}
+      ${stepReveal(e.steps,e.answer)}
+    </div>`).join('');
+  return {cls:'eg-slide', navClass:'part-b-dot', workSlide:false, html:`
+    ${sh('ic-gold','Ex',`Worked Examples: ÷10, ÷100, ÷1000`,'Part B','sh-part-b')}
+    <div class="eg-grid g3" style="flex:1;">${cards}</div>
+    ${arrows('prev()','Your Turn!',false,false)}`};
+}
+
+function buildPartBYourTurn() {
+  const p=lessonData.partB;
+  const cards=p.yourTurn.map(q=>`
+    <div class="eg-card">
+      <div class="eg-label">${q.label}</div>
+      <div class="eg-q">${q.q}</div>
+      <details><summary>Show answer</summary>${solBox(q.steps,q.answer)}</details>
+    </div>`).join('');
+  return {cls:'eg-slide', navClass:'part-b-dot', workSlide:true, html:`
+    ${sh('ic-purple','&#9999;',`Your Turn! &mdash; Dividing`,'Try it yourself!')}
+    ${timer(p.yourTurnTime*60,'ytB')}
+    <div class="eg-grid g2" style="flex:1;">${cards}</div>
+    ${arrows('prev()',p.exercise.title,false,false)}`};
+}
+
+function buildPartBExercise() {
+  const ex=lessonData.partB.exercise;
+  const labels='abcdefghijklmnopqrstuvwxyz'.split('');
+  const qCards=ex.questions.map((q,i)=>`
+    <div class="qc">
+      <div class="qlabel" style="background:var(--gold);color:#1a0800;">${labels[i]}</div>
+      <div class="qtext">${q}
+        <details class="q-ans"><summary>Answer</summary>
+          <div class="q-ans-val">${ex.answers[i].answer}</div>
+        </details>
+      </div>
+    </div>`).join('');
+  return {cls:'', navClass:'part-b-dot', workSlide:true, html:`
+    ${sh('ic-gold','&#9999;',ex.title,'Part B','sh-part-b')}
+    ${timer(ex.time*60,'exB')}
+    <div class="hl-box">${ex.instruction}</div>
+    <div class="qg g4" style="flex:1;">${qCards}</div>
+    ${arrows('prev()','Word Problems',false,false)}`};
+}
+
+function buildWordProblems() {
+  const ex=lessonData.wordProblems;
+  const labels='abcdefghijklmnopqrstuvwxyz'.split('');
+  const qCards=ex.questions.map((q,i)=>`
+    <div class="qc full">
+      <div class="qlabel">${labels[i]}</div>
+      <div class="qtext">${q}
+        <details class="q-ans"><summary>Answer</summary>
+          ${ex.answers[i].working?`<div class="q-ans-working">${ex.answers[i].working}</div>`:''}
+          <div class="q-ans-val">${ex.answers[i].answer}</div>
+        </details>
+      </div>
+    </div>`).join('');
+  return {cls:'', navClass:'', workSlide:true, html:`
+    ${sh('ic-teal','&#127758;',ex.title,'')}
+    ${timer(ex.time*60,'exC')}
+    <div class="hl-box">${ex.instruction}</div>
+    <div class="qg g2" style="flex:1;">${qCards}</div>
+    ${arrows('prev()','Extension',false,false)}`};
+}
+
+function buildExtension() {
+  const cards=lessonData.extension.map(e=>`
+    <div class="eg-card" style="border-top-color:var(--gold);">
+      <div class="eg-label">${e.label}</div>
+      <div class="eg-q">${e.q}</div>
+      <details><summary>Show answer</summary>${solBox(e.steps,e.answer)}</details>
+    </div>`).join('');
+  return {cls:'', navClass:'', workSlide:true, html:`
+    ${sh('ic-gold','&#11088;','Extension Questions','Challenge')}
+    <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);font-weight:700;margin-bottom:12px;">&#11088; Can you go further?</div>
+    <div class="eg-grid g3" style="flex:1;">${cards}</div>
+    ${arrows('prev()','Plenary',false,false)}`};
+}
+
+function buildPlenary() {
+  const p=lessonData.plenary;
+  const qRows=p.questions.map((q,i)=>`<div class="ple-q"><div class="ple-num">${i+1}.</div>${q}</div>`).join('');
+  const aRows=p.answers.map((a,i)=>`<strong>${i+1}.</strong> ${a}<br><br>`).join('');
+  return {cls:'', navClass:'', workSlide:false, html:`
+    ${sh('ic-blue','&#128172;','Plenary','Exit Ticket')}
+    ${timer(180,'plenary')}
+    <div class="ple-grid" style="flex:1;">
+      <div class="ple-card">
+        <div class="ple-head">Reflection &mdash; discuss with the class</div>
+        ${qRows}
+        <details style="margin-top:10px;"><summary>Show all answers</summary>
+          <div class="sol-box" style="font-size:0.88rem;">${aRows}</div>
+        </details>
+      </div>
+      <div class="ple-card">
+        <div class="ple-head">Key Takeaway &mdash; ${lessonData.meta.topic}</div>
+        <div class="rule" style="margin-top:0;">
+          <div class="rule-title">What we learned today</div>
+          <div class="rule-body">${p.summary}</div>
+        </div>
+        <div style="margin-top:10px;background:rgba(240,165,0,0.08);border:2px solid rgba(240,165,0,0.35);border-radius:8px;padding:12px 16px;font-size:0.92rem;line-height:1.8;">
+          <strong style="color:var(--blue);">× (Multiply)</strong> &nbsp;→&nbsp; point RIGHT &nbsp;(bigger number)<br>
+          <strong style="color:var(--gold);">÷ (Divide)</strong> &nbsp;→&nbsp; point LEFT &nbsp;(smaller number)
+        </div>
+        <div style="margin-top:10px;font-size:0.85rem;color:var(--muted);">&#128204; Remember: ${p.reminder}</div>
+      </div>
+    </div>
+    ${arrows('prev()','',false,true)}`};
+}
+
+function buildLesson() {
+  const slides = [];
+  slides.push({title:'Cover',        ...buildCover()});
+  slides.push({title:'Intentions',   ...buildLearningIntentions()});
+  slides.push({title:'Starter',      ...buildStarter()});
+  /* Part A */
+  slides.push({title:'Part A',       ...buildPartTransition('A','Multiplying by 10, 100, 1000','Move the decimal point to the RIGHT','&#215; 10 &rarr; 1 place right &emsp;','&#215; 100 &rarr; 2 places &emsp; &#215; 1000 &rarr; 3 places')});
+  slides.push({title:'A: Notes',     ...buildPartANotes()});
+  slides.push({title:'A: Examples',  ...buildPartAExamples()});
+  slides.push({title:'A: Your Turn', ...buildPartAYourTurn()});
+  slides.push({title:'A: Exercise',  ...buildPartAExercise()});
+  /* Part B */
+  slides.push({title:'Part B',       ...buildPartTransition('B','Dividing by 10, 100, 1000','Move the decimal point to the LEFT','&#247; 10 &rarr; 1 place left &emsp;','&#247; 100 &rarr; 2 places &emsp; &#247; 1000 &rarr; 3 places')});
+  slides.push({title:'B: Notes',     ...buildPartBNotes()});
+  slides.push({title:'B: Examples',  ...buildPartBExamples()});
+  slides.push({title:'B: Your Turn', ...buildPartBYourTurn()});
+  slides.push({title:'B: Exercise',  ...buildPartBExercise()});
+  /* Word problems, extension, plenary */
+  slides.push({title:'Word Probs',   ...buildWordProblems()});
+  slides.push({title:'Extension',    ...buildExtension()});
+  slides.push({title:'Plenary',      ...buildPlenary()});
+  return slides;
+}
+
+function renderLesson() {
+  const m=lessonData.meta;
+  const slides=buildLesson();
+  document.getElementById('chrome-label').textContent=m.course;
+  document.getElementById('chrome-title').textContent=m.topic;
+  document.title=`${m.topic} — Mother Teresa Catholic College`;
+  workSlideIndices.clear();
+  slides.forEach((s,i)=>{if(s.workSlide)workSlideIndices.add(i);});
+  const deck=document.getElementById('deck');
+  deck.innerHTML=slides.map((s,i)=>
+    `<section class="slide${i===0?' active':''}${s.cls?' '+s.cls:''}" data-index="${i}">${s.html}</section>`
+  ).join('');
+  const nav=document.getElementById('nav-bar');
+  nav.innerHTML=slides.map((s,i)=>
+    `<div class="nav-dot${i===0?' active':''}${s.navClass?' '+s.navClass:''}" onclick="goTo(${i})" title="${s.title}"></div>`
+  ).join('');
+  const camBtn=document.getElementById('floatCamBtn');
+  if(camBtn&&workSlideIndices.has(0))camBtn.classList.add('cam-visible');
+  if(window.MathJax&&MathJax.typesetPromise){MathJax.startup.promise.then(()=>{typeset(document.querySelector('.slide.active'));});}
+}
+
+function updateClock() {
+  const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,'0'),s=String(now.getSeconds()).padStart(2,'0'),ampm=h>=12?'PM':'AM',h12=h%12||12;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const el=document.getElementById('live-clock');if(el)el.textContent=`${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}  ${h12}:${m}:${s} ${ampm}`;
+}
+function toggleTheme(){const isLight=document.body.classList.toggle('light');document.getElementById('theme-btn').textContent=isLight?'&#127769; Dark':'&#9728; Light';}
+
+/* Setup */
+let setupObjectives=[...lessonData.learningIntentions];
+function setupRenderObjectives(){const list=document.getElementById('setupObjList');list.innerHTML='';setupObjectives.forEach((text,i)=>{const row=document.createElement('div');row.className='setup-obj-row';const inp=document.createElement('input');inp.type='text';inp.value=text;inp.placeholder='Learning intention...';inp.addEventListener('input',function(){setupObjectives[i]=this.value;});const btn=document.createElement('button');btn.className='setup-obj-remove';btn.innerHTML='&#10005;';btn.addEventListener('click',()=>{setupSyncObjectives();setupObjectives.splice(i,1);setupRenderObjectives();});row.appendChild(inp);row.appendChild(btn);list.appendChild(row);});}
+function setupAddObjective(){setupSyncObjectives();setupObjectives.push('');setupRenderObjectives();const rows=document.querySelectorAll('#setupObjList .setup-obj-row input');if(rows.length)rows[rows.length-1].focus();}
+function setupSyncObjectives(){setupObjectives=Array.from(document.querySelectorAll('#setupObjList .setup-obj-row input')).map(i=>i.value);}
+function setupTog(el){el.classList.toggle('on');setupUpdatePreview();}
+function setupSetMode(el){document.querySelectorAll('.setup-mode-card').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
+function setupUpdatePreview(){
+  const c={};document.querySelectorAll('.setup-tog').forEach(t=>{c[t.dataset.key]=t.classList.contains('on');});
+  const slides=[
+    {label:'Cover',cls:'active'},{label:'Intentions',cls:'active'},{label:'Starter',cls:c.starter?'active':''},
+    {label:'Part A',cls:c.partA?'parta':''},{label:'A: Notes',cls:c.partA?'parta':''},{label:'A: Ex',cls:c.partA?'parta':''},{label:'A: Ex',cls:c.partA?'parta':''},
+    {label:'Part B',cls:c.partB?'partb':''},{label:'B: Notes',cls:c.partB?'partb':''},{label:'B: Ex',cls:c.partB?'partb':''},{label:'B: Ex',cls:c.partB?'partb':''},
+    {label:'Words',cls:'active'},{label:'Extension',cls:c.extension?'ext':''},{label:'Plenary',cls:c.plenary?'active':''},
+  ];
+  document.getElementById('setupSlidePreview').innerHTML=slides.map(s=>`<div class="setup-chip ${s.cls}">${s.label}</div>`).join('');
+}
+function setupApplyMode(mode){document.body.classList.remove('light','adhd','highcontrast');if(mode==='light')document.body.classList.add('light');else if(mode==='adhd')document.body.classList.add('adhd');else if(mode==='highcontrast')document.body.classList.add('highcontrast');}
+function setupLaunch(){
+  setupSyncObjectives();
+  lessonData.learningIntentions=setupObjectives.map(s=>s.trim()).filter(Boolean);
+  lessonData.meta.topic=document.getElementById('infoTopic').value.trim()||lessonData.meta.topic;
+  lessonData.meta.course=document.getElementById('infoCourse').value.trim();
+  lessonData.meta.unit=document.getElementById('infoUnit').value.trim();
+  lessonData.meta.lessonNum=parseInt(document.getElementById('infoLessonNum').value)||lessonData.meta.lessonNum;
+  lessonData.meta.lessonOf=parseInt(document.getElementById('infoLessonOf').value)||lessonData.meta.lessonOf;
+  lessonData.meta.term=parseInt(document.getElementById('infoTerm').value)||lessonData.meta.term;
+  lessonData.meta.week=parseInt(document.getElementById('infoWeek').value)||lessonData.meta.week;
+  const mode=document.querySelector('.setup-mode-card.on')?.dataset.mode||'dark';
+  setupApplyMode(mode);
+  renderLesson();
+  const overlay=document.getElementById('setupOverlay');
+  overlay.classList.add('hiding');
+  setTimeout(()=>overlay.classList.add('gone'),380);
+}
+function updateSetupClock(){const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,'0'),s=String(now.getSeconds()).padStart(2,'0'),ampm=h>=12?'PM':'AM',h12=h%12||12;const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const el=document.getElementById('setup-clock');if(el)el.textContent=days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+'  '+h12+':'+m+':'+s+' '+ampm;}
+
+renderLesson();setupRenderObjectives();setupUpdatePreview();updateClock();updateSetupClock();setInterval(updateClock,1000);setInterval(updateSetupClock,1000);
+
+/* Upload Modal */
+const APPS_SCRIPT_URL=lessonData.appsScriptUrl;let collectedPhotos=[];
+function openUploadModal(){document.getElementById('uploadModal').classList.add('modal-open');}
+function closeUploadModal(){document.getElementById('uploadModal').classList.remove('modal-open');}
+function closeModalOutside(e){if(e.target===document.getElementById('uploadModal'))closeUploadModal();}
+document.addEventListener('change',function(e){if(e.target.id!=='m-cameraInput')return;Array.from(e.target.files).forEach(file=>{const reader=new FileReader();reader.onload=ev=>{collectedPhotos.push({file,dataUrl:ev.target.result});renderModalPreviews();};reader.readAsDataURL(file);});e.target.value='';});
+function renderModalPreviews(){const container=document.getElementById('m-preview');if(!container)return;container.innerHTML='';collectedPhotos.forEach((photo,idx)=>{const thumb=document.createElement('div');thumb.className='m-thumb';thumb.innerHTML=`<img src="${photo.dataUrl}" alt="Photo ${idx+1}"><button class="m-remove" onclick="removeModalPhoto(${idx})">&#10005;</button>`;container.appendChild(thumb);});const btn=document.getElementById('m-submitBtn');if(btn)btn.style.display=collectedPhotos.length>0?'flex':'none';}
+function removeModalPhoto(idx){collectedPhotos.splice(idx,1);renderModalPreviews();}
+function showModalStatus(msg,type){const el=document.getElementById('m-status');if(!el)return;el.className='m-status m-'+type;el.innerHTML=msg;}
+async function submitModalWork(){const sel=document.getElementById('m-courseSelect');const courseId=sel?sel.value:'';const courseName=sel?(sel.options[sel.selectedIndex]?.dataset.name||sel.options[sel.selectedIndex]?.text||''):'';const studentId=(document.getElementById('m-studentId')?.value||'').trim();if(!courseId){showModalStatus('Please select your class.','error');return;}if(!studentId){showModalStatus('Please enter your student ID.','error');return;}if(!collectedPhotos.length){showModalStatus('Please take at least one photo of your work.','error');return;}const submitBtn=document.getElementById('m-submitBtn');const photoBtn=document.getElementById('m-photoBtn');if(submitBtn)submitBtn.disabled=true;if(photoBtn)photoBtn.disabled=true;showModalStatus('Uploading your work\u2026 please wait.','loading');try{const now=new Date();const lessonDate=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;const photos=collectedPhotos.map((p,i)=>({base64:p.dataUrl.split(',')[1],mimeType:p.file.type||'image/jpeg',filename:`${courseName.replace(/\s+/g,'_')}_${studentId}_p${i+1}_${Date.now()}.jpg`}));const response=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({studentId,courseFolderId:courseId,courseName,lessonDate,photos})});const result=await response.json();if(result.success){const msg=result.matched?'&#10003; Work submitted! Well done today. &#127881;':'&#128193; Photos saved, but your ID wasn\'t found. Let your teacher know.';showModalStatus(msg,result.matched?'success':'error');if(submitBtn)submitBtn.style.display='none';if(photoBtn)photoBtn.style.display='none';collectedPhotos=[];renderModalPreviews();}else{showModalStatus('Upload failed: '+(result.error||'Unknown error. Please try again.'),'error');if(submitBtn)submitBtn.disabled=false;if(photoBtn)photoBtn.disabled=false;}}catch(err){showModalStatus('Connection error. Check your internet and try again.','error');if(submitBtn)submitBtn.disabled=false;if(photoBtn)photoBtn.disabled=false;}}
+document.addEventListener('input',function(e){if(e.target.id==='m-studentId')e.target.value=e.target.value.replace(/[^0-9]/g,'').slice(0,6);});
+</script>
+</body>
+</html>
