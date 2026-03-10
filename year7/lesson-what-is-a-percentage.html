@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What is a Percentage? — Maths</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#09121f;--bg-tint:#0d1a2e;--panel:#101d30;--card:#162540;--card-tint:#1b2d47;
+  --lift:#1e3256;--lift-tint:#22395e;--bdr:#1f3557;--bdr-tint:#263f65;
+  --teal:#00c9b8;--teal2:#009e90;--gold:#f0a500;--green:#2ecc71;
+  --red:#e74c3c;--blue:#4fa9ff;--text:#dde8f5;--muted:#6b87a8;--white:#ffffff;
+  --eg-bg:#100e00;--eg-bg2:#1a1400;
+}
+body{font-family:'Trebuchet MS',Trebuchet,Arial,sans-serif;background:var(--bg);color:var(--text);width:100vw;height:100vh;overflow:hidden;font-size:18px;}
+body.light{--bg:#eef5ff;--bg-tint:#e0eeff;--panel:#ffffff;--card:#ffffff;--card-tint:#f0f7ff;--lift:#ddeeff;--lift-tint:#d0e8ff;--bdr:#b8d4f0;--bdr-tint:#a8c8e8;--teal:#007a70;--teal2:#005f58;--gold:#c07800;--green:#1a8a45;--red:#cc2200;--blue:#1a6fc4;--text:#0f1e30;--muted:#4a6a88;--white:#ffffff;--eg-bg:#fffaea;--eg-bg2:#fff3cc;}
+body.light .cover-slide{background:radial-gradient(ellipse at 25% 50%,#c8deff 0%,#eef5ff 65%);}
+body.light .t-main{color:var(--text);}body.light .t-main span{color:var(--teal);}body.light .t-pill{color:var(--text);}
+.pres{width:100vw;height:100vh;display:flex;flex-direction:column;}
+.chrome{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:2px solid var(--teal2);padding:0 28px;height:46px;flex-shrink:0;}
+.chrome-left{display:flex;align-items:center;gap:10px;}
+.chrome-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);}
+.chrome-label{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:700;}
+.chrome-title{font-size:0.92rem;font-weight:700;color:var(--text);}
+.chrome-right{font-size:0.9rem;font-weight:700;color:var(--teal);font-variant-numeric:tabular-nums;}
+.deck{flex:1;position:relative;overflow:hidden;}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;padding:22px 52px 12px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.18s ease;overflow-y:auto;}
+.slide.active{opacity:1;visibility:visible;pointer-events:all;}
+.slide.tinted{background:var(--bg-tint);}
+.slide.tinted .rule,.slide.tinted .eg-card{background:var(--card-tint);border-color:var(--bdr-tint);}
+.slide.tinted .sol-box{background:var(--lift-tint);}
+.slide.eg-slide{background:var(--eg-bg);}
+.slide.eg-slide .eg-card,.slide.eg-slide .rule{background:var(--eg-bg2);border-color:rgba(240,165,0,0.3);}
+.slide.eg-slide .sol-box{background:rgba(240,165,0,0.08);border-color:var(--gold);}
+.nav-bar{background:var(--panel);border-top:1px solid var(--bdr);height:48px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 24px;flex-shrink:0;flex-wrap:wrap;}
+.nav-dot{width:11px;height:11px;border-radius:50%;background:var(--bdr);cursor:pointer;transition:all 0.15s;flex-shrink:0;}
+.nav-dot:hover{background:var(--muted);transform:scale(1.5);}
+.nav-dot.active{background:var(--teal);width:28px;border-radius:6px;}
+.arrows{margin-top:auto;padding-top:8px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.arrow-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 24px;border-radius:7px;border:2px solid var(--bdr);color:var(--muted);cursor:pointer;font-size:0.9rem;font-weight:700;letter-spacing:0.02em;transition:all 0.15s;background:transparent;font-family:inherit;}
+.arrow-btn:hover{border-color:var(--teal);color:var(--teal);}
+.arrow-btn.fwd{background:var(--teal2);border-color:var(--teal2);color:var(--white);}
+.arrow-btn.fwd:hover{background:var(--teal);border-color:var(--teal);}
+.ghost{visibility:hidden;pointer-events:none;}
+.sh{display:flex;align-items:center;gap:14px;padding-bottom:12px;margin-bottom:14px;border-bottom:2px solid var(--bdr);flex-shrink:0;}
+.sh-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:900;flex-shrink:0;color:#000;}
+.ic-teal{background:var(--teal);}.ic-gold{background:var(--gold);}.ic-green{background:var(--green);}.ic-blue{background:var(--blue);}.ic-red{background:var(--red);color:#fff;}
+.sh-title{font-size:1.8rem;font-weight:800;color:var(--text);flex:1;line-height:1;}
+.sh-badge{flex-shrink:0;background:var(--lift);border:1px solid var(--bdr);border-radius:20px;padding:5px 16px;font-size:0.82rem;color:var(--muted);white-space:nowrap;}
+.rule{background:var(--card);border:1px solid var(--bdr);border-left:5px solid var(--teal);border-radius:10px;padding:14px 20px;margin-bottom:10px;flex-shrink:0;}
+.rule-title{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal);font-weight:700;margin-bottom:6px;}
+.rule-body{font-size:1rem;line-height:1.8;}
+.rule-body em{color:var(--gold);font-style:normal;font-weight:700;}
+.rule-body code{display:block;background:var(--lift);padding:8px 14px;border-radius:6px;font-family:'Trebuchet MS',sans-serif;font-size:0.95em;color:var(--teal);font-weight:700;margin-bottom:8px;line-height:1.9;white-space:pre;word-break:break-word;}
+.eg-grid{display:grid;gap:12px;}
+.eg-grid.g2{grid-template-columns:1fr 1fr;}
+.eg-grid.g3{grid-template-columns:1fr 1fr 1fr;}
+.eg-card{background:var(--card);border:1px solid var(--bdr);border-top:4px solid var(--gold);border-radius:10px;padding:14px 18px;overflow-y:auto;}
+.eg-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);font-weight:700;margin-bottom:6px;}
+.eg-q{font-size:1.1rem;font-weight:700;margin-bottom:8px;line-height:1.5;}
+details summary{list-style:none;cursor:pointer;font-size:0.82rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.06em;padding:6px 0;user-select:none;}
+details summary::-webkit-details-marker{display:none;}
+details summary::before{content:'▶  ';font-size:0.7rem;}
+details[open] summary::before{content:'▼  ';}
+.sol-box{background:var(--lift);border-left:3px solid var(--green);border-radius:6px;padding:10px 14px;margin-top:6px;font-size:0.88rem;line-height:1.9;color:var(--text);}
+.sol-box strong{color:var(--green);}
+.qg{display:grid;gap:8px;}
+.qg.g2{grid-template-columns:1fr 1fr;}
+.qg.g3{grid-template-columns:1fr 1fr 1fr;}
+.qg.g4{grid-template-columns:1fr 1fr 1fr 1fr;}
+.qc{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:11px 14px;display:flex;align-items:flex-start;gap:10px;}
+.qc.full{grid-column:1/-1;}
+.qlabel{flex-shrink:0;width:28px;height:28px;border-radius:7px;background:var(--teal2);color:#fff;font-size:0.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.qlabel.gd{background:var(--gold);color:#1a0800;}
+.qtext{font-size:1rem;line-height:1.7;flex:1;}
+.qc details.q-ans summary{font-size:0.73rem;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;cursor:pointer;user-select:none;list-style:none;padding:2px 0;}
+.qc details.q-ans summary::-webkit-details-marker{display:none;}
+.qc details.q-ans summary::before{content:'▶ ';font-size:0.65rem;}
+.qc details.q-ans[open] summary::before{content:'▼ ';}
+.qc details.q-ans .q-ans-val{margin-top:3px;font-weight:700;color:var(--green);font-size:0.92rem;line-height:1.8;}
+.qc details.q-ans .q-ans-working{margin-top:2px;font-size:0.82rem;color:var(--muted);line-height:1.8;}
+.timer-bar-wrap{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:9px 16px;margin-bottom:12px;flex-shrink:0;}
+.tbar-btn{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;padding:6px 18px;border-radius:7px;border:2px solid var(--bdr);cursor:pointer;font-size:0.88rem;font-weight:700;color:var(--muted);background:transparent;transition:all 0.15s;user-select:none;white-space:nowrap;min-width:120px;}
+.tbar-btn:hover{border-color:var(--teal);color:var(--teal);}
+.tbar-btn.tbar-active{background:var(--teal2);border-color:var(--teal2);color:#fff;}
+.tbar-track-outer{flex:1;height:13px;background:var(--bg);border-radius:7px;border:1px solid var(--bdr);overflow:hidden;display:none;}
+.tbar-track-outer.tbar-visible{display:block;}
+.tbar-fill{height:100%;border-radius:7px;width:100%;transition:width 0.5s linear;}
+.tbar-fill.green{background:var(--green);}.tbar-fill.orange{background:#f39c12;}.tbar-fill.red{background:var(--red);}
+.tbar-done{opacity:0;flex-shrink:0;font-size:0.92rem;font-weight:800;color:var(--red);display:none;}
+.tbar-done.tbar-show{display:block;opacity:1;}
+.tbar-time-input{width:48px;padding:4px 5px;border-radius:6px;border:2px solid var(--bdr);background:var(--bg);color:var(--teal);font-size:0.92rem;font-weight:700;text-align:center;font-family:inherit;outline:none;}
+.tbar-time-input:focus{border-color:var(--teal);}
+.tbar-time-label{font-size:0.78rem;color:var(--muted);font-weight:600;white-space:nowrap;}
+/* Learning Intentions */
+.obj-list{display:flex;flex-direction:column;gap:10px;flex:1;min-height:0;justify-content:center;}
+.obj-item{display:flex;align-items:flex-start;gap:16px;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:14px 22px;font-size:1.15rem;line-height:1.5;}
+.obj-item em{color:var(--gold);font-style:normal;font-weight:700;}
+.obj-tick{flex-shrink:0;width:28px;height:28px;background:var(--teal2);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:900;margin-top:2px;}
+/* Cover */
+.cover-slide{background:radial-gradient(ellipse at 25% 50%,#0e2248 0%,var(--bg) 65%);align-items:center;justify-content:center;text-align:center;gap:16px;}
+.t-school{font-size:1.05rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.14em;}
+.t-unit{font-size:0.88rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);border:1px solid var(--bdr);display:inline-block;padding:5px 20px;border-radius:20px;}
+.t-main{font-size:3rem;font-weight:900;color:var(--white);line-height:1.1;}
+.t-main span{color:var(--teal);}
+.t-sub{font-size:1.3rem;color:var(--muted);}
+.t-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.t-pill{background:var(--card);border:1px solid var(--bdr);border-radius:7px;padding:8px 18px;font-size:0.95rem;}
+.t-meta{display:flex;gap:28px;justify-content:center;color:var(--muted);font-size:0.95rem;}
+.hl-box{background:rgba(240,165,0,0.08);border:2px solid rgba(240,165,0,0.35);border-radius:9px;padding:12px 18px;margin-bottom:10px;font-size:0.95rem;flex-shrink:0;line-height:1.7;}
+.hl-box strong{color:var(--gold);}
+.ple-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-height:0;}
+.ple-card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:16px 20px;overflow-y:auto;}
+.ple-head{font-size:0.74rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);font-weight:700;margin-bottom:10px;}
+.ple-q{font-size:1rem;padding:12px 0;border-bottom:1px solid var(--bdr);line-height:1.6;display:flex;gap:10px;align-items:flex-start;}
+.ple-q:last-of-type{border-bottom:none;}
+.ple-q em{color:var(--gold);font-style:normal;font-weight:700;}
+.ple-num{flex-shrink:0;color:var(--gold);font-weight:700;padding-top:2px;}
+.step-reveal{margin-top:8px;}
+.step-item{padding:8px 12px;margin-bottom:5px;background:rgba(240,165,0,0.07);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:0.92rem;line-height:1.8;}
+.step-explain{font-size:0.78rem;color:var(--muted);margin-top:3px;font-style:italic;line-height:1.4;}
+.step-answer{padding:7px 12px;margin-top:6px;background:rgba(46,204,113,0.1);border-left:3px solid var(--green);border-radius:0 6px 6px 0;font-size:0.95rem;line-height:1.8;}
+.step-btn{margin-top:8px;padding:6px 18px;border-radius:7px;background:transparent;border:2px solid var(--gold);color:var(--gold);font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+.step-btn:hover{background:var(--gold);color:#000;}
+.step-btn:disabled{opacity:0.35;cursor:default;}
+/* Fractions */
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 2px;line-height:1;}
+.frac-num,.frac-den{display:block;text-align:center;padding:0 4px;font-weight:700;font-size:0.85em;line-height:1.2;}
+.frac-num{border-bottom:2px solid currentColor;padding-bottom:1px;}
+.frac-den{padding-top:1px;}
+/* Buttons */
+.theme-btn{background:transparent;border:1.5px solid var(--bdr);color:var(--muted);border-radius:7px;padding:5px 12px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;white-space:nowrap;letter-spacing:0.04em;}
+.theme-btn:hover{border-color:var(--teal);color:var(--teal);}
+.setup-btn{background:transparent;border:1.5px solid var(--bdr);color:var(--muted);border-radius:7px;padding:5px 12px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;white-space:nowrap;letter-spacing:0.04em;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+.setup-btn:hover{border-color:var(--teal);color:var(--teal);}
+/* ── Percentage Grid ─────────────────────────────── */
+.grid-wrap{display:inline-flex;flex-direction:column;gap:6px;position:relative;}
+.grid-and-btn{position:relative;display:inline-block;line-height:0;}
+.grid-zoom-btn{position:absolute;top:4px;right:4px;width:24px;height:24px;background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.3);border-radius:5px;color:#fff;font-size:0.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;z-index:5;backdrop-filter:blur(2px);line-height:1;}
+.grid-zoom-btn:hover{background:var(--teal2);border-color:var(--teal);}
+.grid-legend{display:none;}.grid-modal .grid-legend,.grid-modal-legend{display:flex;flex-wrap:wrap;gap:7px;}
+.grid-legend-item{display:none;}
+.grid-modal-legend .grid-legend-item{display:flex;align-items:center;gap:5px;font-size:0.77rem;color:var(--text);font-weight:600;}
+.grid-legend-swatch{width:13px;height:13px;border-radius:3px;border:1px solid rgba(255,255,255,0.18);flex-shrink:0;}
+/* ── Grid Zoom Modal ───────────────────────────────── */
+.grid-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;}
+.grid-modal.open{display:flex;}
+.grid-modal-box{background:var(--panel);border:1px solid var(--bdr);border-radius:16px;padding:22px 26px;display:flex;flex-direction:column;gap:14px;align-items:center;max-width:520px;width:100%;}
+.grid-modal-header{display:flex;justify-content:space-between;align-items:center;width:100%;}
+.grid-modal-title{font-size:1rem;font-weight:800;color:var(--text);}
+.grid-modal-close{background:transparent;border:1.5px solid var(--bdr);color:var(--muted);font-size:0.85rem;font-weight:700;cursor:pointer;padding:5px 14px;border-radius:7px;font-family:inherit;transition:all 0.15s;}
+.grid-modal-close:hover{border-color:var(--red);color:var(--red);}
+.grid-modal-legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.grid-modal-legend .grid-legend-item{font-size:0.88rem;}
+.grid-modal-legend .grid-legend-swatch{width:16px;height:16px;}
+/* Upload */
+.float-cam-btn{position:fixed;bottom:62px;right:18px;width:50px;height:50px;border-radius:50%;background:var(--teal2);border:2px solid var(--teal);color:#fff;font-size:1.35rem;font-weight:900;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:150;box-shadow:0 4px 16px rgba(0,201,184,0.35);transition:all 0.18s;font-family:inherit;}
+.float-cam-btn:hover{background:var(--teal);transform:scale(1.12);}
+.float-cam-btn.cam-visible{display:flex;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:300;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.modal-open{display:flex;}
+.modal-box{background:var(--panel);border:1px solid var(--bdr);border-radius:16px;padding:26px 30px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:18px;position:relative;}
+body.light .modal-box{background:#fff;}
+.modal-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bdr);padding-bottom:14px;}
+.modal-title{font-size:1rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px;}
+.modal-close-btn{background:transparent;border:1.5px solid var(--bdr);color:var(--muted);font-size:1.1rem;cursor:pointer;padding:4px 10px;border-radius:7px;font-family:inherit;transition:all 0.15s;}
+.modal-close-btn:hover{border-color:var(--red);color:var(--red);}
+.m-step-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);font-weight:700;margin-bottom:6px;}
+.m-hint{font-size:0.8rem;color:var(--muted);margin-top:4px;}
+.m-hint-blue{color:var(--blue);}
+.modal-divider{border:none;border-top:1px solid var(--bdr);margin:0;}
+.m-select{width:100%;padding:11px 14px;font-size:1rem;font-weight:700;background:var(--lift);border:2px solid var(--bdr);border-radius:10px;color:var(--text);outline:none;font-family:inherit;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%2300c9b8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;transition:border-color 0.15s;}
+.m-select:focus{border-color:var(--teal);}
+.m-select option{background:var(--card);}
+.m-select:disabled{opacity:0.5;cursor:not-allowed;}
+.m-id-input{width:150px;padding:11px 14px;font-size:1.5rem;font-weight:800;text-align:center;letter-spacing:0.28em;background:var(--lift);border:2px solid var(--bdr);border-radius:10px;color:var(--teal);outline:none;font-family:inherit;display:block;transition:border-color 0.15s;}
+.m-id-input:focus{border-color:var(--teal);}
+.m-id-input::placeholder{color:var(--muted);letter-spacing:0.1em;font-size:0.95rem;}
+.m-photo-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:10px;border:none;background:var(--teal2);color:var(--white);font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.15s;font-family:inherit;}
+.m-photo-btn:hover{background:var(--teal);}
+.m-photo-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.m-submit-btn{background:var(--green);width:100%;justify-content:center;font-size:1rem;padding:14px;border-radius:10px;border:none;display:flex;align-items:center;gap:8px;color:#fff;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.15s;}
+.m-submit-btn:hover{background:#27ae60;}
+.m-submit-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.m-preview-grid{display:flex;gap:10px;flex-wrap:wrap;}
+.m-thumb{position:relative;width:80px;height:80px;border-radius:9px;overflow:hidden;border:2px solid var(--bdr);}
+.m-thumb img{width:100%;height:100%;object-fit:cover;}
+.m-thumb .m-remove{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:0.75rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.m-status{padding:10px 16px;border-radius:9px;font-weight:700;font-size:0.9rem;text-align:center;display:none;line-height:1.5;}
+.m-status.m-success{background:rgba(46,204,113,0.15);border:2px solid var(--green);color:var(--green);display:block;}
+.m-status.m-error{background:rgba(231,76,60,0.15);border:2px solid var(--red);color:var(--red);display:block;}
+.m-status.m-loading{background:rgba(79,169,255,0.15);border:2px solid var(--blue);color:var(--blue);display:block;}
+body.adhd{--bg:#1a1a2e;--bg-tint:#1e1e35;--panel:#22223a;--card:#2a2a45;--card-tint:#2e2e4a;--lift:#32325a;--lift-tint:#36366a;--bdr:#3a3a60;--bdr-tint:#42427a;--teal:#7ecfcf;--teal2:#5aafaf;--gold:#e8c97e;--green:#7ecf9e;--red:#cf7e7e;--blue:#7eaacf;--text:#e8e8f5;--muted:#8888aa;--eg-bg:#1e1e15;--eg-bg2:#26261c;}
+body.adhd .slide{padding:32px 60px 16px;}
+body.adhd .rule-body,body.adhd .qtext,body.adhd .eg-q{font-size:1.1rem;line-height:2.0;}
+body.adhd .sh-title{font-size:1.6rem;}
+body.adhd .qg.g4{grid-template-columns:1fr 1fr;}
+body.adhd .eg-grid.g2{grid-template-columns:1fr;}
+body.adhd .cover-slide{background:radial-gradient(ellipse at 25% 50%,#2a2a55 0%,#1a1a2e 65%);}
+body.hc{--bg:#000;--bg-tint:#0a0a0a;--panel:#111;--card:#111;--card-tint:#181818;--lift:#1a1a1a;--lift-tint:#222;--bdr:#555;--bdr-tint:#666;--teal:#00ffff;--teal2:#00cccc;--gold:#ffff00;--green:#00ff88;--red:#ff4444;--blue:#4499ff;--text:#fff;--muted:#aaa;--eg-bg:#0a0800;--eg-bg2:#111000;}
+body.hc .rule{border-left-width:6px;}
+body.hc .cover-slide{background:#000;}
+/* ─── SETUP OVERLAY ─── */
+.setup-overlay{position:fixed;inset:0;z-index:800;background:var(--bg);display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:0 0 60px;transition:opacity 0.35s ease;}
+.setup-overlay.hiding{opacity:0;pointer-events:none;}
+.setup-overlay.gone{display:none;}
+.setup-chrome{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:2px solid var(--teal2);padding:0 28px;height:52px;flex-shrink:0;margin-bottom:32px;position:sticky;top:0;z-index:10;}
+.setup-chrome-left{display:flex;align-items:center;gap:10px;}
+.setup-chrome-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);}
+.setup-chrome-label{font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:700;}
+.setup-clock{font-size:0.82rem;font-weight:700;color:var(--teal);}
+.setup-header{text-align:center;margin-bottom:28px;padding:0 24px;}
+.setup-header h1{font-size:1.7rem;font-weight:900;color:var(--white);margin-bottom:4px;}
+.setup-header p{font-size:0.9rem;color:var(--muted);}
+.setup-badge{display:inline-flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--bdr);border-radius:12px;padding:14px 22px;margin-bottom:24px;}
+.setup-badge-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--teal));display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#000;flex-shrink:0;font-weight:900;}
+.setup-badge-title{font-size:1.1rem;font-weight:900;color:var(--white);line-height:1.2;}
+.setup-badge-sub{font-size:0.78rem;color:var(--muted);margin-top:2px;}
+.setup-card{background:var(--panel);border:1px solid var(--bdr);border-radius:14px;padding:22px 26px;width:100%;max-width:760px;margin-bottom:16px;}
+.setup-section-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:14px;}
+.setup-section-label.teal{color:var(--teal);}.setup-section-label.gold{color:var(--gold);}
+.setup-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.setup-info-field label{display:block;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:700;margin-bottom:5px;}
+.setup-input{width:100%;padding:10px 13px;border-radius:9px;border:2px solid var(--bdr);background:var(--lift);color:var(--text);font-family:inherit;font-size:0.9rem;font-weight:600;outline:none;transition:border-color 0.15s;}
+.setup-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,201,184,0.12);}
+.setup-span2{grid-column:1/-1;}
+.setup-obj-list{display:flex;flex-direction:column;gap:8px;}
+.setup-obj-row{display:flex;align-items:center;gap:10px;}
+.setup-obj-row input{flex:1;padding:8px 12px;border-radius:8px;border:2px solid var(--bdr);background:var(--lift);color:var(--text);font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.15s;}
+.setup-obj-row input:focus{border-color:var(--teal);}
+.setup-obj-remove{background:transparent;border:none;color:var(--muted);font-size:1.05rem;cursor:pointer;padding:4px 6px;border-radius:6px;transition:color 0.15s;}
+.setup-obj-remove:hover{color:var(--red);}
+.setup-add-obj{display:inline-flex;align-items:center;gap:6px;background:transparent;border:2px dashed var(--bdr);color:var(--muted);border-radius:8px;padding:7px 14px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-top:6px;}
+.setup-add-obj:hover{border-color:var(--teal);color:var(--teal);}
+.setup-toggle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;}
+.setup-tog{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--bdr);border-radius:9px;padding:11px 14px;cursor:pointer;transition:all 0.15s;user-select:none;}
+.setup-tog:hover{border-color:var(--teal);}
+.setup-tog.on{border-color:var(--teal);background:rgba(0,201,184,0.08);}
+.setup-tog-icon{font-size:1.05rem;flex-shrink:0;}
+.setup-tog-label{font-size:0.88rem;font-weight:700;line-height:1.2;}
+.setup-tog-sub{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+.setup-tog-check{margin-left:auto;flex-shrink:0;width:18px;height:18px;border-radius:4px;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:transparent;transition:all 0.15s;}
+.setup-tog.on .setup-tog-check{background:var(--teal);border-color:var(--teal);color:#000;}
+.setup-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.setup-chip{background:var(--lift);border:1px solid var(--bdr);border-radius:20px;padding:4px 14px;font-size:0.75rem;color:var(--muted);}
+.setup-chip.active{background:rgba(0,201,184,0.12);border-color:var(--teal);color:var(--teal);}
+.setup-chip.ex{background:rgba(79,169,255,0.1);border-color:var(--blue);color:var(--blue);}
+.setup-chip.ext{background:rgba(240,165,0,0.1);border-color:var(--gold);color:var(--gold);}
+.setup-appear-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.setup-mode-card{background:var(--card);border:2px solid var(--bdr);border-radius:9px;padding:13px 16px;cursor:pointer;transition:all 0.15s;user-select:none;}
+.setup-mode-card:hover{border-color:var(--teal);}
+.setup-mode-card.on{border-color:var(--teal);background:rgba(0,201,184,0.08);}
+.setup-mode-title{font-size:0.9rem;font-weight:800;margin-bottom:4px;}
+.setup-mode-desc{font-size:0.73rem;color:var(--muted);line-height:1.5;}
+.setup-mode-swatch{display:flex;gap:5px;margin-top:8px;}
+.setup-sw{width:18px;height:18px;border-radius:4px;}
+.setup-launch-wrap{width:100%;max-width:760px;padding:0 0 8px;}
+.setup-launch-btn{width:100%;padding:16px;border-radius:10px;border:none;background:var(--teal2);color:var(--white);font-size:1.1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.15s;letter-spacing:0.03em;display:flex;align-items:center;justify-content:center;gap:10px;}
+.setup-launch-btn:hover{background:var(--teal);}
+.setup-hint{font-size:0.76rem;color:var(--muted);text-align:center;margin-top:8px;}
+@media(max-width:520px){.setup-info-grid,.setup-appear-grid{grid-template-columns:1fr;}.setup-span2{grid-column:1;}.setup-card{padding:18px 16px;}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SETUP OVERLAY
+══════════════════════════════════════════ -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-chrome">
+    <div class="setup-chrome-left"><div class="setup-chrome-dot"></div><span class="setup-chrome-label">Lesson Setup</span></div>
+    <span class="setup-clock" id="setup-clock"></span>
+  </div>
+  <div class="setup-header">
+    <h1>&#128196; Lesson Setup</h1>
+    <p>Configure your lesson, then launch for the class.</p>
+  </div>
+  <div class="setup-badge">
+    <div class="setup-badge-icon">%</div>
+    <div>
+      <div class="setup-badge-title">What is a Percentage?</div>
+      <div class="setup-badge-sub">Year 7 Mathematics &nbsp;&middot;&nbsp; Percentages &nbsp;&middot;&nbsp; Lesson 1 of 4</div>
+    </div>
+  </div>
+
+  <!-- LESSON DETAILS -->
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#128218; Lesson Details</div>
+    <div class="setup-info-grid">
+      <div class="setup-info-field setup-span2"><label>Topic Title</label><input class="setup-input" type="text" id="infoTopic" value="What is a Percentage?"></div>
+      <div class="setup-info-field"><label>Course</label>
+        <input class="setup-input" list="courseList" id="infoCourse" value="Year 7 Mathematics">
+        <datalist id="courseList">
+          <option value="Year 7 Mathematics"><option value="Year 8 Mathematics">
+          <option value="Year 9 Mathematics"><option value="Year 10 Mathematics">
+          <option value="Year 11 Foundations"><option value="Year 11 Essentials">
+          <option value="Year 11 Methods"><option value="Year 11 Applications">
+          <option value="Year 12 Essentials"><option value="Year 12 Applications">
+        </datalist>
+      </div>
+      <div class="setup-info-field"><label>Unit</label><input class="setup-input" type="text" id="infoUnit" value="Percentages"></div>
+      <div class="setup-info-field"><label>Lesson Number</label><input class="setup-input" type="number" id="infoLessonNum" min="1" value="1"></div>
+      <div class="setup-info-field"><label>Lessons in Unit</label><input class="setup-input" type="number" id="infoLessonOf" min="1" value="4"></div>
+      <div class="setup-info-field"><label>Term</label><input class="setup-input" type="number" id="infoTerm" min="1" max="4" value="2"></div>
+      <div class="setup-info-field"><label>Week</label><input class="setup-input" type="number" id="infoWeek" min="1" value="3"></div>
+    </div>
+    <div style="margin-top:18px;">
+      <div class="setup-section-label teal" style="margin-bottom:8px;">&#127919; Learning Intentions</div>
+      <div class="setup-obj-list" id="setupObjList"></div>
+      <button class="setup-add-obj" onclick="setupAddObjective()">&#43; Add Intention</button>
+    </div>
+  </div>
+
+  <!-- COMPONENTS -->
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#9881; Lesson Components</div>
+    <div class="setup-toggle-grid">
+      <div class="setup-tog on" data-key="starter"   onclick="setupTog(this)"><span class="setup-tog-icon">&#9733;</span><div><div class="setup-tog-label">Starter</div><div class="setup-tog-sub">Warm-up questions</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="notes"     onclick="setupTog(this)"><span class="setup-tog-icon">&#128208;</span><div><div class="setup-tog-label">Notes</div><div class="setup-tog-sub">Key concepts</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="examples"  onclick="setupTog(this)"><span class="setup-tog-icon">&#128396;</span><div><div class="setup-tog-label">Examples</div><div class="setup-tog-sub">Worked examples</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="yourturn"  onclick="setupTog(this)"><span class="setup-tog-icon">&#9999;</span><div><div class="setup-tog-label">Your Turn</div><div class="setup-tog-sub">Guided practice</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="exercise"  onclick="setupTog(this)"><span class="setup-tog-icon">&#128221;</span><div><div class="setup-tog-label">Exercises</div><div class="setup-tog-sub">3 exercise sets</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="extension" onclick="setupTog(this)"><span class="setup-tog-icon">&#11088;</span><div><div class="setup-tog-label">Extension</div><div class="setup-tog-sub">Challenge questions</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="plenary"   onclick="setupTog(this)"><span class="setup-tog-icon">&#128172;</span><div><div class="setup-tog-label">Plenary</div><div class="setup-tog-sub">Exit discussion</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="upload"    onclick="setupTog(this)"><span class="setup-tog-icon">&#128247;</span><div><div class="setup-tog-label">Upload Work</div><div class="setup-tog-sub">Submit button</div></div><span class="setup-tog-check">&#10003;</span></div>
+    </div>
+    <div style="margin-top:16px;">
+      <div class="setup-section-label gold" style="margin-bottom:8px;">&#128196; Slide Overview</div>
+      <div class="setup-chips" id="setupSlidePreview"></div>
+    </div>
+  </div>
+
+  <!-- APPEARANCE -->
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#127775; Appearance</div>
+    <div class="setup-appear-grid">
+      <div class="setup-mode-card on" data-mode="dark" onclick="setupSetMode(this)"><div class="setup-mode-title">&#127769; Dark</div><div class="setup-mode-desc">Default dark theme. Easy on the eyes in a dim classroom.</div><div class="setup-mode-swatch"><div class="setup-sw" style="background:#09121f;border:1px solid #1f3557;"></div><div class="setup-sw" style="background:#00c9b8;"></div><div class="setup-sw" style="background:#f0a500;"></div></div></div>
+      <div class="setup-mode-card" data-mode="light" onclick="setupSetMode(this)"><div class="setup-mode-title">&#9728; Light</div><div class="setup-mode-desc">Bright white theme. Good for projectors in lit rooms.</div><div class="setup-mode-swatch"><div class="setup-sw" style="background:#eef5ff;border:1px solid #b8d4f0;"></div><div class="setup-sw" style="background:#007a70;"></div><div class="setup-sw" style="background:#c07800;"></div></div></div>
+      <div class="setup-mode-card" data-mode="adhd" onclick="setupSetMode(this)"><div class="setup-mode-title">&#129504; Focus Mode</div><div class="setup-mode-desc">Reduced colour, softer contrast. Supports ADHD &amp; visual sensitivity.</div><div class="setup-mode-swatch"><div class="setup-sw" style="background:#1a1a2e;border:1px solid #333;"></div><div class="setup-sw" style="background:#7ecfcf;"></div><div class="setup-sw" style="background:#e8c97e;"></div></div></div>
+      <div class="setup-mode-card" data-mode="highcontrast" onclick="setupSetMode(this)"><div class="setup-mode-title">&#9680; High Contrast</div><div class="setup-mode-desc">Maximum contrast, bold text. Helps students with low vision.</div><div class="setup-mode-swatch"><div class="setup-sw" style="background:#000;border:1px solid #fff;"></div><div class="setup-sw" style="background:#fff;"></div><div class="setup-sw" style="background:#ffff00;"></div></div></div>
+    </div>
+  </div>
+
+  <!-- LAUNCH -->
+  <div class="setup-launch-wrap">
+    <button class="setup-launch-btn" onclick="setupLaunch()">&#9654;&nbsp; Launch Lesson</button>
+    <p class="setup-hint">Lesson opens instantly — use the theme toggle inside the lesson to switch appearance at any time.</p>
+  </div>
+</div>
+
+<!-- Grid Zoom Modal -->
+<div class="grid-modal" id="gridZoomModal" onclick="if(event.target===this)closeGridZoom()">
+  <div class="grid-modal-box">
+    <div class="grid-modal-header">
+      <div class="grid-modal-title" id="gridZoomTitle">Percentage Grid</div>
+      <button class="grid-modal-close" onclick="closeGridZoom()">&#10005; Close</button>
+    </div>
+    <div id="gridZoomSVG"></div>
+    <div class="grid-modal-legend" id="gridZoomLegend"></div>
+  </div>
+</div>
+
+<!-- Upload Float Button -->
+<button class="float-cam-btn" id="floatCamBtn" title="Submit your work" onclick="openModal()">&#128247;</button>
+
+<!-- Upload Modal -->
+<div class="modal-overlay" id="uploadModal" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">&#128247; &nbsp; Submit Your Work</div>
+      <button class="modal-close-btn" onclick="closeModal()">&#10005; Close</button>
+    </div>
+    <div>
+      <div class="m-step-label">Step 1 — Select your course</div>
+      <select class="m-select" id="m-courseSelect" disabled><option value="">Loading courses&hellip;</option></select>
+      <p class="m-hint m-hint-blue" id="m-courseLoading">&#9203; Fetching course list&hellip;</p>
+      <p class="m-hint" id="m-courseHint" style="display:none;">Can&rsquo;t find your course? Ask your teacher.</p>
+    </div>
+    <hr class="modal-divider">
+    <div>
+      <div class="m-step-label">Step 2 — Enter your student ID</div>
+      <input class="m-id-input" type="text" id="m-studentId" maxlength="6" placeholder="ID" inputmode="numeric" autocomplete="off" spellcheck="false">
+      <p class="m-hint">Your 6-digit student number</p>
+    </div>
+    <hr class="modal-divider">
+    <div>
+      <div class="m-step-label">Step 3 — Take a photo of your work</div>
+      <input type="file" id="m-cameraInput" accept="image/*" capture="environment" multiple style="display:none;">
+      <button class="m-photo-btn" id="m-photoBtn" onclick="document.getElementById('m-cameraInput').click()">&#128247; &nbsp; Take / Choose Photo(s)</button>
+      <p class="m-hint">You can add multiple photos if your work spans more than one page.</p>
+    </div>
+    <div class="m-preview-grid" id="m-preview"></div>
+    <button class="m-submit-btn" id="m-submitBtn" onclick="submitWork()" style="display:none;">&#9989; &nbsp; Submit to Teacher</button>
+    <div class="m-status" id="m-status"></div>
+  </div>
+</div>
+
+<div class="pres">
+  <div class="chrome">
+    <div class="chrome-left">
+      <div class="chrome-dot"></div>
+      <span class="chrome-label" id="chrome-label"></span>
+    </div>
+    <span class="chrome-title" id="chrome-title"></span>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">&#9728; Light</button>
+      <span class="chrome-right" id="live-clock">--:--:-- --</span>
+    </div>
+  </div>
+  <div class="deck" id="deck"></div>
+  <div class="nav-bar" id="nav-bar"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════ */
+function F(n,d){return `<span class="frac"><span class="frac-num">${n}</span><span class="frac-den">${d}</span></span>`;}
+
+/* ─── SVG Percentage Grid ───────────────────────────
+   segments: [{color, count, label}]
+   size: pixel width/height (default 148)
+   title: string shown in zoom modal
+─────────────────────────────────────────────────── */
+let _gc = 0;
+function pctGrid(segments, size, title) {
+  size  = size  || 148;
+  title = title || 'Percentage Grid';
+
+  const flat = [];
+  segments.forEach(s => { for (let i = 0; i < s.count; i++) flat.push(s.color); });
+  while (flat.length < 100) flat.push(null);
+
+  function makeSVG(sz) {
+    const c = sz / 10, g = Math.max(1, sz * 0.006);
+    let r = `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" xmlns="http://www.w3.org/2000/svg" style="display:block;">`;
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        const idx = row * 10 + col;
+        const fill = flat[idx] ? flat[idx] : '#ffffff';
+        const stroke = '#aaaaaa';
+        r += `<rect x="${col*c+g}" y="${row*c+g}" width="${c-g*2}" height="${c-g*2}" fill="${fill}" stroke="${stroke}" stroke-width="0.5" rx="1.5"/>`;
+      }
+    }
+    r += '</svg>';
+    return r;
+  }
+
+  const legendHTML = segments.filter(s=>s.label).map(s=>
+    `<span class="grid-legend-item"><span class="grid-legend-swatch" style="background:${s.color};"></span>${s.label}</span>`
+  ).join('');
+
+  const uid = 'g' + (_gc++);
+  // Store seg data as JSON in a data attribute for the zoom handler
+  const segsJSON = encodeURIComponent(JSON.stringify(segments));
+  const titleEnc = encodeURIComponent(title);
+
+  return `<div class="grid-wrap" id="${uid}">
+    <div class="grid-and-btn">
+      ${makeSVG(size)}
+    </div>
+  </div>`;
+}
+
+function openGridZoom(segsEnc, titleEnc, legendHTML) {
+  const segments = JSON.parse(decodeURIComponent(segsEnc));
+  const title    = decodeURIComponent(titleEnc);
+
+  const flat = [];
+  segments.forEach(s => { for (let i = 0; i < s.count; i++) flat.push(s.color); });
+  while (flat.length < 100) flat.push(null);
+
+  const sz = 440, c = sz / 10, g = 2;
+  let svg = `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" xmlns="http://www.w3.org/2000/svg" style="display:block;">`;
+  for (let row = 0; row < 10; row++) {
+    for (let col = 0; col < 10; col++) {
+      const idx = row * 10 + col;
+      const fill   = flat[idx] ? flat[idx] : '#ffffff';
+      const stroke = '#aaaaaa';
+      svg += `<rect x="${col*c+g}" y="${row*c+g}" width="${c-g*2}" height="${c-g*2}" fill="${fill}" stroke="${stroke}" stroke-width="0.8" rx="2"/>`;
+    }
+  }
+  svg += '</svg>';
+
+  document.getElementById('gridZoomTitle').textContent = title;
+  document.getElementById('gridZoomSVG').innerHTML     = svg;
+  document.getElementById('gridZoomLegend').innerHTML  = legendHTML;
+  document.getElementById('gridZoomModal').classList.add('open');
+}
+function closeGridZoom() {
+  document.getElementById('gridZoomModal').classList.remove('open');
+}
+
+/* ═══════════════════════════════════════════════════
+   LESSON DATA
+═══════════════════════════════════════════════════ */
+const lessonData = {
+
+  meta: {
+    course:'Year 7 Mathematics', unit:'Percentages', lessonNum:1, lessonOf:4,
+    topic:'What is a Percentage?', topicHighlight:'Percentage',
+    subtopics:['Percent means out of 100','Fractions & Decimals','% symbol'],
+    pills:['Percent','Fraction','Decimal','Hundredths'], term:2, week:3
+  },
+
+  learningIntentions: [
+    `I understand that <em>percent</em> means "out of 100" and can use the <em>%</em> symbol correctly`,
+    `I can <em>convert</em> a percentage to a fraction with denominator 100`,
+    `I can <em>convert</em> a percentage to a decimal by dividing by 100`,
+    `I can convert fractions and decimals back into <em>percentages</em>`
+  ],
+
+  starter: {
+    time: 6,
+    questions: [
+      {
+        tag: 'Calculate',
+        q: `<div style="font-size:1.05rem;font-weight:800;color:var(--gold);margin-bottom:12px;">Calculate the following</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div><strong>(a)</strong> &nbsp; 143 &times; 7</div>
+              <div><strong>(b)</strong> &nbsp; 504 &divide; 8</div>
+            </div>`
+      },
+      {
+        tag: 'Estimate',
+        q: `<div style="font-size:1.05rem;font-weight:800;color:var(--gold);margin-bottom:12px;">Estimate the answer to</div>
+            <div style="font-size:1.15rem;font-weight:700;margin-top:6px;">38 &times; 408</div>`
+      },
+      {
+        tag: 'BIMDAS',
+        q: `<div style="font-size:1.05rem;font-weight:800;color:var(--gold);margin-bottom:12px;">Calculate</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div><strong>(a)</strong> &nbsp; 3 + 4 &times; 2</div>
+              <div><strong>(b)</strong> &nbsp; (5 + 3) &times; 2</div>
+            </div>`
+      },
+      {
+        tag: 'Fractions',
+        q: `<div style="font-size:1.05rem;font-weight:800;color:var(--gold);margin-bottom:12px;">Work out</div>
+            <div style="font-size:1.15rem;font-weight:700;">${F(3,7)} of $56</div>`
+      }
+    ],
+    answers: [
+      { working:'143 &times; 7 &nbsp;&nbsp; 504 &divide; 8',
+        answer: '<strong>(a)</strong> &nbsp;1001 &nbsp;&nbsp;&nbsp; <strong>(b)</strong> &nbsp;63' },
+      { working:'38 &rarr; 40, &nbsp; 408 &rarr; 400',
+        answer: '40 &times; 400 = <strong>16 000</strong>' },
+      { working:'(a) multiply before adding &nbsp; (b) brackets first',
+        answer: '<strong>(a)</strong> &nbsp;11 &nbsp;&nbsp;&nbsp; <strong>(b)</strong> &nbsp;16' },
+      { working:'$56 &divide; 7 = $8 &nbsp;&rarr;&nbsp; $8 &times; 3',
+        answer: `${F(3,7)} of $56 = <strong>$24</strong>` }
+    ]
+  },
+
+  topics: [{
+    title: 'What is a Percentage?',
+
+    notes: [
+      {
+        title: 'Percent means out of 100',
+        formula: `percent = "per centum" = out of 100\ne.g.  38% = ${F(38,100)} = 0·38     and     6% = ${F(6,100)} = 0·06`,
+        body: `The word <em>percent</em> comes from Latin meaning "per hundred". When a shape is divided into <em>100 equal pieces</em>, each piece is <em>1 percent (1%)</em>. We write it using the symbol <em>%</em>. The denominator is always <em>100</em>.`
+      },
+      {
+        title: 'Converting: % ↔ Fraction ↔ Decimal',
+        formula: `% → Fraction : write the number over 100          e.g. 47% = ${F(47,100)}
+% → Decimal  : divide by 100 (move point 2 left)  e.g. 47% = 0·47
+Decimal → %  : multiply by 100                    e.g. 0·35 = 35%
+Fraction → % : read the top number (denom = 100)  e.g. ${F(63,100)} = 63%`,
+        body: `To change a <em>percentage to a fraction</em>, write it over 100. To change to a <em>decimal</em>, divide by 100 (move the decimal point 2 places left). <em>Single-digit %</em> values need a leading zero: 7% = 0·07, not 0·7.`
+      }
+    ],
+
+    examples: [
+      {
+        label: 'Example 1 — Reading a percentage grid',
+        q: `The 10&times;10 grid below has <strong style="color:#9b59b6;">38 purple</strong> squares and <strong style="color:#e05555;">6 red</strong> squares coloured. Write each colour as a percentage, fraction and decimal.<br><br>
+        ${pctGrid([{color:'#9b59b6',count:38,label:'Purple — 38 squares'},{color:'#e05555',count:6,label:'Red — 6 squares'}],148,'Example 1 — Purple & Red')}`,
+        hint: 'Each small square = 1% because the whole grid has exactly 100 squares',
+        steps: [
+          { line:`Purple: 38 squares out of 100 → <strong>38%</strong>`, explain:'Count the purple squares — there are 38' },
+          { line:`Purple = 38% = ${F(38,100)} = 38 ÷ 100 = <strong>0·38</strong>`, explain:'Write as %, then fraction over 100, then divide for decimal' },
+          { line:`Red: 6 squares out of 100 → <strong>6%</strong>`, explain:'Count the red squares — there are 6' },
+          { line:`Red = 6% = ${F(6,100)} = 6 ÷ 100 = <strong>0·06</strong>`, explain:'Single digit — 6 ÷ 100 = 0·06, leading zero essential' },
+          { line:`✓ Check: 38 + 6 = 44 coloured, so 56 white. 44% + 56% = 100% ✓` }
+        ],
+        answer: `Purple: 38%, ${F(38,100)}, 0·38 &nbsp;|&nbsp; Red: 6%, ${F(6,100)}, 0·06`
+      },
+      {
+        label: 'Example 2 — Converting between forms',
+        q: `Write each as a fraction and as a decimal: &nbsp; (a) 73% &nbsp;&nbsp; (b) 9% &nbsp;&nbsp; (c) 50%`,
+        hint: 'Fraction: write over 100. Decimal: divide by 100',
+        steps: [
+          { line:`(a) 73% = ${F(73,100)} = 73 ÷ 100 = <strong>0·73</strong>`, explain:'Move decimal 2 left: 73. → 0·73' },
+          { line:`(b) 9% = ${F(9,100)} = 9 ÷ 100 = <strong>0·09</strong>`, explain:'Single digit — must be 0·09, not 0·9!' },
+          { line:`(c) 50% = ${F(50,100)} = 50 ÷ 100 = <strong>0·5</strong>`, explain:'50 ÷ 100 = 0·5 (trailing zero can drop)' },
+          { line:`✓ Check: 0·73×100=73 ✓ &nbsp; 0·09×100=9 ✓ &nbsp; 0·5×100=50 ✓` }
+        ],
+        answer: `(a) ${F(73,100)}, 0·73 &nbsp;&nbsp; (b) ${F(9,100)}, 0·09 &nbsp;&nbsp; (c) ${F(50,100)}, 0·5`
+      }
+    ],
+
+    yourTurn: [
+      {
+        label: 'Your Turn (a) — Read the grid',
+        q: `Look at the grid below. Count each colour and write it as a percentage, as a fraction with denominator 100, and as a decimal.<br><br>
+        ${pctGrid([{color:'#4fa9ff',count:45,label:'Blue — 45 squares'},{color:'#e05555',count:15,label:'Red — 15 squares'}],148,'Your Turn — Blue & Red')}`,
+        steps: [
+          `Blue: 45 out of 100 → 45% = ${F(45,100)} = 0·45`,
+          `Red: 15 out of 100 → 15% = ${F(15,100)} = 0·15`,
+          `Check: 45 + 15 = 60 coloured; 40 white. 60% + 40% = 100% ✓`
+        ],
+        answer: `Blue: 45%, ${F(45,100)}, 0·45 &nbsp;|&nbsp; Red: 15%, ${F(15,100)}, 0·15`
+      },
+      {
+        label: 'Your Turn (b) — Convert',
+        q: `Write each as a fraction (with denominator 100) and as a decimal:<br><br>
+        <strong>(a)</strong> &nbsp;29% &nbsp;&nbsp;&nbsp;&nbsp; <strong>(b)</strong> &nbsp;4% &nbsp;&nbsp;&nbsp;&nbsp; <strong>(c)</strong> &nbsp;100%`,
+        steps: [
+          `(a) 29% = ${F(29,100)} = 0·29`,
+          `(b) 4% = ${F(4,100)} = 0·04 ← leading zero needed!`,
+          `(c) 100% = ${F(100,100)} = 1`
+        ],
+        answer: `(a) ${F(29,100)}, 0·29 &nbsp;&nbsp; (b) ${F(4,100)}, 0·04 &nbsp;&nbsp; (c) ${F(100,100)}, 1`
+      }
+    ],
+    yourTurnTime: 5,
+
+    exercises: [
+
+      {
+        title: 'Exercise 1 — Reading Percentage Grids',
+        instruction: `For each grid, count the coloured squares. Write each colour as a <em>percentage</em>.`,
+        time: 10,
+        cols: 2,
+        questions: [
+          `${pctGrid([{color:'#4fa9ff',count:40,label:'Blue — 40 squares'},{color:'#e05555',count:10,label:'Red — 10 squares'}],140,'Grid (a) — Blue & Red')}`,
+          `${pctGrid([{color:'#e91e8c',count:30,label:'Pink — 30 squares'},{color:'#2ecc71',count:50,label:'Green — 50 squares'}],140,'Grid (b) — Pink & Green')}`,
+          `${pctGrid([{color:'#c8a96e',count:55,label:'Tan — 55 squares'},{color:'#7ecfcf',count:20,label:'Blue — 20 squares'}],140,'Grid (c) — Tan & Blue')}`,
+          `${pctGrid([{color:'#e67e22',count:20,label:'Orange — 20 squares'},{color:'#9b59b6',count:35,label:'Purple — 35 squares'},{color:'#f1c40f',count:15,label:'Yellow — 15 squares'}],140,'Grid (d) — Three Colours')}`
+        ],
+        answers: [
+          { working:'Blue: 40 squares; Red: 10 squares',
+            answer:`Blue: 40%, ${F(40,100)}, 0·40 &nbsp;| Red: 10%, ${F(10,100)}, 0·10` },
+          { working:'Pink: 30 squares; Green: 50 squares',
+            answer:`Pink: 30%, ${F(30,100)}, 0·30 &nbsp;| Green: 50%, ${F(50,100)}, 0·50` },
+          { working:'Tan: 55, Blue: 20. Total = 75. Uncoloured = 25',
+            answer:`Tan: 55%, ${F(55,100)}, 0·55 &nbsp;| Blue: 20%, ${F(20,100)}, 0·20 &nbsp;| Uncoloured: <strong>25%</strong>` },
+          { working:'Orange: 20, Purple: 35, Yellow: 15. Total = 70. Uncoloured = 30',
+            answer:`Orange 20%, 0·20 &nbsp;| Purple 35%, 0·35 &nbsp;| Yellow 15%, 0·15 &nbsp;| Uncoloured: <strong>30%</strong>` }
+        ]
+      },
+
+      {
+        title: 'Exercise 2 — Fractions, Percentages and Decimals',
+        instruction: `<strong>Question 1:</strong> Write each percentage as a fraction with denominator 100.<br>
+        <strong>Question 2:</strong> Write each fraction or decimal as a percentage.`,
+        time: 12,
+        cols: 4,
+        questions: [
+          `<div style="grid-column:1/-1;padding:6px 4px 0;"><span style="font-size:0.95rem;font-weight:800;color:var(--teal);">Question 1</span> <span style="font-size:0.85rem;color:var(--muted);">— Write each percentage as a fraction with denominator 100</span></div>`,
+          `33%`,
+          `59%`,
+          `71%`,
+          `6%`,
+          `<div style="grid-column:1/-1;padding:6px 4px 0;"><span style="font-size:0.95rem;font-weight:800;color:var(--teal);">Question 2</span> <span style="font-size:0.85rem;color:var(--muted);">— Write each fraction or decimal as a percentage</span></div>`,
+          `${F(17,100)}`,
+          `${F(83,100)}`,
+          `${F(6,100)}`,
+          `0·91`,
+          `0·07`,
+          `0·14`,
+          `${F(45,100)}`,
+          `0·5`
+        ],
+        answers: [
+          null,
+          {working:'33 over 100', answer:`${F(33,100)}`},
+          {working:'59 over 100', answer:`${F(59,100)}`},
+          {working:'71 over 100', answer:`${F(71,100)}`},
+          {working:'6 over 100',  answer:`${F(6,100)}`},
+          null,
+          {working:'top ÷ 100', answer:'17%'},
+          {working:'top ÷ 100', answer:'83%'},
+          {working:'top ÷ 100', answer:'6%'},
+          {working:'0·91 × 100', answer:'91%'},
+          {working:'0·07 × 100', answer:'7%'},
+          {working:'0·14 × 100', answer:'14%'},
+          {working:'top ÷ 100', answer:'45%'},
+          {working:'0·5 × 100',  answer:'50%'}
+        ]
+      },
+
+      {
+        title: 'Exercise 3 — Fraction and Decimal Conversions',
+        instruction: `<strong>Question 1:</strong> Write each percentage as both a fraction with denominator 100 and as a decimal.<br>
+        <strong>Question 2:</strong> Write each percentage as a fraction in its simplest form.<br>
+        <strong>Question 3:</strong> Write each fraction or decimal as a percentage.`,
+        time: 12,
+        cols: 4,
+        questions: [
+          `<div style="grid-column:1/-1;padding:6px 4px 0;"><span style="font-size:0.95rem;font-weight:800;color:var(--teal);">Question 1</span> <span style="font-size:0.85rem;color:var(--muted);">— Write each percentage as a fraction with denominator 100 and as a decimal</span></div>`,
+          `14%`,
+          `39%`,
+          `50%`,
+          `28%`,
+          `<div style="grid-column:1/-1;padding:6px 4px 0;"><span style="font-size:0.95rem;font-weight:800;color:var(--teal);">Question 2</span> <span style="font-size:0.85rem;color:var(--muted);">— Write each percentage as a fraction in its simplest form</span></div>`,
+          `50%`,
+          `25%`,
+          `10%`,
+          `75%`,
+          `<div style="grid-column:1/-1;padding:6px 4px 0;"><span style="font-size:0.95rem;font-weight:800;color:var(--teal);">Question 3</span> <span style="font-size:0.85rem;color:var(--muted);">— Write each fraction or decimal as a percentage</span></div>`,
+          `0·4`,
+          `0·73`,
+          `${F(20,200)} <span style="font-size:0.8rem;color:var(--muted);">(simplify first)</span>`
+        ],
+        answers: [
+          null,
+          {working:`${F(14,100)}, 14÷100`, answer:`${F(14,100)} and 0·14`},
+          {working:`${F(39,100)}, 39÷100`, answer:`${F(39,100)} and 0·39`},
+          {working:`${F(50,100)}, 50÷100`, answer:`${F(50,100)} and 0·5`},
+          {working:`${F(28,100)}, 28÷100`, answer:`${F(28,100)} and 0·28`},
+          null,
+          {working:`${F(50,100)} ÷ 50`, answer:`${F(1,2)}`},
+          {working:`${F(25,100)} ÷ 25`, answer:`${F(1,4)}`},
+          {working:`${F(10,100)} ÷ 10`, answer:`${F(1,10)}`},
+          {working:`${F(75,100)} ÷ 25`, answer:`${F(3,4)}`},
+          null,
+          {working:'0·4 × 100',  answer:'40%'},
+          {working:'0·73 × 100', answer:'73%'},
+          {working:`${F(20,200)} = ${F(1,10)} = 10%`, answer:'10%'}
+        ]
+      }
+
+    ]
+  }],
+
+  extension: [
+    {
+      label: 'Extension 1 — Three-Colour Grid',
+      q: `The grid below has three colours. Write each colour as a percentage, as a fraction with denominator 100, and as a decimal. Then work out what percentage is uncoloured — <em>without counting</em>.<br><br>
+      ${pctGrid([{color:'#4fa9ff',count:24,label:'Blue — 24 squares'},{color:'#2ecc71',count:17,label:'Green — 17 squares'},{color:'#f1c40f',count:9,label:'Yellow — 9 squares'}],155,'Extension 1 — Three Colours')}`,
+      steps: [
+        `Blue: 24 squares → 24%, ${F(24,100)}, 0·24`,
+        `Green: 17 squares → 17%, ${F(17,100)}, 0·17`,
+        `Yellow: 9 squares → 9%, ${F(9,100)}, 0·09`,
+        `Total coloured: 24 + 17 + 9 = 50`,
+        `Uncoloured: 100% − 50% = <strong>50%</strong> — subtract from 100, no counting needed!`
+      ],
+      answer: `Blue 24%, 0·24 &nbsp;| Green 17%, 0·17 &nbsp;| Yellow 9%, 0·09 &nbsp;| Uncoloured: 50%`
+    },
+    {
+      label: 'Extension 2 — Fraction to Percentage',
+      q: `Convert each fraction to a percentage. Find an equivalent fraction with denominator 100 first.<br><br>
+      <strong>(a)</strong> &nbsp;${F(1,2)} &nbsp;&nbsp;&nbsp;&nbsp; <strong>(b)</strong> &nbsp;${F(3,4)} &nbsp;&nbsp;&nbsp;&nbsp; <strong>(c)</strong> &nbsp;${F(7,10)} &nbsp;&nbsp;&nbsp;&nbsp; <strong>(d)</strong> &nbsp;${F(3,5)}`,
+      steps: [
+        `(a) ${F(1,2)} = ${F(50,100)} = <strong>50%</strong> (×50 top & bottom)`,
+        `(b) ${F(3,4)} = ${F(75,100)} = <strong>75%</strong> (×25)`,
+        `(c) ${F(7,10)} = ${F(70,100)} = <strong>70%</strong> (×10)`,
+        `(d) ${F(3,5)} = ${F(60,100)} = <strong>60%</strong> (×20)`
+      ],
+      answer: `(a) 50% &nbsp; (b) 75% &nbsp; (c) 70% &nbsp; (d) 60%`
+    }
+  ],
+
+  plenary: {
+    questions: [
+      `What does the word <em>percent</em> actually mean? Where does it come from?`,
+      `How do you convert a percentage to a decimal? Explain with <strong>7%</strong>.`,
+      `A grid has 62 squares coloured. What percentage is coloured? What percentage is <em>not</em> coloured — how can you find that without counting?`
+    ],
+    answers: [
+      `"Percent" = Latin "per centum" = per hundred. So 45% means 45 out of every 100.`,
+      `Divide by 100 (move decimal 2 places left). 7% = 7 ÷ 100 = 0·07.`,
+      `62 coloured = 62%. Not coloured = 100% − 62% = 38% — just subtract from 100!`
+    ],
+    summary:  `A <em>percentage</em> is a number out of 100. We write it with the <em>%</em> symbol. Convert to a fraction by writing over 100. Convert to a decimal by dividing by 100. Go back to a percentage by multiplying by 100.`,
+    reminder: `% means "out of 100" — so 47% = ${F(47,100)} = 0·47. Always!`
+  },
+
+  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbz_TWHf7W7XSNQ4bJ5iNYbPLj1JUSnLq7G_BuRwmxKEPK-PrGiR4TOMZhyPg6-KHdvZvA/exec'
+
+};
+/* END OF LESSON DATA */
+
+/* ── Navigation ─────────────────────────── */
+let currentSlide=0, timerCount=0;
+const timerInstances={};
+let workSlideIndices=new Set();
+
+function goTo(n){
+  const slides=document.querySelectorAll('.slide'),dots=document.querySelectorAll('.nav-dot');
+  if(n<0||n>=slides.length)return;
+  slides[currentSlide].classList.remove('active');dots[currentSlide].classList.remove('active');
+  currentSlide=n;
+  slides[currentSlide].classList.add('active');dots[currentSlide].classList.add('active');
+  const cb=document.getElementById('floatCamBtn');
+  if(cb)cb.classList.toggle('cam-visible',workSlideIndices.has(currentSlide));
+}
+function next(){goTo(currentSlide+1);}
+function prev(){goTo(currentSlide-1);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();});
+
+/* ── Timer ──────────────────────────────── */
+function timer(secs,uid){
+  const id=`t_${uid||timerCount++}`;
+  const mins=Math.round(secs/60);
+  return `<div class="timer-bar-wrap" id="${id}_w">
+    <label class="tbar-time-label">Time:</label>
+    <input class="tbar-time-input" type="number" id="${id}_m" value="${mins}" min="1" max="60">
+    <label class="tbar-time-label">min</label>
+    <button class="tbar-btn" id="${id}_b" onclick="tToggle('${id}')">
+      <span class="tbar-on">&#9654; Start</span><span class="tbar-off" style="display:none">&#9632; Reset</span>
+    </button>
+    <div class="tbar-track-outer" id="${id}_tr"><div class="tbar-fill green" id="${id}_f"></div></div>
+    <div class="tbar-done" id="${id}_d">&#9200; Time&rsquo;s Up!</div>
+  </div>`;
+}
+function tToggle(id){
+  const b=document.getElementById(`${id}_b`),tr=document.getElementById(`${id}_tr`),f=document.getElementById(`${id}_f`),d=document.getElementById(`${id}_d`),inp=document.getElementById(`${id}_m`),on=b.querySelector('.tbar-on'),off=b.querySelector('.tbar-off');
+  if(timerInstances[id]){clearInterval(timerInstances[id].iv);delete timerInstances[id];tr.classList.remove('tbar-visible');d.classList.remove('tbar-show');b.classList.remove('tbar-active');on.style.display='inline';off.style.display='none';inp.disabled=false;f.style.width='100%';f.className='tbar-fill green';return;}
+  const tot=parseInt(inp.value)*60;if(isNaN(tot)||tot<=0)return;
+  inp.disabled=true;tr.classList.add('tbar-visible');b.classList.add('tbar-active');on.style.display='none';off.style.display='inline';
+  const end=Date.now()+tot*1000;
+  timerInstances[id]={iv:setInterval(()=>{const rem=Math.max(0,end-Date.now()),pct=rem/(tot*1000)*100;f.style.width=pct+'%';f.className='tbar-fill '+(pct>40?'green':pct>12?'orange':'red');if(rem<=0){clearInterval(timerInstances[id].iv);delete timerInstances[id];d.classList.add('tbar-show');f.style.width='0%';}},200)};
+}
+
+/* ── Helpers ────────────────────────────── */
+function arrows(backFn,fwdLabel,isFirst,isLast){
+  const back=isFirst?`<span class="ghost"><button class="arrow-btn">&#8592;</button></span>`:`<button class="arrow-btn" onclick="${backFn}">&#8592; Back</button>`;
+  const fwd=isLast?`<button class="arrow-btn fwd" onclick="goTo(0)">&#8617; Restart</button>`:`<button class="arrow-btn fwd" onclick="next()">${fwdLabel} &#8594;</button>`;
+  return `<div class="arrows">${back}${fwd}</div>`;
+}
+function sh(ic,icon,title,badge){
+  return `<div class="sh"><div class="sh-icon ${ic}">${icon}</div><div class="sh-title">${title}</div>${badge?`<div class="sh-badge">${badge}</div>`:''}</div>`;
+}
+function solBox(steps,answer){
+  return `<div class="sol-box">${steps&&steps.length?steps.map(s=>`&#9642; ${s}<br>`).join(''):''}<strong>&#10003; ${answer}</strong></div>`;
+}
+let _sc=0;
+function stepReveal(steps,answer){
+  const id=`sr${_sc++}`;
+  const html=steps.map((s,i)=>{const line=typeof s==='string'?s:s.line;const ex=typeof s==='object'&&s.explain?s.explain:'';return `<div class="step-item" id="${id}_s${i}" style="display:none">${line}${ex?`<div class="step-explain">&#128161; ${ex}</div>`:''}</div>`;}).join('');
+  return `<div class="step-reveal">${html}<div class="step-answer" id="${id}_a" style="display:none"><strong>${answer}</strong></div><button class="step-btn" id="${id}_b" onclick="revealStep('${id}',${steps.length})">Show Step 1</button></div>`;
+}
+function revealStep(id,total){
+  let next=-1;for(let i=0;i<total;i++){if(document.getElementById(`${id}_s${i}`).style.display==='none'){next=i;break;}}
+  if(next===-1){document.getElementById(`${id}_a`).style.display='block';document.getElementById(`${id}_b`).style.display='none';return;}
+  document.getElementById(`${id}_s${next}`).style.display='block';
+  document.getElementById(`${id}_b`).textContent=next===total-1?'Show Answer':`Show Step ${next+2}`;
+}
+
+/* ── Slide Builders ─────────────────────── */
+function buildCover(){
+  const m=lessonData.meta;
+  const tp=m.topic.split(m.topicHighlight);
+  const tH=m.topicHighlight?tp[0]+`<span>${m.topicHighlight}</span>`+(tp[1]||''):m.topic;
+  const tot=lessonData.topics.reduce((s,t)=>s+t.exercises.length,0);
+  return {cls:'cover-slide',workSlide:false,title:'Cover',html:`
+    <div class="t-school">Mother Teresa Catholic College</div>
+    <div class="t-unit">${m.course} &middot; ${m.unit} &middot; Lesson ${m.lessonNum}</div>
+    <div class="t-main">${tH}</div>
+    <div class="t-sub">${m.subtopics.join(' &middot; ')}</div>
+    <div class="t-pills">${m.pills.map(p=>`<div class="t-pill">${p}</div>`).join('')}</div>
+    <div class="t-meta"><span>&#128208; ${tot} exercise set${tot!==1?'s':''} + extension</span><span>&#128218; ${m.unit} &mdash; Lesson ${m.lessonNum} of ${m.lessonOf}</span></div>
+    ${arrows('','Begin Lesson',true,false)}`};
+}
+
+function buildLI(){
+  return {cls:'',workSlide:false,title:'Learning Intentions',html:`
+    ${sh('ic-teal','&#127919;','Learning Intentions','By the end of today&hellip;')}
+    <div class="obj-list">
+      ${lessonData.learningIntentions.map(o=>`<div class="obj-item"><div class="obj-tick">&#10003;</div><div>${o}</div></div>`).join('')}
+    </div>
+    ${arrows('prev()','Lesson Starter',false,false)}`};
+}
+
+function buildStarter(){
+  const s=lessonData.starter;
+  const cards=s.questions.map((q,i)=>{
+    const a=s.answers[i];
+    return `<div class="qc"><div class="qlabel gd">${i+1}</div><div class="qtext">${q.q}
+      <details class="q-ans" style="margin-top:8px;"><summary>Show solution</summary>
+      ${a.working?`<div class="q-ans-working">${a.working}</div>`:''}
+      <div class="q-ans-val">${a.answer}</div></details></div></div>`;
+  }).join('');
+  return {cls:'',workSlide:true,title:'Starter',html:`
+    ${sh('ic-gold','&#9733;','Lesson Starter',`${s.time} minutes`)}
+    ${timer(s.time*60)}
+    <div class="qg g2" style="flex:1;">${cards}</div>
+    ${arrows('prev()',lessonData.topics[0].title,false,false)}`};
+}
+
+function buildNotes(topic){
+  const rules=topic.notes.map(n=>`<div class="rule"><div class="rule-title">${n.title}</div><div class="rule-body"><code>${n.formula}</code>${n.body}</div></div>`).join('');
+  return {cls:'tinted',workSlide:false,title:'Notes',html:`${sh('ic-teal','&#128208;',topic.title,'')}${rules}${arrows('prev()','Worked Examples',false,false)}`};
+}
+
+function buildExamples(topic){
+  const cards=topic.examples.map(e=>`<div class="eg-card">
+    <div class="eg-label">${e.label}</div>
+    <div class="eg-q">${e.q}</div>
+    ${e.hint?`<p style="font-size:0.82rem;color:var(--muted);margin-bottom:6px;">&#128161; ${e.hint}</p>`:''}
+    ${stepReveal(e.steps,e.answer)}</div>`).join('');
+  return {cls:'eg-slide',workSlide:false,title:'Examples',html:`
+    ${sh('ic-gold','Ex',`Worked Examples: ${topic.title}`,'')}
+    <div class="eg-grid g2" style="flex:1;">${cards}</div>
+    ${arrows('prev()','Your Turn',false,false)}`};
+}
+
+function buildYourTurn(topic){
+  const cards=topic.yourTurn.map(q=>`<div class="eg-card">
+    <div class="eg-label">${q.label}</div>
+    <div class="eg-q">${q.q}</div>
+    <details><summary>Show answer</summary>${solBox(q.steps,q.answer)}</details></div>`).join('');
+  return {cls:'eg-slide',workSlide:true,title:'Your Turn',html:`
+    ${sh('ic-teal','&#9999;',`Your Turn! &mdash; ${topic.title}`,'Try it, then check')}
+    ${timer((topic.yourTurnTime||3)*60)}
+    <div class="eg-grid g2" style="flex:1;">${cards}</div>
+    ${arrows('prev()',topic.exercises[0].title,false,false)}`};
+}
+
+function buildExercise(ex,uid){
+  const labels='abcdefghijklmnopqrstuvwxyz'.split('');
+  const cc=ex.cols?`g${ex.cols}`:'g3';
+  let labelIdx=0;
+  const qc=ex.questions.map((q,i)=>{
+    const a=ex.answers[i];
+    /* null answer = full-width section header row */
+    if(a===null){
+      return `<div style="grid-column:1/-1;padding:8px 4px 0;">${q}</div>`;
+    }
+    const isObj=typeof a==='object'&&a!==null;
+    const lbl=labels[labelIdx++];
+    return `<div class="qc"><div class="qlabel">${lbl}</div><div class="qtext">${q}
+      <details class="q-ans"><summary>Answer</summary>
+      ${isObj&&a.working?`<div class="q-ans-working">${a.working}</div>`:''}
+      <div class="q-ans-val">${isObj?a.answer:a}</div></details></div></div>`;
+  }).join('');
+  return {cls:'',workSlide:true,title:'Ex',html:`
+    ${sh('ic-teal','&#9999;',ex.title,'')}
+    ${timer(ex.time*60,uid)}
+    <div class="hl-box">${ex.instruction}</div>
+    <div class="qg ${cc}" style="flex:1;align-content:start;">${qc}</div>
+    ${arrows('prev()','Next',false,false)}`};
+}
+
+function buildExtension(){
+  const cards=lessonData.extension.map(e=>`<div class="eg-card" style="border-top-color:var(--gold);">
+    <div class="eg-label">${e.label}</div>
+    <div class="eg-q">${e.q}</div>
+    <details><summary>Show answer</summary>${solBox(e.steps,e.answer)}</details></div>`).join('');
+  return {cls:'',workSlide:true,title:'Extension',html:`
+    ${sh('ic-gold','&#11088;','Extension Questions','Challenge')}
+    <div class="eg-grid g2" style="flex:1;">${cards}</div>
+    ${arrows('prev()','Plenary',false,false)}`};
+}
+
+function buildPlenary(){
+  const p=lessonData.plenary;
+  const qR=p.questions.map((q,i)=>`<div class="ple-q"><div class="ple-num">${i+1}.</div>${q}</div>`).join('');
+  const aR=p.answers.map((a,i)=>`<strong>${i+1}.</strong> ${a}<br><br>`).join('');
+  return {cls:'',workSlide:false,title:'Plenary',html:`
+    ${sh('ic-blue','&#128172;','Plenary','Exit Ticket')}
+    ${timer(180)}
+    <div class="ple-grid" style="flex:1;">
+      <div class="ple-card">
+        <div class="ple-head">Reflection &mdash; discuss with the class</div>
+        ${qR}
+        <details style="margin-top:10px;"><summary>Show all answers</summary>
+          <div class="sol-box" style="font-size:0.83rem;">${aR}</div></details>
+      </div>
+      <div class="ple-card">
+        <div class="ple-head">Key Takeaway &mdash; ${lessonData.meta.topic}</div>
+        <div class="rule" style="margin-top:0;"><div class="rule-title">What we learned today</div><div class="rule-body">${p.summary}</div></div>
+        <div style="margin-top:10px;font-size:0.83rem;color:var(--muted);">&#128204; Remember: ${p.reminder}</div>
+      </div>
+    </div>
+    ${arrows('prev()','',false,true)}`};
+}
+
+function buildLesson(){
+  const slides=[];
+  slides.push(buildCover());
+  slides.push(buildLI());
+  slides.push(buildStarter());
+  lessonData.topics.forEach((topic,ti)=>{
+    slides.push(buildNotes(topic));
+    slides.push(buildExamples(topic));
+    slides.push(buildYourTurn(topic));
+    topic.exercises.forEach((ex,ei)=>slides.push({...buildExercise(ex,`${ti}_${ei}`),title:`Ex ${ti+1}.${ei+1}`}));
+  });
+  slides.push(buildExtension());
+  slides.push(buildPlenary());
+  return slides;
+}
+
+function applyMode(mode){
+  document.body.classList.remove('light','adhd','hc');
+  if(mode==='light')document.body.classList.add('light');
+  if(mode==='adhd')document.body.classList.add('adhd');
+  if(mode==='highcontrast')document.body.classList.add('hc');
+  const btn=document.getElementById('theme-btn');
+  if(btn)btn.innerHTML={dark:'&#9728; Light',light:'&#127769; Dark',adhd:'&#127769; Dark',highcontrast:'&#127769; Dark'}[mode]||'&#9728; Light';
+}
+
+function renderLesson(){
+  let prefs={components:{starter:true,notes:true,examples:true,yourturn:true,exercise:true,extension:true,plenary:true,upload:true},mode:'dark'};
+  try{const s=sessionStorage.getItem('lessonPrefs');if(s)prefs=JSON.parse(s);}catch(e){}
+  const C=prefs.components;
+  applyMode(prefs.mode);
+  const camBtn=document.getElementById('floatCamBtn');
+  if(camBtn&&!C.upload)camBtn.style.display='none';
+
+  const all=buildLesson();
+  const SKIP={Starter:!C.starter,Notes:!C.notes,Examples:!C.examples,'Your Turn':!C.yourturn,Extension:!C.extension,Plenary:!C.plenary};
+  const slides=all.filter(s=>{
+    if(s.title==='Cover'||s.title==='Learning Intentions')return true;
+    if(SKIP[s.title])return false;
+    if(s.title.startsWith('Ex ')&&!C.exercise)return false;
+    return true;
+  });
+
+  const m=lessonData.meta;
+  document.getElementById('chrome-label').textContent=m.course;
+  document.getElementById('chrome-title').textContent=m.topic;
+  document.title=`${m.topic} — Mother Teresa Catholic College`;
+  workSlideIndices.clear();
+  slides.forEach((s,i)=>{if(s.workSlide)workSlideIndices.add(i);});
+  document.getElementById('deck').innerHTML=slides.map((s,i)=>`<section class="slide${i===0?' active':''}${s.cls?' '+s.cls:''}">${s.html}</section>`).join('');
+  document.getElementById('nav-bar').innerHTML=slides.map((s,i)=>`<div class="nav-dot${i===0?' active':''}" onclick="goTo(${i})" title="${s.title}"></div>`).join('');
+  if(camBtn&&C.upload&&workSlideIndices.has(0))camBtn.classList.add('cam-visible');
+}
+
+function updateClock(){
+  const now=new Date(),h=now.getHours(),mi=String(now.getMinutes()).padStart(2,'0'),s=String(now.getSeconds()).padStart(2,'0'),ap=h>=12?'PM':'AM',h12=h%12||12;
+  const el=document.getElementById('live-clock');
+  if(el)el.textContent=`${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][now.getDay()]} ${now.getDate()} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()]}  ${h12}:${mi}:${s} ${ap}`;
+}
+function toggleTheme(){const il=document.body.classList.toggle('light');document.getElementById('theme-btn').innerHTML=il?'&#127769; Dark':'&#9728; Light';}
+
+/* ══════════════════════════════════════════
+   SETUP OVERLAY LOGIC
+══════════════════════════════════════════ */
+let setupObjectives = lessonData.learningIntentions.map(s => s.replace(/<[^>]+>/g,''));
+
+function setupRenderObjectives() {
+  const list = document.getElementById('setupObjList');
+  list.innerHTML = '';
+  setupObjectives.forEach((text, i) => {
+    const row = document.createElement('div'); row.className = 'setup-obj-row';
+    const inp = document.createElement('input'); inp.type = 'text'; inp.value = text; inp.placeholder = 'Learning intention...';
+    inp.addEventListener('input', function() { setupObjectives[i] = this.value; });
+    const btn = document.createElement('button'); btn.className = 'setup-obj-remove'; btn.innerHTML = '&#10005;';
+    btn.addEventListener('click', () => { setupSyncObjectives(); setupObjectives.splice(i,1); setupRenderObjectives(); });
+    row.appendChild(inp); row.appendChild(btn); list.appendChild(row);
+  });
+}
+function setupAddObjective() { setupSyncObjectives(); setupObjectives.push(''); setupRenderObjectives(); const rows=document.querySelectorAll('#setupObjList .setup-obj-row input'); if(rows.length)rows[rows.length-1].focus(); }
+function setupSyncObjectives() { setupObjectives = Array.from(document.querySelectorAll('#setupObjList .setup-obj-row input')).map(i=>i.value); }
+function setupTog(el) { el.classList.toggle('on'); setupUpdatePreview(); }
+function setupSetMode(el) { document.querySelectorAll('.setup-mode-card').forEach(c=>c.classList.remove('on')); el.classList.add('on'); }
+function setupUpdatePreview() {
+  const c = {}; document.querySelectorAll('.setup-tog').forEach(t=>{ c[t.dataset.key]=t.classList.contains('on'); });
+  const slides = [
+    {label:'Cover',cls:'active'},{label:'Objectives',cls:'active'},
+    {label:'Starter',cls:c.starter?'active':''},
+    {label:'Notes',cls:c.notes?'active':''},
+    {label:'Examples',cls:c.examples?'active':''},
+    {label:'Your Turn',cls:c.yourturn?'active':''},
+    {label:'Ex 1',cls:c.exercise?'ex':''},{label:'Ex 2',cls:c.exercise?'ex':''},{label:'Ex 3',cls:c.exercise?'ex':''},
+    {label:'Extension',cls:c.extension?'ext':''},
+    {label:'Plenary',cls:c.plenary?'active':''},
+  ];
+  document.getElementById('setupSlidePreview').innerHTML = slides.map(s=>`<div class="setup-chip ${s.cls}">${s.label}</div>`).join('');
+}
+function setupLaunch() {
+  setupSyncObjectives();
+  const clean = setupObjectives.map(s=>s.trim()).filter(Boolean);
+  lessonData.learningIntentions = clean;
+  lessonData.meta.topic      = document.getElementById('infoTopic').value.trim() || lessonData.meta.topic;
+  lessonData.meta.course     = document.getElementById('infoCourse').value.trim();
+  lessonData.meta.unit       = document.getElementById('infoUnit').value.trim();
+  lessonData.meta.lessonNum  = parseInt(document.getElementById('infoLessonNum').value) || lessonData.meta.lessonNum;
+  lessonData.meta.lessonOf   = parseInt(document.getElementById('infoLessonOf').value) || lessonData.meta.lessonOf;
+  lessonData.meta.term       = parseInt(document.getElementById('infoTerm').value) || lessonData.meta.term;
+  lessonData.meta.week       = parseInt(document.getElementById('infoWeek').value) || lessonData.meta.week;
+  const C = {};
+  document.querySelectorAll('.setup-tog').forEach(t=>{ C[t.dataset.key]=t.classList.contains('on'); });
+  const mode = document.querySelector('.setup-mode-card.on')?.dataset.mode || 'dark';
+  applyMode(mode);
+  const camBtn = document.getElementById('floatCamBtn');
+  if (camBtn && !C.upload) camBtn.style.display = 'none';
+  const all = buildLesson();
+  const SKIP = {Starter:!C.starter,Notes:!C.notes,Examples:!C.examples,'Your Turn':!C.yourturn,Extension:!C.extension,Plenary:!C.plenary};
+  const slides = all.filter(s => {
+    if (s.title === 'Cover' || s.title === 'Learning Intentions') return true;
+    if (SKIP[s.title]) return false;
+    if (s.title.startsWith('Ex ') && !C.exercise) return false;
+    return true;
+  });
+  const m = lessonData.meta;
+  document.getElementById('chrome-label').textContent = m.course;
+  document.getElementById('chrome-title').textContent = m.topic;
+  document.title = `${m.topic} — Maths`;
+  workSlideIndices.clear();
+  slides.forEach((s,i) => { if(s.workSlide) workSlideIndices.add(i); });
+  document.getElementById('deck').innerHTML = slides.map((s,i)=>`<section class="slide${i===0?' active':''}${s.cls?' '+s.cls:''}">${s.html}</section>`).join('');
+  document.getElementById('nav-bar').innerHTML = slides.map((s,i)=>`<div class="nav-dot${i===0?' active':''}" onclick="goTo(${i})" title="${s.title}"></div>`).join('');
+  if (camBtn && C.upload && workSlideIndices.has(0)) camBtn.classList.add('cam-visible');
+  const overlay = document.getElementById('setupOverlay');
+  overlay.classList.add('hiding');
+  setTimeout(() => overlay.classList.add('gone'), 380);
+}
+function updateSetupClock() {
+  const now=new Date(),h=now.getHours(),mi=String(now.getMinutes()).padStart(2,'0'),s=String(now.getSeconds()).padStart(2,'0'),ap=h>=12?'PM':'AM',h12=h%12||12;
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const el=document.getElementById('setup-clock'); if(el)el.textContent=days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+'  '+h12+':'+mi+':'+s+' '+ap;
+}
+
+setupRenderObjectives();
+setupUpdatePreview();
+loadCoursesForModal();
+updateClock();
+updateSetupClock();
+setInterval(updateClock, 1000);
+setInterval(updateSetupClock, 1000);
+
+/* ── Upload ─────────────────────────────── */
+const APPS_SCRIPT_URL=lessonData.appsScriptUrl;
+let collectedPhotos=[];
+function openModal(){document.getElementById('uploadModal').classList.add('modal-open');}
+function closeModal(){document.getElementById('uploadModal').classList.remove('modal-open');}
+function handleOverlayClick(e){if(e.target===document.getElementById('uploadModal'))closeModal();}
+async function loadCoursesForModal(){
+  const sel=document.getElementById('m-courseSelect'),loading=document.getElementById('m-courseLoading'),hint=document.getElementById('m-courseHint');
+  if(!sel)return;
+  try{const res=await fetch(APPS_SCRIPT_URL),data=await res.json();if(loading)loading.style.display='none';sel.innerHTML='<option value="">— Choose your course —</option>';if(data.success&&data.folders?.length){data.folders.forEach(f=>{const o=document.createElement('option');o.value=f.id;o.textContent=f.name;o.dataset.name=f.name;sel.appendChild(o);});sel.disabled=false;if(hint)hint.style.display='block';}else{sel.innerHTML='<option value="">&cross; Could not load — see teacher</option>';}}
+  catch(e){if(loading)loading.style.display='none';if(sel)sel.innerHTML='<option value="">&cross; Could not load</option>';}
+}
+document.addEventListener('change',e=>{
+  if(e.target.id!=='m-cameraInput')return;
+  Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=ev=>{collectedPhotos.push({file,dataUrl:ev.target.result});renderPreviews();};r.readAsDataURL(file);});
+  e.target.value='';
+});
+function renderPreviews(){const c=document.getElementById('m-preview');if(!c)return;c.innerHTML='';collectedPhotos.forEach((p,i)=>{const t=document.createElement('div');t.className='m-thumb';t.innerHTML=`<img src="${p.dataUrl}"><button class="m-remove" onclick="removePhoto(${i})">&#10005;</button>`;c.appendChild(t);});const b=document.getElementById('m-submitBtn');if(b)b.style.display=collectedPhotos.length?'flex':'none';}
+function removePhoto(i){collectedPhotos.splice(i,1);renderPreviews();}
+function showStatus(msg,type){const el=document.getElementById('m-status');if(!el)return;el.className='m-status m-'+type;el.innerHTML=msg;}
+async function submitWork(){
+  const sel=document.getElementById('m-courseSelect'),courseId=sel?.value||'',courseName=sel?.options[sel.selectedIndex]?.dataset.name||'',studentId=(document.getElementById('m-studentId')?.value||'').trim();
+  if(!courseId){showStatus('Please select your course.','error');return;}
+  if(!studentId){showStatus('Please enter your student ID.','error');return;}
+  if(!collectedPhotos.length){showStatus('Please take at least one photo.','error');return;}
+  const sb=document.getElementById('m-submitBtn'),pb=document.getElementById('m-photoBtn');
+  if(sb)sb.disabled=true;if(pb)pb.disabled=true;
+  showStatus('Uploading\u2026 please wait.','loading');
+  try{
+    const now=new Date(),ld=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    const photos=collectedPhotos.map((p,i)=>({base64:p.dataUrl.split(',')[1],mimeType:p.file.type||'image/jpeg',filename:`${courseName.replace(/\s+/g,'_')}_${studentId}_p${i+1}_${Date.now()}.jpg`}));
+    const res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({studentId,courseId,courseName,lessonDate:ld,photos})});
+    const result=await res.json();
+    if(result.success){showStatus(result.matched?'&#10003; Submitted! Well done &#127881;':'&#128193; Saved — let teacher know your ID.',result.matched?'success':'error');if(sb)sb.style.display='none';if(pb)pb.style.display='none';collectedPhotos=[];renderPreviews();}
+    else{showStatus('Upload failed: '+(result.error||'Try again.'),'error');if(sb)sb.disabled=false;if(pb)pb.disabled=false;}
+  }catch(e){showStatus('Connection error. Check internet.','error');const sb=document.getElementById('m-submitBtn'),pb=document.getElementById('m-photoBtn');if(sb)sb.disabled=false;if(pb)pb.disabled=false;}
+}
+document.addEventListener('input',e=>{if(e.target.id==='m-studentId')e.target.value=e.target.value.replace(/[^0-9]/g,'').slice(0,6);});
+</script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Year 7 — Lessons</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#09121f;--panel:#101d30;--card:#162540;--lift:#1e3256;--bdr:#1f3557;
+  --teal:#00c9b8;--teal2:#009e90;--gold:#f0a500;--green:#2ecc71;
+  --red:#e74c3c;--blue:#4fa9ff;--text:#dde8f5;--muted:#6b87a8;--white:#ffffff;
+  --accent:#00c9b8;
+}
+body{font-family:'Trebuchet MS',Trebuchet,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+body.light{--bg:#eef5ff;--panel:#ffffff;--card:#ffffff;--lift:#ddeeff;--bdr:#b8d4f0;--teal:#007a70;--teal2:#005f58;--gold:#c07800;--green:#1a8a45;--red:#cc2200;--blue:#1a6fc4;--text:#0f1e30;--muted:#4a6a88;--accent:#007a70;}
+
+/* Chrome */
+.chrome{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:2px solid var(--teal2);padding:0 28px;height:46px;flex-shrink:0;}
+.chrome-left{display:flex;align-items:center;gap:10px;}
+.chrome-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);}
+.chrome-title{font-size:0.92rem;font-weight:700;color:var(--text);}
+.chrome-right{display:flex;align-items:center;gap:10px;}
+.chrome-clock{font-size:0.9rem;font-weight:700;color:var(--teal);font-variant-numeric:tabular-nums;}
+.chrome-btn{background:transparent;border:1.5px solid var(--bdr);border-radius:6px;color:var(--muted);font-size:0.8rem;font-weight:700;padding:4px 12px;cursor:pointer;font-family:inherit;transition:all 0.15s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+.chrome-btn:hover{border-color:var(--teal);color:var(--teal);}
+
+/* Main */
+.main{flex:1;padding:36px 24px 48px;display:flex;flex-direction:column;align-items:center;}
+
+/* Page header */
+.page-header{width:100%;max-width:760px;margin-bottom:32px;}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--muted);margin-bottom:16px;flex-wrap:wrap;}
+.breadcrumb a{color:var(--muted);text-decoration:none;font-weight:600;transition:color 0.12s;}
+.breadcrumb a:hover{color:var(--teal);}
+.breadcrumb-sep{color:var(--bdr);}
+.breadcrumb-current{color:var(--text);font-weight:700;}
+.page-title-row{display:flex;align-items:center;gap:16px;}
+.page-icon{width:52px;height:52px;border-radius:14px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:900;color:#000;flex-shrink:0;}
+.page-title{font-size:2rem;font-weight:900;color:var(--text);line-height:1.1;}
+.page-title span{color:var(--accent);}
+.page-sub{font-size:0.9rem;color:var(--muted);margin-top:4px;}
+
+/* Lesson count badge */
+.lesson-count{display:inline-flex;align-items:center;gap:6px;background:var(--lift);border:1px solid var(--bdr);border-radius:20px;padding:4px 14px;font-size:0.78rem;color:var(--muted);font-weight:700;margin-top:14px;}
+.lesson-count span{color:var(--teal);}
+
+/* Unit label */
+.unit-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--muted);padding:18px 0 8px;width:100%;max-width:760px;display:flex;align-items:center;gap:10px;}
+.unit-label::after{content:'';flex:1;height:1px;background:var(--bdr);}
+
+/* Lesson list */
+.lesson-list{width:100%;max-width:760px;display:flex;flex-direction:column;gap:10px;}
+
+/* Lesson card */
+.lesson-card{
+  background:var(--panel);border:1px solid var(--bdr);border-radius:12px;
+  padding:18px 22px;display:flex;align-items:center;gap:18px;
+  text-decoration:none;color:inherit;
+  transition:all 0.15s ease;position:relative;overflow:hidden;
+}
+.lesson-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:var(--accent);border-radius:12px 0 0 12px;
+  transition:width 0.15s;
+}
+.lesson-card:hover{border-color:var(--accent);transform:translateX(4px);box-shadow:0 4px 20px rgba(0,0,0,0.2);}
+.lesson-card:hover::before{width:6px;}
+
+/* Coming soon card */
+.lesson-card.coming-soon{opacity:0.45;cursor:not-allowed;pointer-events:none;}
+.lesson-card.coming-soon::before{background:var(--muted);}
+
+/* Lesson number badge */
+.lesson-num{
+  flex-shrink:0;width:44px;height:44px;border-radius:10px;
+  background:var(--lift);border:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;font-weight:900;color:var(--accent);
+}
+.lesson-card.coming-soon .lesson-num{color:var(--muted);}
+
+/* Lesson info */
+.lesson-info{flex:1;min-width:0;}
+.lesson-unit{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal);font-weight:700;margin-bottom:3px;}
+.lesson-card.coming-soon .lesson-unit{color:var(--muted);}
+.lesson-title{font-size:1.05rem;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lesson-meta{display:flex;align-items:center;gap:12px;margin-top:5px;flex-wrap:wrap;}
+.lesson-meta-item{font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:4px;}
+
+/* Status badge */
+.lesson-status{flex-shrink:0;}
+.status-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 12px;border-radius:20px;font-size:0.72rem;font-weight:700;
+}
+.status-badge.available{background:rgba(0,201,184,0.12);border:1px solid var(--teal);color:var(--teal);}
+.status-badge.soon{background:var(--lift);border:1px solid var(--bdr);color:var(--muted);}
+
+/* Arrow */
+.lesson-arrow{flex-shrink:0;font-size:1.2rem;color:var(--muted);transition:all 0.15s;}
+.lesson-card:hover .lesson-arrow{color:var(--accent);transform:translateX(3px);}
+
+/* Footer */
+.footer{text-align:center;padding:14px;font-size:0.78rem;color:var(--muted);border-top:1px solid var(--bdr);background:var(--panel);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.anim-in{animation:fadeUp 0.28s ease both;}
+.lesson-card{animation:fadeUp 0.28s ease both;}
+.lesson-list .lesson-card:nth-child(1){animation-delay:0.04s;}
+.lesson-list .lesson-card:nth-child(2){animation-delay:0.08s;}
+.lesson-list .lesson-card:nth-child(3){animation-delay:0.12s;}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="chrome-left">
+    <div class="chrome-dot"></div>
+    <span class="chrome-title">Mathematics — Year 7</span>
+  </div>
+  <div class="chrome-right">
+    <span class="chrome-clock" id="live-clock"></span>
+    <a class="chrome-btn" href="index.html">← Back</a>
+    <a class="chrome-btn" href="../index.html">⌂ Home</a>
+    <button class="chrome-btn" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="page-header anim-in">
+    <div class="breadcrumb">
+      <a href="../index.html">⌂ Home</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="index.html">Year 7</a>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">Lessons</span>
+    </div>
+    <div class="page-title-row">
+      <div class="page-icon">📚</div>
+      <div>
+        <div class="page-title">Year <span>7</span></div>
+        <div class="page-sub">Select a lesson to begin</div>
+      </div>
+    </div>
+    <div class="lesson-count">
+      <span>2</span> lessons available &nbsp;·&nbsp; more coming soon
+    </div>
+  </div>
+
+  <div class="unit-label">📐 &nbsp; Percentages</div>
+
+  <div class="lesson-list">
+
+    <!-- ── Lesson 1 — What is a Percentage? ── -->
+    <a class="lesson-card" href="lesson-what-is-a-percentage.html">
+      <div class="lesson-num">1</div>
+      <div class="lesson-info">
+        <div class="lesson-unit">Percentages</div>
+        <div class="lesson-title">What is a Percentage?</div>
+        <div class="lesson-meta">
+          <span class="lesson-meta-item">📅 Term 2, Week 3</span>
+        </div>
+      </div>
+      <div class="lesson-status">
+        <span class="status-badge available">✓ Available</span>
+      </div>
+      <div class="lesson-arrow">›</div>
+    </a>
+
+    <!-- ── Lesson 2 — Linking Fractions, Decimals & Percentages ── -->
+    <a class="lesson-card" href="lesson-linking-fractions-decimals-percentages.html">
+      <div class="lesson-num">2</div>
+      <div class="lesson-info">
+        <div class="lesson-unit">Percentages</div>
+        <div class="lesson-title">Linking Fractions, Decimals &amp; Percentages</div>
+        <div class="lesson-meta">
+          <span class="lesson-meta-item">📅 Term 1, Week 6</span>
+        </div>
+      </div>
+      <div class="lesson-status">
+        <span class="status-badge available">✓ Available</span>
+      </div>
+      <div class="lesson-arrow">›</div>
+    </a>
+
+    <!-- ── Coming Soon placeholder ── -->
+    <div class="lesson-card coming-soon">
+      <div class="lesson-num">3</div>
+      <div class="lesson-info">
+        <div class="lesson-unit">More lessons coming soon</div>
+        <div class="lesson-title">—</div>
+      </div>
+      <div class="lesson-status">
+        <span class="status-badge soon">Coming Soon</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer">Mathematics Department</div>
+
+<script>
+function updateClock(){
+  const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,'0'),s=String(now.getSeconds()).padStart(2,'0'),ampm=h>=12?'PM':'AM',h12=h%12||12;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const el=document.getElementById('live-clock');
+  if(el)el.textContent=days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+'  '+h12+':'+m+':'+s+' '+ampm;
+}
+updateClock();setInterval(updateClock,1000);
+function toggleTheme(){const isLight=document.body.classList.toggle('light');document.getElementById('theme-btn').innerHTML=isLight?'🌙 Dark':'☀ Light';}
+</script>
+</body>
+</html>
