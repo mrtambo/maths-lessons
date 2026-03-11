@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finding a Percentage of a Quantity — Maths</title>
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)']],
+    displayMath: [['\\[','\\]']]
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] },
+  startup: { typeset: false }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #09121f;
+  --bg-tint:   #0d1a2e;
+  --panel:     #101d30;
+  --card:      #162540;
+  --card-tint: #1b2d47;
+  --lift:      #1e3256;
+  --lift-tint: #22395e;
+  --bdr:       #1f3557;
+  --bdr-tint:  #263f65;
+  --teal:      #00c9b8;
+  --teal2:     #009e90;
+  --gold:      #f0a500;
+  --green:     #2ecc71;
+  --red:       #e74c3c;
+  --blue:      #4fa9ff;
+  --purple:    #a855f7;
+  --text:      #dde8f5;
+  --muted:     #6b87a8;
+  --white:     #ffffff;
+}
+
+body {
+  font-family: 'Trebuchet MS', Trebuchet, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  font-size: 18px;
+}
+
+.pres { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+
+.chrome {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--panel); border-bottom: 2px solid var(--teal2);
+  padding: 0 28px; height: 46px; flex-shrink: 0;
+}
+.chrome-left   { display: flex; align-items: center; gap: 10px; }
+.chrome-dot    { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); }
+.chrome-label  { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 700; }
+.chrome-title  { font-size: 0.92rem; font-weight: 700; color: var(--text); }
+.chrome-right  { font-size: 0.9rem; font-weight: 700; color: var(--teal); font-variant-numeric: tabular-nums; }
+
+.deck { flex: 1; position: relative; overflow: hidden; }
+
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  padding: 28px 56px 16px;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.18s ease;
+  overflow-y: auto;
+}
+.slide.active { opacity: 1; visibility: visible; pointer-events: all; }
+.slide.tinted { background: var(--bg-tint); }
+.slide.tinted .rule    { background: var(--card-tint); border-color: var(--bdr-tint); }
+.slide.tinted .eg-card { background: var(--card-tint); border-color: var(--bdr-tint); }
+.slide.tinted .sol-box { background: var(--lift-tint); }
+
+.nav-bar {
+  background: var(--panel); border-top: 1px solid var(--bdr);
+  height: 48px; display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 0 24px; flex-shrink: 0; flex-wrap: wrap;
+}
+.nav-dot {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--bdr); cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+}
+.nav-dot:hover  { background: var(--muted); transform: scale(1.5); }
+.nav-dot.active { background: var(--teal); width: 28px; border-radius: 6px; }
+
+.arrows {
+  margin-top: auto; padding-top: 10px;
+  display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+}
+.arrow-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 24px; border-radius: 7px; border: 2px solid var(--bdr);
+  color: var(--muted); cursor: pointer; font-size: 0.9rem; font-weight: 700;
+  letter-spacing: 0.02em; transition: all 0.15s;
+  background: transparent; font-family: inherit;
+}
+.arrow-btn:hover { border-color: var(--teal); color: var(--teal); }
+.arrow-btn.fwd   { background: var(--teal2); border-color: var(--teal2); color: var(--white); }
+.arrow-btn.fwd:hover { background: var(--teal); border-color: var(--teal); }
+.ghost { visibility: hidden; pointer-events: none; }
+
+.sh {
+  display: flex; align-items: center; gap: 14px;
+  padding-bottom: 14px; margin-bottom: 18px;
+  border-bottom: 2px solid var(--bdr); flex-shrink: 0;
+}
+.sh-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.35rem; font-weight: 900; flex-shrink: 0; color: #000;
+}
+.ic-teal   { background: var(--teal); }
+.ic-gold   { background: var(--gold); }
+.ic-green  { background: var(--green); }
+.ic-blue   { background: var(--blue); }
+.ic-red    { background: var(--red); color: #fff; }
+.ic-purple { background: var(--purple); color: #fff; }
+.sh-title { font-size: 2rem; font-weight: 800; color: var(--text); flex: 1; line-height: 1; }
+.sh-badge {
+  flex-shrink: 0; background: var(--lift); border: 1px solid var(--bdr);
+  border-radius: 20px; padding: 5px 16px; font-size: 0.82rem; color: var(--muted); white-space: nowrap;
+}
+
+.rule {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-left: 5px solid var(--teal); border-radius: 10px;
+  padding: 15px 22px; margin-bottom: 12px; flex-shrink: 0;
+}
+.rule-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--teal); font-weight: 700; margin-bottom: 8px; }
+.rule-body  { font-size: 1.1rem; line-height: 1.9; }
+.rule-body em { color: var(--gold); font-style: normal; font-weight: 700; }
+
+.rule-formula {
+  display: block; background: var(--lift); padding: 10px 16px; border-radius: 6px;
+  font-size: 1.15em; color: var(--teal);
+  font-weight: 700; margin-bottom: 10px; line-height: 2.6;
+  white-space: normal; word-break: break-word; text-align: center;
+}
+
+.eg-grid    { display: grid; gap: 14px; }
+.eg-grid.g2 { grid-template-columns: 1fr 1fr; }
+.eg-grid.g3 { grid-template-columns: 1fr 1fr 1fr; }
+.eg-card {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-top: 4px solid var(--gold); border-radius: 10px; padding: 16px 20px;
+}
+.eg-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+.eg-q     { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; line-height: 1.7; }
+
+details summary {
+  list-style: none; cursor: pointer; font-size: 0.82rem; font-weight: 700;
+  color: var(--green); text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 6px 0; user-select: none;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '▶  '; font-size: 0.7rem; }
+details[open] summary::before { content: '▼  '; }
+.sol-box {
+  background: var(--lift); border-left: 3px solid var(--green);
+  border-radius: 6px; padding: 12px 16px; margin-top: 8px;
+  font-size: 0.92rem; line-height: 2.2; color: var(--text);
+}
+.sol-box strong { color: var(--green); }
+
+.qg     { display: grid; gap: 10px; }
+.qg.g2  { grid-template-columns: 1fr 1fr; }
+.qg.g3  { grid-template-columns: 1fr 1fr 1fr; }
+.qg.g4  { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.qc {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-radius: 9px; padding: 13px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.qc.full { grid-column: 1 / -1; }
+.qlabel {
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: 7px;
+  background: var(--teal2); color: #fff; font-size: 0.82rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+.qlabel.gd  { background: var(--gold); color: #1a0800; }
+.qlabel.ans { background: var(--green); color: #000; }
+.qtext { font-size: 1.1rem; line-height: 1.9; flex: 1; }
+
+.timer-bar-wrap {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--card); border: 1px solid var(--bdr);
+  border-radius: 10px; padding: 10px 18px; margin-bottom: 14px; flex-shrink: 0;
+}
+.tbar-btn {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+  padding: 7px 20px; border-radius: 7px; border: 2px solid var(--bdr);
+  cursor: pointer; font-size: 0.9rem; font-weight: 700; color: var(--muted);
+  background: transparent; transition: all 0.15s; user-select: none;
+  white-space: nowrap; min-width: 130px;
+}
+.tbar-btn:hover { border-color: var(--teal); color: var(--teal); }
+.tbar-btn.tbar-active { background: var(--teal2); border-color: var(--teal2); color: #fff; }
+.tbar-track-outer { flex: 1; height: 14px; background: var(--bg); border-radius: 7px; border: 1px solid var(--bdr); overflow: hidden; display: none; }
+.tbar-track-outer.tbar-visible { display: block; }
+.tbar-fill { height: 100%; border-radius: 7px; width: 100%; transition: width 0.5s linear; }
+.tbar-fill.green  { background: var(--green); }
+.tbar-fill.orange { background: #f39c12; }
+.tbar-fill.red    { background: var(--red); }
+.tbar-done { opacity: 0; flex-shrink: 0; font-size: 0.95rem; font-weight: 800; color: var(--red); display: none; }
+.tbar-done.tbar-show { display: block; opacity: 1; }
+.tbar-time-input {
+  width: 52px; padding: 5px 6px; border-radius: 6px;
+  border: 2px solid var(--bdr); background: var(--bg);
+  color: var(--teal); font-size: 0.95rem; font-weight: 700;
+  text-align: center; font-family: inherit; outline: none;
+}
+.tbar-time-input:focus { border-color: var(--teal); box-shadow: 0 0 0 2px rgba(0,201,184,0.2); }
+.tbar-time-label { font-size: 0.8rem; color: var(--muted); font-weight: 600; white-space: nowrap; }
+
+.obj-list { display: flex; flex-direction: column; gap: 12px; flex: 1; justify-content: center; }
+.obj-item { display: flex; align-items: center; gap: 18px; background: var(--card); border: 1px solid var(--bdr); border-radius: 10px; padding: 16px 24px; font-size: 1.25rem; line-height: 1.4; }
+.obj-tick { flex-shrink: 0; width: 30px; height: 30px; background: var(--teal2); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 900; }
+
+.cover-slide { background: radial-gradient(ellipse at 25% 50%, #0e2248 0%, var(--bg) 65%); align-items: center; justify-content: center; text-align: center; gap: 18px; }
+.t-school { font-size: 1.05rem; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.14em; }
+.t-unit   { font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); border: 1px solid var(--bdr); display: inline-block; padding: 5px 20px; border-radius: 20px; }
+.t-main   { font-size: 3.2rem; font-weight: 900; color: var(--white); line-height: 1.1; }
+.t-main span { color: var(--teal); }
+.t-sub    { font-size: 1.4rem; color: var(--muted); }
+.t-pills  { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.t-pill   { background: var(--card); border: 1px solid var(--bdr); border-radius: 7px; padding: 9px 20px; font-size: 1rem; }
+.t-meta   { display: flex; gap: 28px; justify-content: center; color: var(--muted); font-size: 1rem; }
+
+.hl-box { background: rgba(240,165,0,0.08); border: 2px solid rgba(240,165,0,0.35); border-radius: 9px; padding: 14px 20px; margin-bottom: 12px; font-size: 1.05rem; flex-shrink: 0; line-height: 1.8; }
+.hl-box strong { color: var(--gold); }
+.hl-box em     { color: var(--gold); font-style: normal; }
+
+.warn-box {
+  background: rgba(231,76,60,0.08); border: 2px solid rgba(231,76,60,0.35);
+  border-radius: 9px; padding: 12px 18px; margin: 10px 0 0; font-size: 0.98rem;
+  line-height: 1.8; flex-shrink: 0;
+}
+.warn-box strong { color: var(--red); }
+.warn-box em     { color: var(--gold); font-style: normal; }
+
+.ple-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex: 1; min-height: 0; }
+.ple-card { background: var(--card); border: 1px solid var(--bdr); border-radius: 10px; padding: 18px 22px; overflow-y: auto; }
+.ple-head { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); font-weight: 700; margin-bottom: 12px; }
+.ple-q {
+  font-size: 1.05rem; padding: 14px 0; border-bottom: 1px solid var(--bdr);
+  line-height: 1.7; display: flex; gap: 10px; align-items: flex-start;
+}
+.ple-q:last-of-type { border-bottom: none; }
+.ple-num { flex-shrink: 0; color: var(--gold); font-weight: 700; padding-top: 4px; }
+
+.step-reveal { margin-top: 10px; }
+.step-item {
+  padding: 9px 14px; margin-bottom: 6px;
+  background: rgba(240,165,0,0.07); border-left: 3px solid var(--gold);
+  border-radius: 0 6px 6px 0; font-size: 0.95rem; line-height: 2.2;
+}
+.step-explain { font-size: 0.82rem; color: var(--muted); margin-top: 4px; font-style: italic; line-height: 1.5; }
+.step-answer {
+  padding: 8px 14px; margin-top: 8px;
+  background: rgba(46,204,113,0.1); border-left: 3px solid var(--green);
+  border-radius: 0 6px 6px 0; font-size: 1rem; line-height: 2;
+}
+.step-btn {
+  margin-top: 10px; padding: 7px 20px; border-radius: 7px;
+  background: transparent; border: 2px solid var(--gold);
+  color: var(--gold); font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; font-family: inherit; transition: all 0.15s;
+}
+.step-btn:hover { background: var(--gold); color: #000; }
+.step-btn:disabled { opacity: 0.35; cursor: default; }
+
+.qc details.q-ans { margin-top: 6px; }
+.qc details.q-ans summary {
+  font-size: 0.75rem; color: var(--green); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  cursor: pointer; user-select: none; list-style: none; padding: 2px 0;
+}
+.qc details.q-ans summary::-webkit-details-marker { display: none; }
+.qc details.q-ans summary::before { content: '▶ '; font-size: 0.65rem; }
+.qc details.q-ans[open] summary::before { content: '▼ '; }
+.qc details.q-ans .q-ans-val { margin-top: 4px; font-weight: 700; color: var(--green); font-size: 0.95rem; line-height: 2.2; }
+.qc details.q-ans .q-ans-working { margin-top: 2px; font-size: 0.85rem; color: var(--muted); line-height: 1.9; }
+
+.starter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  flex: 1;
+}
+.starter-card {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-radius: 10px; padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.starter-card.span2 { grid-column: 1 / -1; }
+.starter-tag {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+  font-weight: 700; color: var(--gold);
+  border-bottom: 1px solid var(--bdr); padding-bottom: 8px; margin-bottom: 2px;
+}
+.starter-qlist { display: flex; flex-direction: column; gap: 6px; }
+.starter-qrow  { display: flex; align-items: baseline; gap: 10px; font-size: 1.05rem; line-height: 1.9; }
+.starter-lbl   {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 6px;
+  background: var(--gold); color: #1a0800; font-size: 0.75rem; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+}
+.starter-ans-btn {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem;
+  color: var(--green); font-weight: 700; text-transform: uppercase;
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  letter-spacing: 0.05em; padding: 3px 0; margin-top: 6px;
+}
+.starter-ans-btn::before { content: '▶ '; font-size: 0.65rem; }
+.starter-ans-btn.open::before { content: '▼ '; }
+.starter-ans-reveal { display: none; margin-top: 4px; }
+.starter-ans-reveal.show { display: block; }
+.starter-ans-inner {
+  background: var(--lift); border-left: 3px solid var(--green);
+  border-radius: 0 6px 6px 0; padding: 8px 14px;
+  font-size: 0.88rem; line-height: 2.1; color: var(--text);
+}
+.starter-ans-inner strong { color: var(--green); }
+
+/* Key fractions reference bar */
+.frac-key-bar {
+  display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.frac-key-pill {
+  background: var(--lift); border: 2px solid var(--teal2);
+  border-radius: 10px; padding: 8px 18px; font-size: 1rem; font-weight: 700;
+  color: var(--teal); display: flex; align-items: center; gap: 8px;
+}
+
+/* Copy and complete grid */
+.copy-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px;
+}
+.copy-cell {
+  background: var(--card); border: 1px solid var(--bdr); border-radius: 9px;
+  padding: 14px 16px; font-size: 1rem; line-height: 2.4;
+}
+.copy-cell .copy-lbl {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--teal2); font-weight: 800; margin-bottom: 6px;
+}
+.blank { display: inline-block; min-width: 44px; border-bottom: 2px solid var(--gold); text-align: center; color: var(--gold); font-weight: 700; }
+
+.hw-due { display: inline-block; background: var(--gold); color: #1a0800; font-size: 0.9rem; font-weight: 800; border-radius: 20px; padding: 6px 20px; margin-bottom: 16px; letter-spacing: 0.04em; flex-shrink: 0; }
+
+:root      { --eg-bg: #100e00; --eg-bg2: #1a1400; }
+body.light { --eg-bg: #fffaea; --eg-bg2: #fff3cc; }
+.slide.eg-slide               { background: var(--eg-bg); }
+.slide.eg-slide .eg-card      { background: var(--eg-bg2); border-color: rgba(240,165,0,0.3); }
+.slide.eg-slide .rule         { background: var(--eg-bg2); border-color: rgba(240,165,0,0.3); }
+.slide.eg-slide .sol-box      { background: rgba(240,165,0,0.08); border-color: var(--gold); }
+
+body.light {
+  --bg: #eef5ff; --bg-tint: #e0eeff; --panel: #ffffff; --card: #ffffff;
+  --card-tint: #f0f7ff; --lift: #ddeeff; --lift-tint: #d0e8ff;
+  --bdr: #b8d4f0; --bdr-tint: #a8c8e8;
+  --teal: #007a70; --teal2: #005f58; --gold: #c07800; --green: #1a8a45;
+  --red: #cc2200; --blue: #1a6fc4; --text: #0f1e30; --muted: #4a6a88; --white: #ffffff;
+}
+body.light .cover-slide { background: radial-gradient(ellipse at 25% 50%, #c8deff 0%, #eef5ff 65%); }
+body.light .t-main { color: var(--text); }
+body.light .t-main span { color: var(--teal); }
+
+.theme-btn {
+  background: transparent; border: 1.5px solid var(--bdr);
+  color: var(--muted); border-radius: 7px; padding: 5px 12px;
+  font-size: 0.8rem; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: all 0.15s; white-space: nowrap; letter-spacing: 0.04em;
+}
+.theme-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+/* SETUP OVERLAY */
+.setup-overlay{position:fixed;inset:0;z-index:800;background:var(--bg);display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:0 0 60px;transition:opacity 0.35s ease;}
+.setup-overlay.hiding{opacity:0;pointer-events:none;}
+.setup-overlay.gone{display:none;}
+.setup-chrome{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:2px solid var(--teal2);padding:0 28px;height:52px;flex-shrink:0;margin-bottom:32px;position:sticky;top:0;z-index:10;}
+.setup-chrome-left{display:flex;align-items:center;gap:10px;}
+.setup-chrome-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);}
+.setup-chrome-label{font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:700;}
+.setup-clock{font-size:0.82rem;font-weight:700;color:var(--teal);}
+.setup-header{text-align:center;margin-bottom:28px;padding:0 24px;}
+.setup-header h1{font-size:1.7rem;font-weight:900;color:var(--white);margin-bottom:4px;}
+.setup-header p{font-size:0.9rem;color:var(--muted);}
+.setup-badge{display:inline-flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--bdr);border-radius:12px;padding:14px 22px;margin-bottom:24px;}
+.setup-badge-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--blue));display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#000;flex-shrink:0;}
+.setup-badge-title{font-size:1.1rem;font-weight:900;color:var(--white);line-height:1.2;}
+.setup-badge-sub{font-size:0.78rem;color:var(--muted);margin-top:2px;}
+.setup-card{background:var(--panel);border:1px solid var(--bdr);border-radius:14px;padding:22px 26px;width:100%;max-width:760px;margin-bottom:16px;}
+.setup-section-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:14px;}
+.setup-section-label.teal{color:var(--teal);}.setup-section-label.gold{color:var(--gold);}
+.setup-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.setup-info-field label{display:block;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:700;margin-bottom:5px;}
+.setup-input{width:100%;padding:10px 13px;border-radius:9px;border:2px solid var(--bdr);background:var(--lift);color:var(--text);font-family:inherit;font-size:0.9rem;font-weight:600;outline:none;transition:border-color 0.15s;}
+.setup-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,201,184,0.12);}
+.setup-span2{grid-column:1/-1;}
+.setup-obj-list{display:flex;flex-direction:column;gap:8px;}
+.setup-obj-row{display:flex;align-items:center;gap:10px;}
+.setup-obj-row input{flex:1;padding:8px 12px;border-radius:8px;border:2px solid var(--bdr);background:var(--lift);color:var(--text);font-family:inherit;font-size:0.88rem;outline:none;transition:border-color 0.15s;}
+.setup-obj-row input:focus{border-color:var(--teal);}
+.setup-obj-remove{background:transparent;border:none;color:var(--muted);font-size:1.05rem;cursor:pointer;padding:4px 6px;border-radius:6px;transition:color 0.15s;}
+.setup-obj-remove:hover{color:var(--red);}
+.setup-add-obj{display:inline-flex;align-items:center;gap:6px;background:transparent;border:2px dashed var(--bdr);color:var(--muted);border-radius:8px;padding:7px 14px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-top:6px;}
+.setup-add-obj:hover{border-color:var(--teal);color:var(--teal);}
+.setup-toggle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;}
+.setup-tog{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--bdr);border-radius:9px;padding:11px 14px;cursor:pointer;transition:all 0.15s;user-select:none;}
+.setup-tog:hover{border-color:var(--teal);}
+.setup-tog.on{border-color:var(--teal);background:rgba(0,201,184,0.08);}
+.setup-tog-icon{font-size:1.05rem;flex-shrink:0;}
+.setup-tog-label{font-size:0.88rem;font-weight:700;line-height:1.2;}
+.setup-tog-sub{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+.setup-tog-check{margin-left:auto;flex-shrink:0;width:18px;height:18px;border-radius:4px;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:transparent;transition:all 0.15s;}
+.setup-tog.on .setup-tog-check{background:var(--teal);border-color:var(--teal);color:#000;}
+.setup-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.setup-chip{background:var(--lift);border:1px solid var(--bdr);border-radius:20px;padding:4px 14px;font-size:0.75rem;color:var(--muted);}
+.setup-chip.active{background:rgba(0,201,184,0.12);border-color:var(--teal);color:var(--teal);}
+.setup-chip.ex{background:rgba(79,169,255,0.1);border-color:var(--blue);color:var(--blue);}
+.setup-chip.ext{background:rgba(240,165,0,0.1);border-color:var(--gold);color:var(--gold);}
+.setup-appear-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.setup-mode-card{background:var(--card);border:2px solid var(--bdr);border-radius:9px;padding:13px 16px;cursor:pointer;transition:all 0.15s;user-select:none;}
+.setup-mode-card:hover{border-color:var(--teal);}
+.setup-mode-card.on{border-color:var(--teal);background:rgba(0,201,184,0.08);}
+.setup-mode-title{font-size:0.9rem;font-weight:800;margin-bottom:4px;}
+.setup-mode-desc{font-size:0.73rem;color:var(--muted);line-height:1.5;}
+.setup-mode-swatch{display:flex;gap:5px;margin-top:8px;}
+.setup-sw{width:18px;height:18px;border-radius:4px;}
+.setup-launch-wrap{width:100%;max-width:760px;padding:0 0 8px;}
+.setup-launch-btn{width:100%;padding:16px;border-radius:10px;border:none;background:var(--teal2);color:var(--white);font-size:1.1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all 0.15s;letter-spacing:0.03em;display:flex;align-items:center;justify-content:center;gap:10px;}
+.setup-launch-btn:hover{background:var(--teal);}
+.setup-hint{font-size:0.76rem;color:var(--muted);text-align:center;margin-top:8px;}
+
+/* FLOATING CAMERA */
+.float-cam-btn {
+  position: fixed; bottom: 62px; right: 18px;
+  width: 50px; height: 50px; border-radius: 50%;
+  background: var(--teal2); border: 2px solid var(--teal);
+  color: #fff; font-size: 1.35rem; cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+  z-index: 150; box-shadow: 0 4px 16px rgba(0,201,184,0.35);
+  transition: all 0.18s; font-family: inherit;
+}
+.float-cam-btn:hover { background: var(--teal); transform: scale(1.12); }
+.float-cam-btn.cam-visible { display: flex; }
+
+/* UPLOAD MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.72);
+  z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px;
+}
+.modal-overlay.modal-open { display: flex; }
+.modal-box {
+  background: var(--panel); border: 1px solid var(--bdr); border-radius: 16px;
+  padding: 26px 30px; width: 100%; max-width: 440px; max-height: 90vh;
+  overflow-y: auto; display: flex; flex-direction: column; gap: 18px; position: relative;
+}
+.modal-head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--bdr); padding-bottom: 14px; }
+.modal-title { font-size: 1rem; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.modal-close-btn { background: transparent; border: 1.5px solid var(--bdr); color: var(--muted); font-size: 1.1rem; cursor: pointer; padding: 4px 10px; border-radius: 7px; font-family: inherit; transition: all 0.15s; }
+.modal-close-btn:hover { border-color: var(--red); color: var(--red); }
+.m-step-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); font-weight: 700; margin-bottom: 6px; }
+.m-hint { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+.modal-divider { border: none; border-top: 1px solid var(--bdr); margin: 0; }
+.m-select { width: 100%; padding: 11px 14px; font-size: 1rem; font-weight: 700; background: var(--lift); border: 2px solid var(--bdr); border-radius: 10px; color: var(--text); outline: none; font-family: inherit; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%2300c9b8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; transition: border-color 0.15s; }
+.m-select:focus { border-color: var(--teal); }
+.m-select option { background: var(--card); }
+.m-id-input { width: 150px; padding: 11px 14px; font-size: 1.5rem; font-weight: 800; text-align: center; letter-spacing: 0.28em; background: var(--lift); border: 2px solid var(--bdr); border-radius: 10px; color: var(--teal); outline: none; font-family: inherit; display: block; transition: border-color 0.15s; }
+.m-id-input:focus { border-color: var(--teal); }
+.m-id-input::placeholder { color: var(--muted); letter-spacing: 0.1em; font-size: 0.95rem; }
+.m-photo-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 10px; border: none; background: var(--teal2); color: var(--white); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.m-photo-btn:hover { background: var(--teal); }
+.m-photo-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.m-submit-btn { background: var(--green); width: 100%; justify-content: center; font-size: 1rem; padding: 14px; border-radius: 10px; border: none; display: flex; align-items: center; gap: 8px; color: #fff; font-weight: 700; font-family: inherit; cursor: pointer; transition: all 0.15s; }
+.m-submit-btn:hover { background: #27ae60; }
+.m-submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.m-preview-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.m-thumb { position: relative; width: 80px; height: 80px; border-radius: 9px; overflow: hidden; border: 2px solid var(--bdr); }
+.m-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.m-thumb .m-remove { position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--red); color: #fff; border: none; font-size: 0.75rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.m-status { padding: 10px 16px; border-radius: 9px; font-weight: 700; font-size: 0.9rem; text-align: center; display: none; line-height: 1.5; }
+.m-status.m-success { background: rgba(46,204,113,0.15); border: 2px solid var(--green); color: var(--green); display: block; }
+.m-status.m-error   { background: rgba(231,76,60,0.15);  border: 2px solid var(--red);   color: var(--red);   display: block; }
+.m-status.m-loading { background: rgba(79,169,255,0.15); border: 2px solid var(--blue);  color: var(--blue);  display: block; }
+</style>
+</head>
+<body>
+
+<button class="float-cam-btn" id="floatCamBtn" title="Submit your work" onclick="openUploadModal()">&#128247;</button>
+
+<div class="modal-overlay" id="uploadModal" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">&#128247; &nbsp; Submit Your Work</div>
+      <button class="modal-close-btn" onclick="closeUploadModal()">&#10005; Close</button>
+    </div>
+    <div>
+      <div class="m-step-label">Step 1 &mdash; Select your class</div>
+      <select class="m-select" id="m-courseSelect">
+        <option value="">&#8212; Choose your class &#8212;</option>
+        <option value="1Vxb9ntVNvd8wf_KOCRuQuuQISV1Iwcfc">Year 12 Essentials</option>
+        <option value="1xZzcqQXYiZEQAY3ncNXp0AemufhGAF1U">Year 12 Apps</option>
+        <option value="1e-j-Rlma9SSdbzXoLO0tauXr5tcMI1Js">Year 11 Methods</option>
+        <option value="1gJDhgHnFb7i6O7jX-phUQ3dYy9F6M2c7">Year 11 Foundations</option>
+        <option value="1HSl_x-FfUbn3DSUtz5qSMfRhg4eQWWy1">Year 11 Essentials</option>
+        <option value="1l8JLaeLBkUfbxVT9FB3eZQ5-czZkWFi9">Year 11 Apps</option>
+        <option value="1cq4lpxyou4qJfqOXaHONIKXtcMV7LIhs">Year 10</option>
+        <option value="1xaTPogudenjYWSwagLAIaozq-9bSV3Mz">Year 9</option>
+        <option value="1UOXPybIAQ7m03M8xnsDEiqHudjCk9BTe">Year 8</option>
+        <option value="11ts1_-UU6un5EfIA9WvqDeIhNUCOrrIB">Year 7</option>
+      </select>
+      <p class="m-hint">Pick the class you are submitting work for</p>
+    </div>
+    <hr class="modal-divider">
+    <div>
+      <div class="m-step-label">Step 2 &mdash; Enter your student ID</div>
+      <input class="m-id-input" type="text" id="m-studentId" maxlength="6" placeholder="ID" inputmode="numeric" autocomplete="off" spellcheck="false">
+      <p class="m-hint">Your 6-digit student number</p>
+    </div>
+    <hr class="modal-divider">
+    <div>
+      <div class="m-step-label">Step 3 &mdash; Take a photo of your work</div>
+      <input type="file" id="m-cameraInput" accept="image/*" capture="environment" multiple style="display:none;">
+      <button class="m-photo-btn" id="m-photoBtn" onclick="document.getElementById('m-cameraInput').click()">
+        &#128247; &nbsp; Take / Choose Photo(s)
+      </button>
+      <p class="m-hint">You can add multiple photos if your work spans more than one page.</p>
+    </div>
+    <div class="m-preview-grid" id="m-preview"></div>
+    <button class="m-submit-btn" id="m-submitBtn" onclick="submitModalWork()" style="display:none;">
+      &#9989; &nbsp; Submit to Teacher
+    </button>
+    <div class="m-status" id="m-status"></div>
+  </div>
+</div>
+
+<!-- SETUP OVERLAY -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-chrome">
+    <div class="setup-chrome-left"><div class="setup-chrome-dot"></div><span class="setup-chrome-label">Lesson Setup</span></div>
+    <span class="setup-clock" id="setup-clock"></span>
+  </div>
+  <div class="setup-header">
+    <h1>&#128196; Lesson Setup</h1>
+    <p>Configure your lesson, then launch for the class.</p>
+  </div>
+  <div class="setup-badge">
+    <div class="setup-badge-icon">&#37;</div>
+    <div>
+      <div class="setup-badge-title">Finding a Percentage of a Quantity</div>
+      <div class="setup-badge-sub">Year 7 Mathematics &nbsp;&middot;&nbsp; Percentages &nbsp;&middot;&nbsp; Lesson 3 of 4</div>
+    </div>
+  </div>
+
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#128218; Lesson Details</div>
+    <div class="setup-info-grid">
+      <div class="setup-info-field setup-span2"><label>Topic Title</label><input class="setup-input" type="text" id="infoTopic" value="Finding a Percentage of a Quantity"></div>
+      <div class="setup-info-field"><label>Course</label>
+        <input class="setup-input" list="courseList" id="infoCourse" value="Year 7 Mathematics">
+        <datalist id="courseList">
+          <option value="Year 7 Mathematics"><option value="Year 8 Mathematics">
+          <option value="Year 9 Mathematics"><option value="Year 10 Mathematics">
+        </datalist>
+      </div>
+      <div class="setup-info-field"><label>Unit</label><input class="setup-input" type="text" id="infoUnit" value="Percentages"></div>
+      <div class="setup-info-field"><label>Lesson Number</label><input class="setup-input" type="number" id="infoLessonNum" min="1" value="3"></div>
+      <div class="setup-info-field"><label>Lessons in Unit</label><input class="setup-input" type="number" id="infoLessonOf" min="1" value="4"></div>
+      <div class="setup-info-field"><label>Term</label><input class="setup-input" type="number" id="infoTerm" min="1" max="4" value="1"></div>
+      <div class="setup-info-field"><label>Week</label><input class="setup-input" type="number" id="infoWeek" min="1" value="7"></div>
+    </div>
+    <div style="margin-top:18px;">
+      <div class="setup-section-label teal" style="margin-bottom:8px;">&#127919; Learning Intentions</div>
+      <div class="setup-obj-list" id="setupObjList"></div>
+      <button class="setup-add-obj" onclick="setupAddObjective()">&#43; Add Intention</button>
+    </div>
+  </div>
+
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#9881; Lesson Components</div>
+    <div class="setup-toggle-grid">
+      <div class="setup-tog on" data-key="starter"   onclick="setupTog(this)"><span class="setup-tog-icon">&#9733;</span><div><div class="setup-tog-label">Starter</div><div class="setup-tog-sub">Warm-up questions</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="notes"     onclick="setupTog(this)"><span class="setup-tog-icon">&#128208;</span><div><div class="setup-tog-label">Notes</div><div class="setup-tog-sub">Key concepts</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="examples"  onclick="setupTog(this)"><span class="setup-tog-icon">&#128396;</span><div><div class="setup-tog-label">Examples</div><div class="setup-tog-sub">Step-by-step worked</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="yourturn"  onclick="setupTog(this)"><span class="setup-tog-icon">&#9999;</span><div><div class="setup-tog-label">Your Turn</div><div class="setup-tog-sub">Guided practice</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="ex1"       onclick="setupTog(this)"><span class="setup-tog-icon">&#128221;</span><div><div class="setup-tog-label">Ex 1: Copy &amp; Complete</div><div class="setup-tog-sub">Fraction method</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="ex2"       onclick="setupTog(this)"><span class="setup-tog-icon">&#128221;</span><div><div class="setup-tog-label">Ex 2: Calculate</div><div class="setup-tog-sub">50%, 25%, 10%</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="ex3"       onclick="setupTog(this)"><span class="setup-tog-icon">&#128221;</span><div><div class="setup-tog-label">Ex 3: Word Problems</div><div class="setup-tog-sub">Real-life contexts</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="extension" onclick="setupTog(this)"><span class="setup-tog-icon">&#11088;</span><div><div class="setup-tog-label">Extension</div><div class="setup-tog-sub">Harder % + discounts</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="plenary"   onclick="setupTog(this)"><span class="setup-tog-icon">&#128172;</span><div><div class="setup-tog-label">Plenary</div><div class="setup-tog-sub">Exit ticket</div></div><span class="setup-tog-check">&#10003;</span></div>
+      <div class="setup-tog on" data-key="upload"    onclick="setupTog(this)"><span class="setup-tog-icon">&#128247;</span><div><div class="setup-tog-label">Upload Work</div><div class="setup-tog-sub">Submit button</div></div><span class="setup-tog-check">&#10003;</span></div>
+    </div>
+    <div style="margin-top:16px;">
+      <div class="setup-section-label gold" style="margin-bottom:8px;">&#128196; Slide Overview</div>
+      <div class="setup-chips" id="setupSlidePreview"></div>
+    </div>
+  </div>
+
+  <div class="setup-card">
+    <div class="setup-section-label teal">&#127775; Appearance</div>
+    <div class="setup-appear-grid">
+      <div class="setup-mode-card on" data-mode="dark" onclick="setupSetMode(this)"><div class="setup-mode-title">&#127769; Dark</div><div class="setup-mode-desc">Default dark theme. Easy on the eyes in a dim classroom.</div><div class="setup-mode-swatch"><div class="setup-sw" style="background:#09121f;border:1px solid #1f3557;"></div><div class="setup-sw" style="background:#00c9b8;"></div><div class="setup-sw" style="background:#f0a500;"></div></div></div>
+      <div class="setup-mode-card" data-mode="light" onclick="setupSetMode(this)"><div class="setup-mode-title">&#9728; Light</div><div class="setup-mode-desc">Bright white theme. Good for projectors in lit rooms.</div><div class="setup-mode-swatch"><div class="setup-sw" style="background:#eef5ff;border:1px solid #b8d4f0;"></div><div class="setup-sw" style="background:#007a70;"></div><div class="setup-sw" style="background:#c07800;"></div></div></div>
+    </div>
+  </div>
+
+  <div class="setup-launch-wrap">
+    <button class="setup-launch-btn" onclick="setupLaunch()">&#9654;&nbsp; Launch Lesson</button>
+    <p class="setup-hint">Lesson opens instantly — use the theme toggle inside the lesson to switch appearance at any time.</p>
+  </div>
+</div>
+
+<!-- MAIN SHELL -->
+<div class="pres">
+  <div class="chrome">
+    <div class="chrome-left">
+      <div class="chrome-dot"></div>
+      <span class="chrome-label" id="chrome-label"></span>
+    </div>
+    <span class="chrome-title" id="chrome-title"></span>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">&#9728; Light</button>
+      <span class="chrome-right" id="live-clock">--:--:-- --</span>
+    </div>
+  </div>
+  <div class="deck" id="deck"></div>
+  <div class="nav-bar" id="nav-bar"></div>
+</div>
+
+<script>
+function F(num, den)        { return `\\(\\dfrac{${num}}{${den}}\\)`; }
+function MFrac(w, num, den) { return `\\(${w}\\dfrac{${num}}{${den}}\\)`; }
+
+const lessonData = {
+  meta: {
+    course:         "Year 7 Mathematics",
+    unit:           "Percentages",
+    lessonNum:      3,
+    lessonOf:       4,
+    topic:          "Finding a Percentage of a Quantity",
+    topicHighlight: "Percentage",
+    subtopics:      ["Using Fraction Equivalents", "50%, 25% and 10%"],
+    pills:          ["50% = ½", "25% = ¼", "10% = 1/10"],
+    term:           1,
+    week:           7
+  },
+
+  learningIntentions: [
+    "I can use fraction equivalents to find 50%, 25% and 10% of a quantity",
+    "I can find a simple percentage of a quantity without a calculator",
+    "I can solve word problems involving percentages of amounts",
+    "I can find a percentage of a quantity and apply it to discounts and interest"
+  ],
+
+  starter: {
+    time: 5,
+    groups: [
+      {
+        tag: "1 — Whole Number Calculations",
+        span: false,
+        items: [
+          { lbl: "a", q: "512 × 8",         ans: "<strong>4 096</strong>" },
+          { lbl: "b", q: "8 + 12 ÷ 4",      ans: "8 + 3 = <strong>11</strong> &nbsp;(division before addition)" }
+        ]
+      },
+      {
+        tag: "2 — Rounding",
+        span: false,
+        items: [
+          { lbl: null, q: "Round 258 to the nearest 10", ans: "<strong>260</strong>" }
+        ]
+      },
+      {
+        tag: "3 — Fractions of Amounts",
+        span: true,
+        items: [
+          { lbl: "a", q: `${F(1,5)} of $45`,   ans: "45 ÷ 5 = <strong>$9</strong>" },
+          { lbl: "b", q: `${F(2,7)} of 21 cm`, ans: "21 ÷ 7 × 2 = 3 × 2 = <strong>6 cm</strong>" },
+          { lbl: "c", q: `${F(3,8)} of 48 kg`, ans: "48 ÷ 8 × 3 = 6 × 3 = <strong>18 kg</strong>" }
+        ]
+      }
+    ]
+  },
+
+  learningNotes: [
+    {
+      title: "Key Fraction Equivalents",
+      formula: `50% = ${F(1,2)} &emsp; 25% = ${F(1,4)} &emsp; 10% = ${F(1,10)}`,
+      body: `Some percentages come up very often. It is <em>quicker and easier</em> to use their fraction equivalents instead of a calculator. To find the percentage, simply <em>divide by the denominator</em> (and multiply if needed).`
+    },
+    {
+      title: "The Method",
+      formula: `Find 25% of 28 cm &rarr; ${F(1,4)} of 28 cm = 28 ÷ 4 = <span style="color:var(--green)">7 cm</span>`,
+      body: `Step 1: <em>Convert the percentage to its fraction</em> (50% → ½, 25% → ¼, 10% → 1/10). Step 2: <em>Divide the quantity by the denominator</em>. That's your answer!`
+    }
+  ],
+
+  examples: [
+    {
+      label: "Example 1 — 50% of an Amount",
+      q: `Find 50% of $18.20`,
+      hint: `50% = ${F(1,2)}, so divide by 2.`,
+      steps: [
+        { line: `50% = ${F(1,2)}`,             explain: "Convert percentage to fraction." },
+        { line: `${F(1,2)} of $18.20 = $18.20 ÷ 2`, explain: "Divide by the denominator." },
+        { line: "= $9.10",                     explain: "This is our answer." }
+      ],
+      answer: "$9.10"
+    },
+    {
+      label: "Example 2 — 25% of an Amount",
+      q: `Find 25% of 28 cm`,
+      hint: `25% = ${F(1,4)}, so divide by 4.`,
+      steps: [
+        { line: `25% = ${F(1,4)}`,             explain: "Convert percentage to fraction." },
+        { line: `${F(1,4)} of 28 cm = 28 ÷ 4`, explain: "Divide by the denominator." },
+        { line: "= 7 cm",                      explain: "This is our answer." }
+      ],
+      answer: "7 cm"
+    },
+    {
+      label: "Example 3 — 10% of an Amount",
+      q: `Find 10% of 45 kg`,
+      hint: `10% = ${F(1,10)}, so divide by 10.`,
+      steps: [
+        { line: `10% = ${F(1,10)}`,            explain: "Convert percentage to fraction." },
+        { line: `${F(1,10)} of 45 kg = 45 ÷ 10`, explain: "Divide by the denominator." },
+        { line: "= 4.5 kg",                    explain: "This is our answer." }
+      ],
+      answer: "4.5 kg"
+    }
+  ],
+
+  yourTurn: [
+    {
+      label: "Your Turn (a)",
+      q: `Find 50% of $96`,
+      steps: [ `50% = ${F(1,2)}`, "$96 ÷ 2 = $48" ],
+      answer: "$48"
+    },
+    {
+      label: "Your Turn (b)",
+      q: `Find 25% of 60 kg`,
+      steps: [ `25% = ${F(1,4)}`, "60 ÷ 4 = 15 kg" ],
+      answer: "15 kg"
+    },
+    {
+      label: "Your Turn (c)",
+      q: `Find 10% of 840 cm`,
+      steps: [ `10% = ${F(1,10)}`, "840 ÷ 10 = 84 cm" ],
+      answer: "84 cm"
+    }
+  ],
+  yourTurnTime: 4,
+
+  exercises: [
+    {
+      title: "Exercise 1: Copy and Complete",
+      instruction: `Copy each line into your book and fill in the blanks. Use the fraction equivalents shown above.`,
+      time: 7,
+      type: "copyComplete",
+      questions: [
+        {
+          label: "a",
+          lines: [
+            `Find 50% of $80`,
+            `= ${F(1,2)} of $80`,
+            `= ____`
+          ],
+          answer: "$40"
+        },
+        {
+          label: "b",
+          lines: [
+            `Find 25% of 36p`,
+            `= ${F(1,4)} of 36p`,
+            `= ____`
+          ],
+          answer: "9p"
+        },
+        {
+          label: "c",
+          lines: [
+            `Find 10% of 30 m`,
+            `= ${F(1,10)} of 30 m`,
+            `= ____`
+          ],
+          answer: "3 m"
+        }
+      ]
+    },
+    {
+      title: "Exercise 2: Calculate",
+      instruction: "Calculate each of the following. Show your working.",
+      time: 12,
+      cols: 3,
+      questions: [
+        "50% of $16",
+        "50% of 58 m",
+        "50% of 146 g",
+        "25% of $4",
+        "25% of 44 kg",
+        "25% of 600 mm",
+        "10% of 200 ml",
+        "10% of 700 cm",
+        "10% of 3 000 miles",
+        "50% of $750",
+        "10% of $820",
+        "25% of $18",
+        "50% of $22.50",
+        "25% of $6",
+        "10% of $9.10"
+      ],
+      answers: [
+        { answer: "$8" },
+        { answer: "29 m" },
+        { answer: "73 g" },
+        { answer: "$1" },
+        { answer: "11 kg" },
+        { answer: "150 mm" },
+        { answer: "20 ml" },
+        { answer: "70 cm" },
+        { answer: "300 miles" },
+        { answer: "$375" },
+        { answer: "$82" },
+        { answer: "$4.50" },
+        { answer: "$11.25" },
+        { answer: "$1.50" },
+        { answer: "$0.91" }
+      ]
+    },
+    {
+      title: "Exercise 3: Word Problems",
+      instruction: "Read each problem carefully. Show all working.",
+      time: 10,
+      cols: 1,
+      questions: [
+        "Tony had $350. He spent 50% of it on a hotel weekend break. How much did Tony pay for the holiday?",
+        "Abbie weighed 72 kilograms. She went on a diet and lost 25% of her weight. How many kilograms did she lose?",
+        "Coleen weighed 60 kg. On a diet, she lost 10% of her weight. What was her new weight?",
+        "25% of the animals in a farmer's field are sheep. If there are a total of 96 animals in the field, how many are sheep?",
+        `A sports shop offers <strong style="color:var(--red)">10% off</strong> all prices.<br>
+         <strong>a</strong>&nbsp; How much would you save on $68.50 trainers?<br>
+         <strong>b</strong>&nbsp; What is the sale price of the trainers?`
+      ],
+      answers: [
+        { working: "50% of $350 = $350 ÷ 2", answer: "$175" },
+        { working: "25% of 72 kg = 72 ÷ 4", answer: "18 kg" },
+        { working: "10% of 60 kg = 6 kg &nbsp;|&nbsp; New weight = 60 − 6", answer: "54 kg" },
+        { working: "25% of 96 = 96 ÷ 4", answer: "24 sheep" },
+        { working: "a) 10% of $68.50 = $6.85 &nbsp; b) $68.50 − $6.85", answer: "a) Save $6.85 &nbsp; b) Sale price: $61.65" }
+      ]
+    }
+  ],
+
+  extension: {
+    title: "Extension: Harder Percentages & Real-Life Problems",
+    instruction: "These questions use trickier percentages and real-life contexts. Show all working.",
+    time: 12,
+    groups: [
+      {
+        heading: "🔢 Find the Following (no calculator)",
+        cols: 3,
+        questions: [
+          { lbl: "a", q: "11% of $20",      working: "10% of $20 = $2; 1% of $20 = $0.20; 11% = $2 + $0.20",    answer: "$2.20" },
+          { lbl: "b", q: "15% of $60",      working: "10% of $60 = $6; 5% of $60 = $3; 15% = $6 + $3",          answer: "$9" },
+          { lbl: "c", q: "3% of $32",       working: "1% of $32 = $0.32; 3% = 3 × $0.32",                       answer: "$0.96" },
+          { lbl: "d", q: "8% of 3 000 m",   working: "1% of 3000 = 30 m; 8% = 8 × 30",                          answer: "240 m" },
+          { lbl: "e", q: "5% of 1 260 ml",  working: "10% of 1260 = 126 ml; 5% = 126 ÷ 2",                      answer: "63 ml" },
+          { lbl: "f", q: "2% of 45 000 mm", working: "1% of 45000 = 450 mm; 2% = 900 mm",                       answer: "900 mm" },
+          { lbl: "g", q: "11% of 50 000 g", working: "10% = 5000 g; 1% = 500 g; 11% = 5500 g",                  answer: "5 500 g" },
+          { lbl: "h", q: "12% of $1 200",   working: "10% = $120; 1% = $12; 12% = $120 + $24",                  answer: "$144" },
+          { lbl: "i", q: "90% of 40 000 kg",working: "10% of 40000 = 4000 kg; 90% = 9 × 4000",                  answer: "36 000 kg" },
+          { lbl: "j", q: "12.5% of $1 600", working: "10% = $160; 25% = $400; 12.5% = $200",                    answer: "$200" },
+          { lbl: "k", q: "4% of $1 150",    working: "1% of $1150 = $11.50; 4% = 4 × $11.50",                   answer: "$46" },
+          { lbl: "l", q: "110% of $810",    working: "100% = $810; 10% = $81; 110% = $810 + $81",               answer: "$891" },
+          { lbl: "m", q: "0.5% of 8 600 ml",working: "1% of 8600 = 86 ml; 0.5% = 86 ÷ 2",                      answer: "43 ml" },
+          { lbl: "n", q: "1.5% of $500",    working: "1% = $5; 0.5% = $2.50; 1.5% = $7.50",                    answer: "$7.50" },
+          { lbl: "o", q: "2.5% of 1 600 km",working: "1% = 16 km; 2.5% = 16 × 2.5",                            answer: "40 km" }
+        ]
+      },
+      {
+        heading: "🏭 Word Problems",
+        cols: 1,
+        questions: [
+          {
+            lbl: "1",
+            q: `There are 360 employees in a factory. 10% of them are women.<br>
+                <strong>a</strong>&nbsp; What percentage of the employees are men?<br>
+                <strong>b</strong>&nbsp; How many men work in the factory?`,
+            working: "a) 100% − 10% = 90% &nbsp;|&nbsp; b) 10% of 360 = 36 women; 360 − 36 = 324 men",
+            answer: "a) 90% &nbsp; b) 324 men"
+          },
+          {
+            lbl: "2",
+            q: `A shop is selling a new bike costing $120. There is a <strong style="color:var(--red)">20% discount</strong>.<br>
+                <strong>a</strong>&nbsp; How much is the discount?<br>
+                <strong>b</strong>&nbsp; How much will the bike cost now?<br>
+                A bicycle helmet priced at $30 is given a <strong style="color:var(--red)">30% discount</strong>.<br>
+                <strong>c</strong>&nbsp; How much will the helmet cost now?`,
+            working: "a) 10% of $120 = $12; 20% = $24 &nbsp;|&nbsp; b) $120 − $24 = $96 &nbsp;|&nbsp; c) 10% of $30 = $3; 30% = $9; $30 − $9 = $21",
+            answer: "a) $24 &nbsp; b) $96 &nbsp; c) $21"
+          },
+          {
+            lbl: "3",
+            q: `Liam puts $450 into a savings account. The account pays <strong style="color:var(--green)">5% interest</strong> every year.<br>
+                How much interest will he earn after one year?`,
+            working: "10% of $450 = $45; 5% = $45 ÷ 2",
+            answer: "$22.50"
+          }
+        ]
+      }
+    ]
+  },
+
+  plenary: {
+    questions: [
+      `What fraction is equivalent to 25%? Use it to find 25% of $48.`,
+      `A jacket costs $80. The shop offers 10% off. What is the sale price?`,
+      `Explain the difference between finding 50% of a number and finding 10% of a number.`
+    ],
+    answers: [
+      `25% = ¼ of $48 = $48 ÷ 4 = $12.`,
+      `10% of $80 = $8. Sale price = $80 − $8 = $72.`,
+      `To find 50%, divide by 2 (it's half). To find 10%, divide by 10. Both use the fraction equivalent of the percentage.`
+    ],
+    summary: "To find a simple percentage without a calculator, convert it to its fraction equivalent: 50% = ½ (divide by 2), 25% = ¼ (divide by 4), 10% = 1/10 (divide by 10). Then simply divide the quantity by the denominator.",
+    reminder: "To find 1%, divide by 100. Then multiply to find any percentage!"
+  },
+
+  appsScriptUrl: "https://script.google.com/macros/s/AKfycbz_TWHf7W7XSNQ4bJ5iNYbPLj1JUSnLq7G_BuRwmxKEPK-PrGiR4TOMZhyPg6-KHdvZvA/exec"
+};
+
+/* ─── STATE ─── */
+let currentSlide = 0;
+let timerCount   = 0;
+const timerInstances = {};
+let workSlideIndices = new Set();
+
+function typeset(el) {
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise(el ? [el] : []).catch(() => {});
+  }
+}
+
+function goTo(n) {
+  const slides = document.querySelectorAll('.slide');
+  const dots   = document.querySelectorAll('.nav-dot');
+  if (n < 0 || n >= slides.length) return;
+  slides[currentSlide].classList.remove('active');
+  dots[currentSlide].classList.remove('active');
+  currentSlide = n;
+  slides[currentSlide].classList.add('active');
+  dots[currentSlide].classList.add('active');
+  const camBtn = document.getElementById('floatCamBtn');
+  if (camBtn) camBtn.classList.toggle('cam-visible', workSlideIndices.has(currentSlide));
+  typeset(slides[currentSlide]);
+}
+function next() { goTo(currentSlide + 1); }
+function prev() { goTo(currentSlide - 1); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft')  prev();
+});
+
+function timer(defaultSeconds, uid) {
+  const id   = `timer_${uid !== undefined ? uid : timerCount++}`;
+  const mins = Math.round(defaultSeconds / 60);
+  return `
+    <div class="timer-bar-wrap" id="${id}_wrap">
+      <label class="tbar-time-label" for="${id}_mins">Time:</label>
+      <input class="tbar-time-input" type="number" id="${id}_mins" value="${mins}" min="1" max="60" step="1">
+      <label class="tbar-time-label">min</label>
+      <button class="tbar-btn" id="${id}_btn" onclick="toggleTimer('${id}')">
+        <span class="tbar-on">&#9654; Start Timer</span>
+        <span class="tbar-off" style="display:none;">&#9632; Reset</span>
+      </button>
+      <div class="tbar-track-outer" id="${id}_track"><div class="tbar-fill green" id="${id}_fill"></div></div>
+      <div class="tbar-done" id="${id}_done">&#9200; Time&rsquo;s Up!</div>
+    </div>`;
+}
+
+function toggleTimer(id) {
+  const btn    = document.getElementById(`${id}_btn`);
+  const track  = document.getElementById(`${id}_track`);
+  const fill   = document.getElementById(`${id}_fill`);
+  const done   = document.getElementById(`${id}_done`);
+  const input  = document.getElementById(`${id}_mins`);
+  const onSpan = btn.querySelector('.tbar-on');
+  const offSpan= btn.querySelector('.tbar-off');
+  if (timerInstances[id]) {
+    clearInterval(timerInstances[id].interval);
+    delete timerInstances[id];
+    track.classList.remove('tbar-visible');
+    done.classList.remove('tbar-show');
+    btn.classList.remove('tbar-active');
+    onSpan.style.display = 'inline'; offSpan.style.display = 'none';
+    input.disabled = false;
+    fill.style.width = '100%'; fill.className = 'tbar-fill green';
+    return;
+  }
+  const totalSeconds = parseInt(input.value) * 60;
+  if (isNaN(totalSeconds) || totalSeconds <= 0) return;
+  input.disabled = true;
+  track.classList.add('tbar-visible');
+  btn.classList.add('tbar-active');
+  onSpan.style.display = 'none'; offSpan.style.display = 'inline';
+  const endTime = Date.now() + totalSeconds * 1000;
+  timerInstances[id] = {
+    interval: setInterval(() => {
+      const remaining = Math.max(0, endTime - Date.now());
+      const pct = remaining / (totalSeconds * 1000) * 100;
+      fill.style.width = pct + '%';
+      if (pct > 40) fill.className = 'tbar-fill green';
+      else if (pct > 12) fill.className = 'tbar-fill orange';
+      else fill.className = 'tbar-fill red';
+      if (remaining <= 0) {
+        clearInterval(timerInstances[id].interval);
+        delete timerInstances[id];
+        done.classList.add('tbar-show');
+        fill.style.width = '0%';
+      }
+    }, 200)
+  };
+}
+
+function arrows(isFirst, isLast, fwdLabel) {
+  fwdLabel = fwdLabel || 'Next';
+  const back = isFirst
+    ? `<span class="ghost"><button class="arrow-btn">&#8592;</button></span>`
+    : `<button class="arrow-btn" onclick="prev()">&#8592; Back</button>`;
+  const fwd = isLast
+    ? `<button class="arrow-btn fwd" onclick="goTo(0)">&#8617; Restart</button>`
+    : `<button class="arrow-btn fwd" onclick="next()">${fwdLabel} &#8594;</button>`;
+  return `<div class="arrows">${back}${fwd}</div>`;
+}
+
+function sh(iconClass, icon, title, badge) {
+  return `<div class="sh">
+    <div class="sh-icon ${iconClass}">${icon}</div>
+    <div class="sh-title">${title}</div>
+    ${badge ? `<div class="sh-badge">${badge}</div>` : ''}
+  </div>`;
+}
+
+function solBox(steps, answer) {
+  const stepsHtml = steps && steps.length ? steps.map(s => `${s}<br>`).join('') : '';
+  return `<div class="sol-box">${stepsHtml}<strong>${answer}</strong></div>`;
+}
+
+let stepCount = 0;
+function stepReveal(steps, answer) {
+  const id = `sr${stepCount++}`;
+  const stepsHtml = steps.map((s, i) => {
+    const line = typeof s === 'string' ? s : s.line;
+    const expl = (typeof s === 'object' && s.explain) ? s.explain : '';
+    return `<div class="step-item" id="${id}_s${i}" style="display:none;">
+      ${line}${expl ? `<div class="step-explain">&#128161; ${expl}</div>` : ''}
+    </div>`;
+  }).join('');
+  return `<div class="step-reveal" id="${id}_box">
+    ${stepsHtml}
+    <div class="step-answer" id="${id}_ans" style="display:none;"><strong>${answer}</strong></div>
+    <button class="step-btn" id="${id}_btn" onclick="revealStep('${id}',${steps.length})">Show Step 1</button>
+  </div>`;
+}
+
+function revealStep(id, total) {
+  let nxt = -1;
+  for (let i = 0; i < total; i++) {
+    if (document.getElementById(`${id}_s${i}`).style.display === 'none') { nxt = i; break; }
+  }
+  if (nxt === -1) {
+    document.getElementById(`${id}_ans`).style.display = 'block';
+    document.getElementById(`${id}_btn`).style.display = 'none';
+    return;
+  }
+  document.getElementById(`${id}_s${nxt}`).style.display = 'block';
+  const btn = document.getElementById(`${id}_btn`);
+  btn.textContent = nxt === total - 1 ? 'Show Answer' : `Show Step ${nxt + 2}`;
+}
+
+function toggleStarterAns(btn, revealId) {
+  const box = document.getElementById(revealId);
+  const open = box.classList.toggle('show');
+  btn.classList.toggle('open', open);
+  btn.textContent = open ? '▼ Hide answer' : '▶ Show answer';
+  if (open) typeset(box);
+}
+
+/* ═══════════════════════════════════════
+   BUILD SLIDES
+═══════════════════════════════════════ */
+
+function buildCover() {
+  const m = lessonData.meta;
+  const titleWords = m.topic.split(m.topicHighlight);
+  const titleHtml = m.topicHighlight
+    ? titleWords[0] + `<span>${m.topicHighlight}</span>` + (titleWords[1] || '')
+    : m.topic;
+  return {
+    cls: 'cover-slide', workSlide: false,
+    html: `
+      <div class="t-school">Mother Teresa Catholic College</div>
+      <div class="t-unit">${m.course} &nbsp;&middot;&nbsp; ${m.unit} &nbsp;&middot;&nbsp; Lesson ${m.lessonNum}</div>
+      <div class="t-main">${titleHtml}</div>
+      <div class="t-sub">${m.subtopics.join(' &nbsp;&middot;&nbsp; ')}</div>
+      <div class="t-pills">${m.pills.map(p => `<div class="t-pill">${p}</div>`).join('')}</div>
+      <div class="t-meta">
+        <span>&#128208; 3 exercises + extension</span>
+        <span>&#128218; ${m.unit} &mdash; Lesson ${m.lessonNum} of ${m.lessonOf}</span>
+      </div>
+      ${arrows(true, false, 'Begin Lesson')}`
+  };
+}
+
+function buildLearningIntentions() {
+  const objectives = lessonData.learningIntentions;
+  return {
+    cls: '', workSlide: false,
+    html: `
+      ${sh('ic-teal', '&#127919;', 'Learning Intentions', 'By the end of today&hellip;')}
+      <div class="obj-list">
+        ${objectives.map(o => `<div class="obj-item"><div class="obj-tick">&#10003;</div>${o}</div>`).join('')}
+      </div>
+      ${arrows(false, false, 'Lesson Starter')}`
+  };
+}
+
+function buildStarter() {
+  const s = lessonData.starter;
+  let cardId = 0;
+  const cards = s.groups.map(g => {
+    const rowsHtml = g.items.map((item, idx) => {
+      const rid = `srans_${cardId}_${idx}`;
+      const qHtml = item.lbl
+        ? `<span class="starter-lbl">${item.lbl}</span><span>${item.q}</span>`
+        : `<span>${item.q}</span>`;
+      return `<div class="starter-qrow">${qHtml}</div>
+        <button class="starter-ans-btn" onclick="toggleStarterAns(this,'${rid}')">&#9654; Show answer</button>
+        <div class="starter-ans-reveal" id="${rid}"><div class="starter-ans-inner">${item.ans}</div></div>`;
+    }).join('');
+    cardId++;
+    return `<div class="starter-card${g.span ? ' span2' : ''}">
+      <div class="starter-tag">${g.tag}</div>
+      <div class="starter-qlist">${rowsHtml}</div>
+    </div>`;
+  }).join('');
+  return {
+    cls: '', workSlide: true,
+    html: `
+      ${sh('ic-gold', '&#9733;', 'Lesson Starter', `${s.time} minutes`)}
+      ${timer(s.time * 60)}
+      <div class="starter-grid" style="flex:1;">${cards}</div>
+      ${arrows(false, false, 'Notes')}`
+  };
+}
+
+function buildNotes() {
+  const rulesHtml = lessonData.learningNotes.map(n => `
+    <div class="rule">
+      <div class="rule-title">${n.title}</div>
+      <div class="rule-body">
+        <div class="rule-formula">${n.formula}</div>
+        ${n.body}
+      </div>
+    </div>`).join('');
+  return {
+    cls: 'tinted', workSlide: false,
+    html: `
+      ${sh('ic-teal', '&#128208;', 'Finding a Percentage: The Key Facts', '')}
+      <div class="frac-key-bar">
+        <div class="frac-key-pill">50% = ${F(1,2)} &rarr; divide by 2</div>
+        <div class="frac-key-pill">25% = ${F(1,4)} &rarr; divide by 4</div>
+        <div class="frac-key-pill">10% = ${F(1,10)} &rarr; divide by 10</div>
+      </div>
+      ${rulesHtml}
+      ${arrows(false, false, 'Worked Examples')}`
+  };
+}
+
+function buildExamples() {
+  const cards = lessonData.examples.map(e => `
+    <div class="eg-card">
+      <div class="eg-label">${e.label}</div>
+      <div class="eg-q">${e.q}</div>
+      ${e.hint ? `<p style="font-size:0.9rem;color:var(--muted);margin-bottom:6px;">&#128161; ${e.hint}</p>` : ''}
+      ${stepReveal(e.steps, e.answer)}
+    </div>`).join('');
+  return {
+    cls: 'eg-slide', workSlide: false,
+    html: `
+      ${sh('ic-gold', 'Ex', 'Worked Examples: Finding a Percentage', '')}
+      <div class="eg-grid g3" style="flex:1;">${cards}</div>
+      ${arrows(false, false, 'Your Turn!')}`
+  };
+}
+
+function buildYourTurn() {
+  const cards = lessonData.yourTurn.map(q => `
+    <div class="eg-card">
+      <div class="eg-label">${q.label}</div>
+      <div class="eg-q">${q.q}</div>
+      <details><summary>Show answer</summary>${solBox(q.steps, q.answer)}</details>
+    </div>`).join('');
+  return {
+    cls: 'eg-slide', workSlide: true,
+    html: `
+      ${sh('ic-purple', '&#9999;', 'Your Turn! &mdash; Find the Percentage', 'Try it yourself!')}
+      ${timer(lessonData.yourTurnTime * 60)}
+      <div class="eg-grid g3" style="flex:1;">${cards}</div>
+      ${arrows(false, false, 'Exercise 1')}`
+  };
+}
+
+function buildEx1() {
+  const ex = lessonData.exercises[0];
+  const cells = ex.questions.map(q => {
+    const linesHtml = q.lines.map(l => `<div style="line-height:2.8;">${l}</div>`).join('');
+    return `<div class="copy-cell">
+      <div class="copy-lbl">${q.label}</div>
+      ${linesHtml}
+      <details style="margin-top:6px;"><summary>Answer</summary>
+        <div class="sol-box"><strong>${q.answer}</strong></div>
+      </details>
+    </div>`;
+  }).join('');
+  return {
+    cls: '', workSlide: true,
+    html: `
+      ${sh('ic-teal', '&#9999;', ex.title, '')}
+      ${timer(ex.time * 60, 'ex1')}
+      <div class="hl-box">${ex.instruction}</div>
+      <div class="copy-grid" style="flex:1;">${cells}</div>
+      ${arrows(false, false, 'Exercise 2')}`
+  };
+}
+
+function buildEx2() {
+  const ex = lessonData.exercises[1];
+  const labels = 'abcdefghijklmnopqrstuvwxyz'.split('');
+  const qCards = ex.questions.map((q, i) => {
+    const ans = ex.answers[i];
+    return `<div class="qc">
+      <div class="qlabel">${labels[i]}</div>
+      <div class="qtext">
+        ${q}
+        <details class="q-ans">
+          <summary>Answer</summary>
+          <div class="q-ans-val">${ans.answer}</div>
+        </details>
+      </div>
+    </div>`;
+  }).join('');
+  return {
+    cls: '', workSlide: true,
+    html: `
+      ${sh('ic-teal', '&#9999;', ex.title, '')}
+      ${timer(ex.time * 60, 'ex2')}
+      <div class="hl-box">${ex.instruction}</div>
+      <div class="qg g3" style="flex:1;">${qCards}</div>
+      ${arrows(false, false, 'Exercise 3')}`
+  };
+}
+
+function buildEx3() {
+  const ex = lessonData.exercises[2];
+  const labels = 'abcdefghijklmnopqrstuvwxyz'.split('');
+  const qCards = ex.questions.map((q, i) => {
+    const ans = ex.answers[i];
+    return `<div class="qc full">
+      <div class="qlabel">${labels[i]}</div>
+      <div class="qtext">
+        ${q}
+        <details class="q-ans">
+          <summary>Answer</summary>
+          ${ans.working ? `<div class="q-ans-working">${ans.working}</div>` : ''}
+          <div class="q-ans-val">${ans.answer}</div>
+        </details>
+      </div>
+    </div>`;
+  }).join('');
+  return {
+    cls: '', workSlide: true,
+    html: `
+      ${sh('ic-teal', '&#9999;', ex.title, '')}
+      ${timer(ex.time * 60, 'ex3')}
+      <div class="hl-box">${ex.instruction}</div>
+      <div class="qg g1" style="flex:1;display:flex;flex-direction:column;gap:10px;">${qCards}</div>
+      ${arrows(false, false, 'Extension')}`
+  };
+}
+
+function buildExtension() {
+  const ext = lessonData.extension;
+  const labels = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+  const groupsHtml = ext.groups.map(g => {
+    let inner = '';
+    if (g.cols === 3) {
+      const cells = g.questions.map(q => `
+        <div class="qc">
+          <div class="qlabel gd">${q.lbl}</div>
+          <div class="qtext">
+            ${q.q}
+            <details class="q-ans">
+              <summary>Answer</summary>
+              ${q.working ? `<div class="q-ans-working">${q.working}</div>` : ''}
+              <div class="q-ans-val">${q.answer}</div>
+            </details>
+          </div>
+        </div>`).join('');
+      inner = `<div class="qg g3">${cells}</div>`;
+    } else {
+      const cells = g.questions.map(q => `
+        <div class="qc full">
+          <div class="qlabel gd">${q.lbl}</div>
+          <div class="qtext">
+            ${q.q}
+            <details class="q-ans">
+              <summary>Answer</summary>
+              ${q.working ? `<div class="q-ans-working">${q.working}</div>` : ''}
+              <div class="q-ans-val">${q.answer}</div>
+            </details>
+          </div>
+        </div>`).join('');
+      inner = `<div class="qg g1" style="display:flex;flex-direction:column;gap:10px;">${cells}</div>`;
+    }
+    return `<div style="margin-bottom:14px;">
+      <div style="font-size:0.8rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">${g.heading}</div>
+      ${inner}
+    </div>`;
+  }).join('');
+
+  return {
+    cls: '', workSlide: true,
+    html: `
+      ${sh('ic-gold', '&#11088;', ext.title, 'Challenge')}
+      ${timer(ext.time * 60, 'ext')}
+      <div class="hl-box">${ext.instruction}</div>
+      <div style="flex:1;overflow-y:auto;">${groupsHtml}</div>
+      ${arrows(false, false, 'Plenary')}`
+  };
+}
+
+function buildPlenary() {
+  const p = lessonData.plenary;
+  const qRows = p.questions.map((q, i) => `<div class="ple-q"><div class="ple-num">${i + 1}.</div>${q}</div>`).join('');
+  const aRows = p.answers.map((a, i) => `<strong>${i + 1}.</strong> ${a}<br><br>`).join('');
+  return {
+    cls: '', workSlide: false,
+    html: `
+      ${sh('ic-blue', '&#128172;', 'Plenary', 'Exit Ticket')}
+      ${timer(180)}
+      <div class="ple-grid" style="flex:1;">
+        <div class="ple-card">
+          <div class="ple-head">Reflection &mdash; discuss with the class</div>
+          ${qRows}
+          <details style="margin-top:10px;"><summary>Show all answers</summary>
+            <div class="sol-box" style="font-size:0.88rem;">${aRows}</div>
+          </details>
+        </div>
+        <div class="ple-card">
+          <div class="ple-head">Key Takeaway &mdash; ${lessonData.meta.topic}</div>
+          <div class="rule" style="margin-top:0;">
+            <div class="rule-title">What we learned today</div>
+            <div class="rule-body">${p.summary}</div>
+          </div>
+          <div style="margin-top:12px;font-size:0.85rem;color:var(--muted);">
+            &#128204; Tip: ${p.reminder}
+          </div>
+        </div>
+      </div>
+      ${arrows(false, true)}`
+  };
+}
+
+function buildLesson() {
+  const slides = [];
+  slides.push({ title: 'Cover',               ...buildCover() });
+  slides.push({ title: 'Learning Intentions', ...buildLearningIntentions() });
+  slides.push({ title: 'Starter',             ...buildStarter() });
+  slides.push({ title: 'Notes',               ...buildNotes() });
+  slides.push({ title: 'Examples',            ...buildExamples() });
+  slides.push({ title: 'Your Turn',           ...buildYourTurn() });
+  slides.push({ title: 'Ex 1',                ...buildEx1() });
+  slides.push({ title: 'Ex 2',                ...buildEx2() });
+  slides.push({ title: 'Ex 3',                ...buildEx3() });
+  slides.push({ title: 'Extension',           ...buildExtension() });
+  slides.push({ title: 'Plenary',             ...buildPlenary() });
+  return slides;
+}
+
+function renderLesson() {
+  const m      = lessonData.meta;
+  const slides = buildLesson();
+  document.getElementById('chrome-label').textContent = m.course;
+  document.getElementById('chrome-title').textContent = m.topic;
+  document.title = `${m.topic} — Mother Teresa Catholic College`;
+
+  workSlideIndices.clear();
+  slides.forEach((s, i) => { if (s.workSlide) workSlideIndices.add(i); });
+
+  const deck = document.getElementById('deck');
+  deck.innerHTML = slides.map((s, i) =>
+    `<section class="slide${i === 0 ? ' active' : ''}${s.cls ? ' ' + s.cls : ''}" data-index="${i}">${s.html}</section>`
+  ).join('');
+
+  const nav = document.getElementById('nav-bar');
+  nav.innerHTML = slides.map((s, i) =>
+    `<div class="nav-dot${i === 0 ? ' active' : ''}" onclick="goTo(${i})" title="${s.title}"></div>`
+  ).join('');
+
+  const camBtn = document.getElementById('floatCamBtn');
+  if (camBtn && workSlideIndices.has(0)) camBtn.classList.add('cam-visible');
+
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.startup.promise.then(() => {
+      typeset(document.querySelector('.slide.active'));
+    });
+  }
+}
+
+function updateClock() {
+  const now = new Date();
+  const h   = now.getHours();
+  const m   = String(now.getMinutes()).padStart(2, '0');
+  const s   = String(now.getSeconds()).padStart(2, '0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12  = h % 12 || 12;
+  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const el = document.getElementById('live-clock');
+  if (el) el.textContent = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}  ${h12}:${m}:${s} ${ampm}`;
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('theme-btn').textContent = isLight ? '&#127769; Dark' : '&#9728; Light';
+}
+
+/* SETUP LOGIC */
+let setupObjectives = [...lessonData.learningIntentions];
+
+function setupRenderObjectives() {
+  const list = document.getElementById('setupObjList');
+  list.innerHTML = '';
+  setupObjectives.forEach((text, i) => {
+    const row = document.createElement('div'); row.className = 'setup-obj-row';
+    const inp = document.createElement('input'); inp.type = 'text'; inp.value = text; inp.placeholder = 'Learning intention...';
+    inp.addEventListener('input', function() { setupObjectives[i] = this.value; });
+    const btn = document.createElement('button'); btn.className = 'setup-obj-remove'; btn.innerHTML = '&#10005;';
+    btn.addEventListener('click', () => { setupSyncObjectives(); setupObjectives.splice(i,1); setupRenderObjectives(); });
+    row.appendChild(inp); row.appendChild(btn); list.appendChild(row);
+  });
+}
+function setupAddObjective() { setupSyncObjectives(); setupObjectives.push(''); setupRenderObjectives(); const rows=document.querySelectorAll('#setupObjList .setup-obj-row input'); if(rows.length)rows[rows.length-1].focus(); }
+function setupSyncObjectives() { setupObjectives = Array.from(document.querySelectorAll('#setupObjList .setup-obj-row input')).map(i=>i.value); }
+function setupTog(el) { el.classList.toggle('on'); setupUpdatePreview(); }
+function setupSetMode(el) { document.querySelectorAll('.setup-mode-card').forEach(c=>c.classList.remove('on')); el.classList.add('on'); }
+function setupUpdatePreview() {
+  const c = {}; document.querySelectorAll('.setup-tog').forEach(t=>{ c[t.dataset.key]=t.classList.contains('on'); });
+  const slides = [
+    { label:'Cover', cls:'active' }, { label:'Objectives', cls:'active' },
+    { label:'Starter', cls:c.starter?'active':'' },
+    { label:'Notes', cls:c.notes?'active':'' },
+    { label:'Examples', cls:c.examples?'active':'' },
+    { label:'Your Turn', cls:c.yourturn?'active':'' },
+    { label:'Ex 1', cls:c.ex1?'ex':'' }, { label:'Ex 2', cls:c.ex2?'ex':'' }, { label:'Ex 3', cls:c.ex3?'ex':'' },
+    { label:'Extension', cls:c.extension?'ext':'' }, { label:'Plenary', cls:c.plenary?'active':'' },
+  ];
+  document.getElementById('setupSlidePreview').innerHTML = slides.map(s=>`<div class="setup-chip ${s.cls}">${s.label}</div>`).join('');
+}
+function setupApplyMode(mode) { document.body.classList.remove('light'); if(mode==='light')document.body.classList.add('light'); }
+function setupLaunch() {
+  setupSyncObjectives();
+  lessonData.learningIntentions = setupObjectives.map(s=>s.trim()).filter(Boolean);
+  lessonData.meta.topic     = document.getElementById('infoTopic').value.trim() || lessonData.meta.topic;
+  lessonData.meta.course    = document.getElementById('infoCourse').value.trim();
+  lessonData.meta.unit      = document.getElementById('infoUnit').value.trim();
+  lessonData.meta.lessonNum = parseInt(document.getElementById('infoLessonNum').value) || lessonData.meta.lessonNum;
+  lessonData.meta.lessonOf  = parseInt(document.getElementById('infoLessonOf').value) || lessonData.meta.lessonOf;
+  lessonData.meta.term      = parseInt(document.getElementById('infoTerm').value) || lessonData.meta.term;
+  lessonData.meta.week      = parseInt(document.getElementById('infoWeek').value) || lessonData.meta.week;
+  const mode = document.querySelector('.setup-mode-card.on')?.dataset.mode || 'dark';
+  setupApplyMode(mode);
+  renderLesson();
+  const overlay = document.getElementById('setupOverlay');
+  overlay.classList.add('hiding');
+  setTimeout(() => overlay.classList.add('gone'), 380);
+}
+function updateSetupClock() {
+  const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,'0'),s=String(now.getSeconds()).padStart(2,'0'),ampm=h>=12?'PM':'AM',h12=h%12||12;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const el=document.getElementById('setup-clock'); if(el)el.textContent=days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+'  '+h12+':'+m+':'+s+' '+ampm;
+}
+
+renderLesson();
+setupRenderObjectives();
+setupUpdatePreview();
+updateClock();
+updateSetupClock();
+setInterval(updateClock, 1000);
+setInterval(updateSetupClock, 1000);
+
+/* UPLOAD MODAL */
+const APPS_SCRIPT_URL = lessonData.appsScriptUrl;
+let collectedPhotos = [];
+
+function openUploadModal()  { document.getElementById('uploadModal').classList.add('modal-open'); }
+function closeUploadModal() { document.getElementById('uploadModal').classList.remove('modal-open'); }
+function closeModalOutside(e) { if (e.target === document.getElementById('uploadModal')) closeUploadModal(); }
+
+document.addEventListener('change', function(e) {
+  if (e.target.id !== 'm-cameraInput') return;
+  Array.from(e.target.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      collectedPhotos.push({ file, dataUrl: ev.target.result });
+      renderModalPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+});
+
+function renderModalPreviews() {
+  const container = document.getElementById('m-preview');
+  if (!container) return;
+  container.innerHTML = '';
+  collectedPhotos.forEach((photo, idx) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'm-thumb';
+    thumb.innerHTML = `<img src="${photo.dataUrl}" alt="Photo ${idx + 1}">
+      <button class="m-remove" onclick="removeModalPhoto(${idx})">&#10005;</button>`;
+    container.appendChild(thumb);
+  });
+  const btn = document.getElementById('m-submitBtn');
+  if (btn) btn.style.display = collectedPhotos.length > 0 ? 'flex' : 'none';
+}
+
+function removeModalPhoto(idx) { collectedPhotos.splice(idx, 1); renderModalPreviews(); }
+
+function showModalStatus(msg, type) {
+  const el = document.getElementById('m-status');
+  if (!el) return;
+  el.className = 'm-status m-' + type;
+  el.innerHTML = msg;
+}
+
+async function submitModalWork() {
+  const sel      = document.getElementById('m-courseSelect');
+  const courseId = sel ? sel.value : '';
+  const courseName = sel ? (sel.options[sel.selectedIndex]?.text || '') : '';
+  const studentId  = (document.getElementById('m-studentId')?.value || '').trim();
+  if (!courseId)               { showModalStatus('Please select your class.', 'error'); return; }
+  if (!studentId)              { showModalStatus('Please enter your student ID.', 'error'); return; }
+  if (!collectedPhotos.length) { showModalStatus('Please take at least one photo.', 'error'); return; }
+  const submitBtn = document.getElementById('m-submitBtn');
+  const photoBtn  = document.getElementById('m-photoBtn');
+  if (submitBtn) submitBtn.disabled = true;
+  if (photoBtn)  photoBtn.disabled  = true;
+  showModalStatus('Uploading\u2026 please wait.', 'loading');
+  try {
+    const now = new Date();
+    const lessonDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    const photos = collectedPhotos.map((p, i) => ({
+      base64: p.dataUrl.split(',')[1], mimeType: p.file.type || 'image/jpeg',
+      filename: `${courseName.replace(/\s+/g,'_')}_${studentId}_p${i+1}_${Date.now()}.jpg`
+    }));
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ studentId, courseFolderId: courseId, courseName, lessonDate, photos })
+    });
+    const result = await response.json();
+    if (result.success) {
+      showModalStatus(result.matched ? '&#10003; Work submitted! Well done today. &#127881;' : '&#128193; Photos saved — let your teacher know your ID.', result.matched ? 'success' : 'error');
+      if (submitBtn) submitBtn.style.display = 'none';
+      if (photoBtn)  photoBtn.style.display  = 'none';
+      collectedPhotos = []; renderModalPreviews();
+    } else {
+      showModalStatus('Upload failed: ' + (result.error || 'Unknown error.'), 'error');
+      if (submitBtn) submitBtn.disabled = false;
+      if (photoBtn)  photoBtn.disabled  = false;
+    }
+  } catch (err) {
+    showModalStatus('Connection error. Check your internet and try again.', 'error');
+    if (submitBtn) submitBtn.disabled = false;
+    if (photoBtn)  photoBtn.disabled  = false;
+  }
+}
+
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'm-studentId')
+    e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+});
+</script>
+</body>
+</html>
